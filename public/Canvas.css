@@ -1,0 +1,10 @@
+canvas{
+	border: 1px solid;
+	display:block;
+	position:absolute;
+}
+#objetos {
+	margin:auto;
+	margin-top:20px;
+	max-width: 1200px;
+}

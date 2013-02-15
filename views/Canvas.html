@@ -1,0 +1,16 @@
+!!!
+meta(charset="utf-8") 
+html(lang="en")
+	head
+		title #{proyecto}
+		link(rel="stylesheet", href="Canvas.css")
+		script(src="jquery.js")
+		script(src="Canvas.js")
+	body
+		form
+			label Cargar una imagen
+			input(type ="file")
+			input#enviar(type="button", value="Enviar")
+		div#objetos
+			canvas#imagen(width="1200", height="650")
+			canvas#canvas(width="1200", height="650")

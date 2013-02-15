@@ -1,0 +1,13 @@
+{
+    "name": "CrystalTurtle",
+    "version": "0.0.3",
+    "dependencies" : {
+    	"express" : "3.1.0",
+    	"consolidate" : "0.8.0",
+        "jade": "0.28.1",
+        "socket.io": "0.9.13",
+        "stylus" : "0.32.0",
+        "nib" : "0.9.1",
+        "arango.client" : "0.6.2"
+    }
+}
