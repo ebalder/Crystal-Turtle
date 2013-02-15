@@ -1,2 +1,4 @@
 nginx.conf
 node_modules
+public/media
+BD.js
