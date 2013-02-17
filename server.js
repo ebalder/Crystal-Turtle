@@ -29,36 +29,14 @@ app.use(stylus.middleware({
    compile: compile
  }));
 app.use(express.static('./public')); //esto debe ir después de stylus
+
 db = new arango.Connection;
 db.use("test");
 
-fragmentos = Array();
-fragmentos[1] = "0:00:00.01";
-fragmentos[2] = "0:00:03.00";
-fragmentos[3] = "0:00:04.15";
-fragmentos[4] = "0:00:06.10";
-fragmentos[5] = "0:00:07.24";
-fragmentos[6] = "0:00:12.00";
-fragmentos[7] = "0:00:17.03";
-fragmentos[8] = "0:00:21.00";
-fragmentos[9] = "0:00:21.00";
-fragmentos[10] = "0:00:27.12";
-fragmentos[11] = "0:00:31.00";
-fragmentos[12] = "0:00:40.07";
-cadena = {};
-
 
 /* GET */
-app.get('/demoproject', function(req, res){
-	res.render('Proyecto',{
-		proyecto : "Demo"
-	});
-});
-app.get('/canvas', function(req, res){
-	res.render('Canvas',{
-		proyecto : "Demo"
-	});
-});
+app.get('/demoproject', loadProject);
+app.get('/canvas', loadAnnotations);
 
 /* POST */
 app.post('/fragmentInfo', fragmentInfo);
@@ -93,7 +71,6 @@ function fragmentInfo(req, res){
 		);
 	});
 }
-
 function fragmentThumb(req, res){
 	query = db.query.for('r').in('test')
           .filter('r.project == @project')
@@ -104,8 +81,16 @@ function fragmentThumb(req, res){
 		function(err){ console.log("err",err) }
 	);
 }
-
-
+function loadAnnotations(req, res){
+	res.render('Canvas',{
+		proyecto : "Demo"
+	});
+}
+function loadProject(req, res){
+	res.render('Proyecto',{
+		proyecto : "Demo"
+	});
+}
 
 
 

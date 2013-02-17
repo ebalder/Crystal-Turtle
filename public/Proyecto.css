@@ -1,35 +1,30 @@
 @font-face {
   font-family: 'AmbleLightCondensed';
-  src: url("img/amble/Amble-LightCondensed-webfont.eot");
-  src: url("img/amble/Amble-LightCondensed-webfont.eot?#iefix") format('embedded-opentype'), url("img/amble/Amble-LightCondensed-webfont.woff") format('woff'), url("img/amble/Amble-LightCondensed-webfont.ttf") format('truetype'), url("img/amble/Amble-LightCondensed-webfont.svg#AmbleLightCondensed") format('svg');
+  src: url("media/font/Amble-LightCondensed-webfont.woff") format('woff'), url("media/font/Amble-LightCondensed-webfont.ttf") format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'BitstreamVeraSansRoman';
-  src: url("img/Bitstream-Vera-Sans/Vera-webfont.eot");
-  src: url("img/Bitstream-Vera-Sans/Vera-webfont.eot?#iefix") format('embedded-opentype'), url("img/Bitstream-Vera-Sans/Vera-webfont.woff") format('woff'), url("img/Bitstream-Vera-Sans/Vera-webfont.ttf") format('truetype'), url("img/Bitstream-Vera-Sans/Vera-webfont.svg#BitstreamVeraSansRoman") format('svg');
+  src: url("media/font/Vera-webfont.woff") format('woff'), url("media/font/Vera-webfont.ttf") format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'BebasNeueRegular';
-  src: url("img/webfontkit/bebasneue.eot");
-  src: url("img/webfontkit/bebasneue.eot?#iefix") format('embedded-opentype'), url("img/webfontkit/bebasneue.woff") format('woff'), url("img/webfontkit/bebasneue.ttf") format('truetype'), url("img/webfontkit/bebasneue.svg#BebasNeueRegular") format('svg');
+  src: url("media/font/BebasNeue-webfont.woff") format('woff'), url("media/font/BebasNeue-webfont.ttf") format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'SteelfishRgBold';
-  src: url("img/webfontkit/steelfish_bd.eot");
-  src: url("img/webfontkit/steelfish_bd.eot?#iefix") format('embedded-opentype'), url("img/webfontkit/steelfish_bd.woff") format('woff'), url("img/webfontkit/steelfish_bd.ttf") format('truetype'), url("img/webfontkit/steelfish_bd.svg#SteelfishRgBold") format('svg');
+  src: url("media/font/steelfish_bd.woff") format('woff'), url("media/font/steelfish_bd.ttf") format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'KenyanCoffeeRgRegular';
-  src: url("img/webfontkit/kenyan_coffee_rg.eot");
-  src: url("img/webfontkit/kenyan_coffee_rg.eot?#iefix") format('embedded-opentype'), url("img/webfontkit/kenyan_coffee_rg.woff") format('woff'), url("img/webfontkit/kenyan_coffee_rg.ttf") format('truetype'), url("img/webfontkit/kenyan_coffee_rg.svg#KenyanCoffeeRgRegular") format('svg');
+  src: url("media/font/kenyan_coffee_rg.woff") format('woff'), url("media/font/kenyan_coffee_rg.ttf") format('truetype');
   font-weight: normal;
   font-style: normal;
 }
