@@ -37,10 +37,12 @@ db.use("test");
 /* GET */
 app.get('/demoproject', loadProject);
 app.get('/canvas', loadAnnotations);
+app.get('/entryForm', loadEntryForm);
 
 /* POST */
 app.post('/fragmentInfo', fragmentInfo);
 app.post('/fragmentThumb', fragmentThumb);
+app.post('/submitEntry', submitEntry)
 
 /* Functions */
 function fragmentInfo(req, res){
@@ -55,18 +57,20 @@ function fragmentInfo(req, res){
      ).then(function(data){ 
      	query = db.query.for('r').in('test')
 		     .filter('r.project == @project')
-		     .collect('info = r.entries.text')
+		     .collect('info = r.entries')
 		     .return('{"info": info}');
 		query.exec({project: "Demo1"}).then(
 			function(data){  
-				var entries = [];
-				for(var i in data[0].info){
-					if(data[0].info[i].fragment == timestamp){
-						entries.push(data[0].info[i]);
+				var entries = {
+					text : []
+				};
+				for (var i in data[0].info.text){ //cada entrada de la cat.
+					if(data[0].info.text[i].timestamp == timestamp){
+						entries.text.push(data[0].info.text[i]);
 					}
 				}
-				console.log("res", timestamp);
-				res.send(entries);},
+				res.render("FragmentInfo", entries);
+			},
 			function(err){ console.log("err",err) }
 		);
 	});
@@ -86,10 +90,34 @@ function loadAnnotations(req, res){
 		proyecto : "Demo"
 	});
 }
+function loadEntryForm(req, res){
+	res.render('EntryForm',{
+		proyecto : "Demo"
+	});
+}
 function loadProject(req, res){
 	res.render('Proyecto',{
 		proyecto : "Demo"
 	});
+}
+function submitEntry(req, resp){
+	project=req.headers['referer'].replace(/(http:\/\/[^\/]*\/|\?.*)/g, '').replace(/\/[.]*/g, '');
+	db.query.string = "FOR r IN test FILTER r.project == " + "'Demo1'" + " RETURN{'doc' : r._id}";
+	db.query.exec().then(
+		function(res){
+			db.document.get(res[0].doc).then(
+				function(res){
+					req.body.related = req.body.related.split(",");
+					req.body.tags = req.body.tags.split(",");
+					res.entries.text.push(req.body);
+					db.document.put(res._id, res).then(
+						function(res){console.log('Insertado: ', res); resp.send("ok")}
+					);
+				}
+			);
+		},
+		function(err){console.log(err)}
+	);
 }
 
 

@@ -1,9 +1,22 @@
+/*!================= Contents =================
+* Selectors are ordered by elements, classes, ids, then by alphabetic order
+*	@font-face
+*	Basic Elements (body, footer, header, nav)
+*	General (Reusable attributes for nonspecific use and containers)
+*	Yet Unused (some stuff will be moved to the main style sheet)
+*	Carrousel
+*	Panel
+*	Forms
+*	Info
+=============================================*/
+
 
 @font-face 
     font-family  'AmbleLightCondensed' 
     src  url('media/font/Amble-LightCondensed-webfont.woff') format('woff'),
          url('media/font/Amble-LightCondensed-webfont.ttf') format('truetype')
     font-weight  normal 
+    font-size 100%
     font-style  normal 
 
 @font-face
@@ -11,6 +24,7 @@
     src  url('media/font/Vera-webfont.woff') format('woff'),
          url('media/font/Vera-webfont.ttf') format('truetype')
     font-weight  normal 
+    font-size 100%
     font-style  normal 
 
 
@@ -19,6 +33,7 @@
     src  url('media/font/BebasNeue-webfont.woff') format('woff'),
          url('media/font/BebasNeue-webfont.ttf') format('truetype')
     font-weight  normal 
+    font-size 100%
     font-style  normal 
 
 @font-face
@@ -26,6 +41,7 @@
     src  url('media/font/steelfish_bd.woff') format('woff'),
          url('media/font/steelfish_bd.ttf') format('truetype')
     font-weight  normal 
+    font-size 100%
     font-style  normal 
 
 @font-face  
@@ -33,22 +49,23 @@
     src  url('media/font/kenyan_coffee_rg.woff') format('woff'),
          url('media/font/kenyan_coffee_rg.ttf') format('truetype')
     font-weight  normal 
+    font-size 100%
     font-style  normal 
 
- 
+
+/*! ============================ Basic Elements ============================= */
 
 
 body 
 	font-family  'AmbleLightCondensed', sans-serif
 	color #303030
-	font-size  19px
+	font-size 100%
 	margin  0
 	padding  0
 	background  #F5F3F4
 	min-width 950px
 	height 100%
 	overflow auto
-
 
 footer  
 	font-size 15px 
@@ -60,68 +77,72 @@ footer
 	width  15% 
 	border-top  solid 1px #303030 
 	clear none 
- 
 
 header  
-	margin-top  0 
-	margin-bottom 0 
-	display  block 
-	position  relative 
-	line-height 0px 
-	padding-top  10px 
-	padding-bottom 20px 
-	padding-left  10% 
 	background  #FBFBFB 
- 
-
-header a  
-	font-family  'BebasNeueRegular' 
-	font-size 30px 
-	line-height 0 
-	margin-top 0 
-	margin-left 1px 
- 
-
-header h1  
-	font-family  'SteelfishRgBold' 
-	font-size 72px 
-	letter-spacing 3px 
-	line-height 7px 
- 
+	display  block 
+	line-height 0
+	margin 0 0 0 0 
+	padding  0.6em 0 1.2em 9%
+	position  relative 
+	h1  
+		font-family 'SteelfishRgBold' 
+		font-size 4.5em 
+		letter-spacing 0.04em 
+		line-height 0.2em 
+	a  
+		font-family 'BebasNeueRegular' 
+		font-size 1.81em 
+		line-height 0 
+		margin 0 0 0 0.1em  
 
 nav  
-	font-family 'KenyanCoffeeRgRegular' 
-	color #F0F0E0 
-	display  block 
 	background-color  #303030 
-	width 100% 
-	overflow  auto 
- 
-
-nav a hover, a link, a visited, a active, a focus  
-	font-family 'KenyanCoffeeRgRegular' 
 	color #F0F0E0 
-	outline none 
- 
-
-nav li  
 	display  block 
-	float  left 
-	width  80px 
-	margin  5px 
-	border  solid 1px #848583 
-	padding-top  3px 
-	padding-bottom  3px 
-	padding-left  7px 
-	padding-right  7px 
- 
-
-nav ul  
-	display  block 
-	width  830px 
-	margin auto 
+	font-family 'KenyanCoffeeRgRegular' 
+	font-size 1em
 	overflow  auto 
+	width 100% 
+	a, a:hover, a:link, a:visited, a:active
+		border  solid 1px #848583 
+		color #F0F0E0 
+		display table-cell
+		font-family 'KenyanCoffeeRgRegular' 
+		height 1em
+		padding 5% 10%
+		outline none
+		transition all 0.2s ease
+		vertical-align middle
+		width  5em 
+	a:focus
+		background-color #191919
+		border  solid 1px #F0F0F0 
+		color #F0F0F0
+	li  
+		display  inline-block 
+		margin  1% 
+	ul  
+		display block 
+		margin auto 
+		overflow  auto 
+		width  85% 
  
+
+/*! =============================== General ================================ */
+
+
+.verticalCenter
+	display table-cell
+	vertical-align middle
+
+#project  
+	padding-left 1.2em 
+ 
+
+
+/*! ============================= Yet Unused =============================== */
+
 
 .msg  
 	display none 
@@ -132,37 +153,35 @@ nav ul
 	width 350px 
 	min-height 26px 
 	background #C0C0C0 
- 
-
-.fragment  
-	display block 
-	float left 
-	position relative 
-	width 180px 
-	border-left  solid 1px #020202 
-	border-right  solid 1px #020202 
- 
-
-.timestamp  
-	font-size 15px 
-	text-align center 
-	display block 
-	height 20px 
-	background-color  #F5F3F4 
-	border-bottom  solid 1px #202020 
- 
-
-.verticalCenter
-	display table-cell
-	vertical-align middle
-
 
 #area  
 	margin auto 
 	margin-top 20px 
 	width 100% 
 	min-width 950px 
+
+#logout  
+	float  right 
  
+
+/*! ============================== Carrousel =============================== */
+
+
+.fragment  
+	border-left  solid 1px #020202 
+	border-right  solid 1px #020202 
+	display block 
+	float left 
+	position relative 
+	width 180px 
+ 
+.timestamp  
+	background-color  #F5F3F4 
+	border-bottom  solid 1px #202020 
+	display block 
+	font-size 15px 
+	height 20px 
+	text-align center 
 
 #bw    
 	float left  
@@ -171,7 +190,7 @@ nav ul
 #fw
 	background-color #020202 
 	color #F5F3F4  
-	display table 
+	display table
 	font-size 25px  
 	height 100px  
 	position relative 
@@ -179,13 +198,47 @@ nav ul
 	width 30px  
 	z-index 1 
 	
-#cambiar 
-#logout  
-	float  right 
- 
 #fw 
-	float right
+	float right 
+
+#timeline  
+	background-color #050505 
+	display inline-block
+	height 100px 
+	width 100%
+	overflow hidden 
+
+#timeline .thumb  
+	background-color #020202 
+	display inline-block 
+	height 80px 
+	width 180px 
+ 
+#timeline .thumb img  
+	height 80px 
+	width 180px 
+
+#tlIn  
+	background-color #050505 
+	display block 
+	height 100% 
+	position relative 
+	transition all 0.2s ease-out
+	width 100% 
+	white-space nowrap
+ 
+#tlView  
+	display block 
+	height  100px 
+	overflow hidden 
+	padding 0 
+	position relative 
+	white-space nowrap
 	
+
+/*! ============================== Panel =============================== */
+
+
 #panel 
 	display block 
 	position absolute 
@@ -197,6 +250,7 @@ nav ul
 	padding-left 20px 
 	transition  all 0.2s ease 
 	z-index 2 
+
 #panTab 
 	color #F5F3F4
 	display table
@@ -204,49 +258,15 @@ nav ul
 	width 20px
 	height 100%
 	float right
+
 #panTab span  
 	height 100% 
+
  
 
-#project  
-	padding-left 20px 
- 
 
-#timeline  
-	background-color #050505 
-	display inline 
-	height 100px 
-	overflow hidden 
- 
 
-#timeline .thumb  
-	display block 
-	width 180px 
-	height 80px 
-	background-color #020202 
- 
-
-#timeline .thumb img  
-	height 80px 
-	width 180px 
- 
-
-#tlIn  
-	position relative 
-	height 100% 
-	width 100% 
-	display block 
-	overflow hidden 
-	background-color #050505 
- 
-
-#tlView  
-	position relative 
-	height  100px 
-	padding 0 
-	display block 
-	overflow hidden 
- 
+/*! ================================ Forms ================================= */
 
 
 form  
@@ -254,12 +274,10 @@ form
 	margin auto 
 	margin-top 70px 
 	overflow auto 
- 
 
 form span 
 	display block 
 	overflow auto 
- 
 
 label  
 	font-family 'AmbleLightCondensed' 
@@ -268,7 +286,9 @@ label
 	margin-bottom 2px 
 	margin-right 10px 
 	display block 
- 
+
+input invalid 
+	box-shadow none 
 
 [type = text], [type = password],  valid,  invalid  
 	font-family 'BitstreamVeraSansRoman' 
@@ -286,37 +306,61 @@ label
 	height 25px 
 	border  solid 1px #A0A0A0 
 	border-radius 0 
- 
 
-input invalid 
-	box-shadow none 
- 
-
-.info, .respuesta 
-	width 200px 
-	height 22px 
-	margin 5px 
-	border-bottom solid 1px #C0C0C0 
- 
-
-.respuesta .num 
-	width 30px 
-	float left 
- 
-
-/*form input focus  invalid  
-	background  url(img/invalid.png) no-repeat 98% center 
+ form input focus  invalid  
+	background  url(media/img/invalid.png) no-repeat 98% center 
 	box-shadow  0 0 3px #d45252 
 	border  solid 1px #b03535 
  
 
 form input focus  valid 
-	background  url(img/valid.png) no-repeat 98% center 
+	background  url(media/img/valid.png) no-repeat 98% center 
 	box-shadow  0 0 5px #5cd053 
 	border  solid 1px #35b035 
- */
+
+
+/*==================== Info ===========================*/
+
+.entry
+	background-color #D8D8CA
+	display inline-block
+	font-size 0.8em
+	padding 0.5em
+	width 27%
+	h2
+		line-height 1em
+		margin 0
+	.related
+		margin-top 0.5em
+
+.new
+	display inline-block
+	width 10em
+
+#contents
+	display inline-block
+	width 70%
+
+#fragmentInfo
+	background-color #E5E5D8
+	display inline-block
+	margin 2% 2%
+	padding 0.5% 0.5%
+	width 60%
+
+#layers
+	border solid
+	display inline-block
+
+#projectInfo
+	background-color #E5E5D8
+	display inline-block
+	margin 2% 2%
+	width 30%
+
 
 /*==================== Login ===========================*/
+
 
 #login  
 	width 30% 
@@ -344,310 +388,6 @@ form input focus  valid
 #login label 
 	float left 
 	width 100px 
- 
-
-/*===================== Buscar & Capturar =====================*/
-
-#buscarSol, #solicitud 
-   margin  auto 
-   padding  15px 
-   padding-left  20px 
-   padding-right  20px 
-   width 100% 
-   max-width 900px 
-   overflow auto 
- 
-
-.folFech  
-	width 330px 
-	float right 
-	text-align right 
- 
-
-.folFech span 
-	display inline 
-	text-align right 
-	overflow auto 
-	margin-left 10px 
- 
-
-#solicitud .folFech span  
-	float right 
-	margin-right 15px 
- 
-
-.folFech label 
-	float left 
- 
-
-.folio input 
-	float left 
-	display inline 
-  	width  96px 
- 
-
-.fSol input, .fProc input, .fMod input  
-	display inline 
-	width  96px 
- 
-
-.dSol  
-	display block 
-	overflow auto 
-	position relative 
-	width 100% 
-	margin auto 
- 
-
-.dSol label, .dSol input, .dSol span, .dSol select 
-	display inline 
-	float left 
- 
-
-.c1 
-	margin-top 17px 
-	margin-bottom 17px 
- 
-
-.c1 label  
-	margin-right 10px 
-	margin-left 15px 
- 
-
-.c1 select  
-	float left 
- 
-
-.dSol .c2  	
-	display block 
-	width 370px 
-	float right 
-	text-align right 
- 
-
-#solicitud .c2 
-	width 105px 
-	margin-top 15px 
- 
-
-.c2 input  
-	margin-left 10px 
-	margin-right 5px 
- 
-
-.movs input [type=text], .movs select, .movs label  
-	float none 
- 
-
-.movs span 
-	float left 
-	margin-left 15px 
- 
-
-.movs select  margin-top 4px  
-
-.movs label   margin-left 10px   
-
-.nom input  
-   width  250px 
-   text-transform  capitalize 
- 
-
-.movs input  
-  margin  5px 
-  margin-top  10px 
-  margin-bottom  10px 
-  display  block 
- 
-
-.abG input  
-   background  none repeat scroll 0% 0% #F0F0F0 
-   margin-top  5px 
-   margin-bottom  5px 
- 
-
-.movG  
-   border  solid 1px #505050 
-   display  block 
-   float  left 
-   margin-right  15px 
-  margin-top  12px 
-  margin-left  5px 
-   padding  0px 
-   width  120px 
- 
-
-.mov  
-	display block 
-	margin-left 7px 
- 
-
-.mov input, label 
-	line-height 22px 
-	display inline 
- 
-
-.clave input, .grup input, .clave, .grupo  
-   width  92px 
-   text-transform  uppercase 
- 
-
-.realiz input, .capt input, .proceso  
-   width  147px 
-   text-transform  capitalize 
- 
-
-.matr input   width  64px   
-.plan select   width 50px  
-.planop   width  50px  
-.carrop   width  82px  
-.estaop input   width  68px  
-.mat input   width  300px  
-.obser input   width  650px   
-
-.busc input  
-  float  right 
-  width  70px 
-  height  27px 
- 
-
-.agregar 
-	height  27px 
-	width  30px 
- 
-
-.quitar 
-	display block 
-	clear none 
-	float  right 
-	height  30px 
-	width  30px 
- 
-
-/*==================== Tabla Buscar =======================*/
-
-#reportes  
-	table-layout auto 
-	margin auto 
- 
-
-#reportes tbody td 
-	font-size 16px 
-	text-align left 
-	padding 3px 
- 
-
-table tbody tr nth-child(odd) 
-	background-color #E7E7E7 
- 
-
-#reportes thead th 
-	text-align center 
- 
-
-#folio   font-size 14px   
-#fProcesamiento   
-.fSolicitud, .fProcesamiento   width 82px   
-#matricula  font-size 15px  
-.matricula   width 64px  
-#nombre  width 120px  
-.nombre  text-transform  capitalize  
-#observaciones   
-.nombre, .observaciones  width 120px  
-#carrera, .Carrera  width 100px  
-#plan  font-size 16px  
-#clave  font-size 14px  
-#grupo  font-size 16px  
-.plan, .clave, .grupo   width 50px   
-#movimiento  font-size 13px  
-#materia   
-#estado   
-#realizo   
-.realizo  width 80px  
-#capturo  font-size 16px  
-#fMod  font-size 16px  
-
-/*============== Administrar ============*/
-
-#campoUsuarios, #campoMaterias, #campoCarreras 
-	width 100% 
-	max-width 900px 
-	margin auto 
- 
-
-.campo  
-	font-family 'KenyanCoffeeRgRegular' 
-	font-size 26px 
-	display block 
-	clear both 
-	width 100% 
-	text-align center 
-	background-color #E7E7E7 
-	margin-top 15px 
-	margin-bottom 10px 
- 
-
-#carreras, #materias, #usuarios  
-	width 100% 
- 
-
-#carreras input, #materias input, #materias select, #usuarios input, #usuarios select  
-	display inline 
-	margin-right 20px 
- 
-
-#carreras .c2, #materias .c2, #usuarios .c2  
-	display block 
-	margin auto 
-	width 300px 
-	margin-top 15px 
- 
-
-#materias .planMat, #carreras .planMat  
-	text-transform  uppercase 
- 
-
-#materias .carrNom, #carreras .carrNom, #usuarios .carrNom  
-	text-transform  capitalize 
- 
-
-.ordenar 
-	width 220px 
-	overflow auto 
-	display block 
-	float right 
- 
-
-.ordenar label, .ordenar input  
-	float left 
- 
-
-#tablaUsu, #tablaMat, #tablaCarr  
-	margin 10px 
-	table-layout fixed 
-	display block 
-	clear none 
- 
-
-#tablaUsu th, #tablaMat th, #tablaCarr th  
-	max-width 700px 
-	padding-left 5px 
-	padding-right 5px 
- 
-
-.paginas  
-	display block 
-	font-family  'KenyanCoffeeRgRegular' 
-	margin-left 25px 
-	margin-bottom 15px 
-	margin-top 10px 
-	padding 5px 
-	clear both 
- 
-
-.browse  
-	padding 10px 
-	border-right solid 1px #909090 
  
 
 /*========================== Contraseña ==================*/

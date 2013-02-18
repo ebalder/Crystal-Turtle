@@ -1,3 +1,5 @@
+var time;
+
 cssShowPanel = {
 	'transform' : 'translate(94.5%)'
 };
@@ -9,7 +11,7 @@ cssHidePanel = {
 
 function fragInfo(){
 	index = $('.fragment').index(this) + 1;
-	console.log(index);
+	time = $(this).find('.timestamp').text();
 	$.post('fragmentInfo', {selection: index}, showData);	
 }
 function hidePanel(){
@@ -27,8 +29,22 @@ function loadFrag(data){
 			</span><!--thumb-->\
 		<span class="timestamp">' + time + '</span><!--timestamp-->');
 }
+function newEntry(){
+	$.get("entryForm", function(data){
+		$('#contents').html(data);
+		$('input[name="timestamp"]').val(time);
+		$('#entryForm').on('submit', function(){
+			$.post("submitEntry", $('#entryForm').serialize(), function(){
+				$('.msg').html("Submission complete");
+			});
+			return false;
+		});
+	});
+	return false;
+}
 function showData(data){
-	$("#fragmentInfo > p").html(JSON.stringify(data, null, '<br>    '));
+	$("#fragmentInfo").html(data);
+	$(".new").on('click', newEntry)
 }
 function showPanel(){
 	$('#panTab').off('click', showPanel);
@@ -56,7 +72,7 @@ function inicio(){
 		$("#tlIn").append('\
 			<span class="fragment"> \
 			</span> <!--fragment-->');
-		$('.fragment:eq(' + (j - 1) + ')').bind('click', fragInfo);
+		$('.fragment:eq(' + (j - 1) + ')').on('click', fragInfo);
 		$.post('fragmentThumb', {index: j}, loadFrag);
 		i++;
 		j++;
@@ -70,22 +86,22 @@ function inicio(){
 				$("#tlIn").append('\
 					<span class="fragment"> \
 					</span> <!--fragment-->');
-				$('.fragment:eq(' + (j - 1) + ')').bind('click', fragInfo);
+				$('.fragment:eq(' + (j - 1) + ')').on('click', fragInfo);
 				$.post('fragmentThumb', {index: j}, loadFrag);
+				j++;
 			}
-			$('#tlIn').animate({
+			$('#tlIn').css({
 				left: '-=' + 182
-			}, 200, 'swing');
+			});
 			k++;
 			i++;
-			j++;
 		}
 	});	
 	$("#bw").on('click', function(){ 
 		if (i > 1){
-			$('#tlIn').animate({
+			$('#tlIn').css({
 				left: '+=' + 182
-			}, 200, 'swing');
+			});
 			k--;
 			i--;
 		}
