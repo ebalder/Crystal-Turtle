@@ -1,0 +1,21 @@
+!!!
+meta(charset="utf-8") 
+html(lang="en")
+	head
+		title Create new project
+		link(rel="stylesheet", href="Proyecto.css")
+		script(src="jquery.js")
+		script(src="nwProject.js")
+	body
+		form#newProject
+			| Title 
+			input(type="text", name="title")
+			| Invite members
+			input(type="text", name="members")
+			| Format
+			select(name="type")
+				option(value="movie") Movie
+				option(value="shortfilm") Shortfilm
+				option(value="miniseries") Miniseries
+				option(value="series") Series
+			input(type="submit", name="submit", value="submit")

@@ -1,0 +1,20 @@
+form#entryForm
+	| Title: 
+	input(type="text", name="title")
+	select(name="type")
+		option(value="text") Text
+		option(value="image") Image
+		option(value="link") Link
+	br
+	| Content
+	textarea(name="content", cols="30", rows="10")
+	br
+	| Tags: 
+	input(type="text", name="tags")
+	br
+	| Related: 
+	input(type="text", name="related")
+	| Timestamp: 
+	input(type="text", name="timestamp")
+	input(type="submit", name="submit", value="submit")
+

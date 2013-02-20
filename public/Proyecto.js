@@ -12,7 +12,7 @@ cssHidePanel = {
 function fragInfo(){
 	index = $('.fragment').index(this) + 1;
 	time = $(this).find('.timestamp').text();
-	$.post('fragmentInfo', {selection: index}, showData);	
+	$.post('../fragmentInfo', {selection: index}, showData);	
 }
 function hidePanel(){
 	$('#panTab').off('click', hidePanel);
@@ -25,16 +25,25 @@ function loadFrag(data){
 	time = data.timestamp;
 	$("#tlIn > .fragment:eq(" + (data.index - 1) +")").html('\
 		<span class="thumb">\
-			<img src ="Frames/' + thumb + '.jpg">\
+			<img src ="../Frames/' + thumb + '.jpg">\
 			</span><!--thumb-->\
 		<span class="timestamp">' + time + '</span><!--timestamp-->');
 }
+function loadLayerFrag(){
+	n = $(this).attr("n");
+	f = $(this).attr("f");
+	$.post("../envisioning",{name : n, fragment : f}, function(data){
+		$('#loaded').html(data);
+		inicioCanvas();
+	});
+	return false;
+}
 function newEntry(){
-	$.get("entryForm", function(data){
+	$.get("../entryForm", function(data){
 		$('#contents').html(data);
 		$('input[name="timestamp"]').val(time);
 		$('#entryForm').on('submit', function(){
-			$.post("submitEntry", $('#entryForm').serialize(), function(){
+			$.post("../submitEntry", $('#entryForm').serialize(), function(){
 				$('.msg').html("Submission complete");
 			});
 			return false;
@@ -44,7 +53,8 @@ function newEntry(){
 }
 function showData(data){
 	$("#fragmentInfo").html(data);
-	$(".new").on('click', newEntry)
+	$(".new").on('click', newEntry);
+	$(".contentLayer a").on('click', loadLayerFrag);
 }
 function showPanel(){
 	$('#panTab').off('click', showPanel);
@@ -73,7 +83,7 @@ function inicio(){
 			<span class="fragment"> \
 			</span> <!--fragment-->');
 		$('.fragment:eq(' + (j - 1) + ')').on('click', fragInfo);
-		$.post('fragmentThumb', {index: j}, loadFrag);
+		$.post('../fragmentThumb', {index: j}, loadFrag);
 		i++;
 		j++;
 	}
@@ -87,7 +97,7 @@ function inicio(){
 					<span class="fragment"> \
 					</span> <!--fragment-->');
 				$('.fragment:eq(' + (j - 1) + ')').on('click', fragInfo);
-				$.post('fragmentThumb', {index: j}, loadFrag);
+				$.post('../fragmentThumb', {index: j}, loadFrag);
 				j++;
 			}
 			$('#tlIn').css({

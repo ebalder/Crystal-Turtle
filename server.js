@@ -11,7 +11,7 @@ var express = require('express'),
 
 /* Servidor */
 server.listen(3000);
-console.log("localhost:3000");
+console.log( __dirname);
 
 /* Usar nib en Stylus */
 function compile(str, path) {
@@ -20,8 +20,8 @@ function compile(str, path) {
 }
 
 /* Configuraciones de los módulos */
-app.engine('.html', cons.jade);
-app.set('view engine', 'html');
+app.engine('.jade', cons.jade);
+app.set('view engine', 'jade');
 app.use(express.bodyParser());
 app.use(stylus.middleware({
    src: __dirname + '/Styl',
@@ -35,54 +35,84 @@ db.use("test");
 
 
 /* GET */
-app.get('/demoproject', loadProject);
+app.get(/\/project\/[^\/]*/, loadProject);
 app.get('/canvas', loadAnnotations);
 app.get('/entryForm', loadEntryForm);
+app.get('/projectForm', loadProjectForm);
 
 /* POST */
 app.post('/fragmentInfo', fragmentInfo);
 app.post('/fragmentThumb', fragmentThumb);
-app.post('/submitEntry', submitEntry)
+app.post('/submitEntry', submitEntry);
+app.post('/submitProject', submitProject);
+app.post('/saveCanvas', saveCanvas);
+app.post('/envisioning', loadCanvas);
 
 /* Functions */
 function fragmentInfo(req, res){
 	var timestamp;
+	project=req.headers['referer'].replace(/(http:\/\/[^\/]*\/project\/|\?.*)/g, '').replace(/\/.*/g, '');
 	query = db.query.for('r').in('test')
           .filter('r.project == @project')
           .collect('time = r.fragments[@index]')
           .return('{"timestamp": time}');
-     query.exec({project: "Demo1", index: req.body.selection - 1}).then(
+     query.exec({project: project, index: req.body.selection - 1}).then(
      	function(data){ timestamp = data[0].timestamp;},
 		function(err){ console.log("err",err) }
      ).then(function(data){ 
      	query = db.query.for('r').in('test')
 		     .filter('r.project == @project')
-		     .collect('info = r.entries')
-		     .return('{"info": info}');
-		query.exec({project: "Demo1"}).then(
+		     .return('{"entries": r.entries, "layers": r.layers}');
+		query.exec({project: project}).then( 
 			function(data){  
 				var entries = {
 					text : []
 				};
-				for (var i in data[0].info.text){ //cada entrada de la cat.
-					if(data[0].info.text[i].timestamp == timestamp){
-						entries.text.push(data[0].info.text[i]);
+				var dLayers = data[0].layers;
+				var cLayers = [];
+				var found; 
+				var dEntries = data[0].entries;
+				for (var i in dEntries.text){ //cada entrada de la cat.
+					if(dEntries.text[i].timestamp == timestamp){
+						entries.text.push(dEntries.text[i]);
 					}
 				}
-				res.render("FragmentInfo", entries);
+				/*  Buscamos los layers con contenido de este fragmento */
+				while (dLayers.length > 0){ //cada capa. 
+					found = false;
+					for (var i in dLayers[0].fragments){ //cada fragmento en la capa
+						if(dLayers[0].fragments[i].timestamp == timestamp){
+							cLayers.unshift(dLayers[0].name);
+							dLayers.shift();
+							found = true;
+							break; 
+						}
+					}
+					if (found == false){ //Si ya no hubo el timestamp en esa capa, deja de buscar en las demás
+						break;
+					}
+				} 
+				res.render("FragmentInfo", {
+					text : entries.text,
+					eLayers : dLayers.reverse(), //empty layers
+					cLayers : cLayers, //layers with contents
+					timestamp : timestamp,
+					project : project
+				});
 			},
 			function(err){ console.log("err",err) }
 		);
 	});
 }
 function fragmentThumb(req, res){
-	query = db.query.for('r').in('test')
+	project=req.headers['referer'].replace(/(http:\/\/[^\/]*\/project\/|\?.*)/g, '').replace(/\/.*/g, '');
+	db.query.for('r').in('test')
           .filter('r.project == @project')
           .collect('time = r.fragments[@index]')
           .return('{"timestamp": time}');
-	query.exec({project : "Demo1", index : req.body.index-1}).then(
+	db.query.exec({project : project, index : req.body.index-1}).then(
 		function(data){ res.send({timestamp : data[0].timestamp, index : req.body.index});},
-		function(err){ console.log("err",err) }
+		function(err){ console.log("err",err);}
 	);
 }
 function loadAnnotations(req, res){
@@ -90,19 +120,32 @@ function loadAnnotations(req, res){
 		proyecto : "Demo"
 	});
 }
+function loadCanvas(req, resp){
+	resp.render("Canvas", {
+
+	}); 
+}
 function loadEntryForm(req, res){
 	res.render('EntryForm',{
 		proyecto : "Demo"
 	});
 }
 function loadProject(req, res){
+	project=req.originalUrl.replace(/(\/project\/|\?.*)/g, '').replace(/\/.*/g, '');
 	res.render('Proyecto',{
-		proyecto : "Demo"
+		proyecto : project
 	});
 }
+function loadProjectForm(req, res){
+	res.render('ProjectForm');
+}
+function saveCanvas(req, resp){
+
+}
 function submitEntry(req, resp){
-	project=req.headers['referer'].replace(/(http:\/\/[^\/]*\/|\?.*)/g, '').replace(/\/[.]*/g, '');
-	db.query.string = "FOR r IN test FILTER r.project == " + "'Demo1'" + " RETURN{'doc' : r._id}";
+	project=req.headers['referer'].split("/")[4];
+	console.log(project);
+	db.query.string = "FOR r IN test FILTER r.project == '" + project + "' RETURN{'doc' : r._id}";
 	db.query.exec().then(
 		function(res){
 			db.document.get(res[0].doc).then(
@@ -119,7 +162,12 @@ function submitEntry(req, resp){
 		function(err){console.log(err)}
 	);
 }
-
+function submitProject(req, resp){
+	db.document.create("test", req.body).then(
+		function(res){ resp.send("Project correctly submited") },
+		function(err){ resp.send(err)}
+	);
+}
 
 
 

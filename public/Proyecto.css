@@ -65,7 +65,6 @@ footer {
   min-width: 300px;
   width: 15%;
   border-top: solid 1px #303030;
-  clear: none;
 }
 header {
   background: #fbfbfb;
@@ -134,6 +133,9 @@ nav ul {
 }
 #project {
   padding-left: 1.2em;
+}
+#loaded {
+  display: inline;
 }
 /* ============================= Yet Unused =============================== */
 .msg {
@@ -300,6 +302,13 @@ form input focus valid {
   border: solid 1px #35b035;
 }
 /*==================== Info ===========================*/
+.contentLayer {
+  background-color: #c5c5b5;
+}
+.emptyLayer {
+  background-color: #e5e5d8;
+  color: #909090;
+}
 .entry {
   background-color: #d8d8ca;
   display: inline-block;
@@ -313,6 +322,10 @@ form input focus valid {
 }
 .entry .related {
   margin-top: 0.5em;
+}
+.layer {
+  border-bottom: solid 1px #252525;
+  padding: 0.5em;
 }
 .new {
   display: inline-block;
@@ -330,7 +343,6 @@ form input focus valid {
   width: 60%;
 }
 #layers {
-  border: solid;
   display: inline-block;
 }
 #projectInfo {

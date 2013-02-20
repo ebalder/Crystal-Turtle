@@ -1,4 +1,3 @@
-$(document).on('ready', inicio);
 
 var loader = {
 
@@ -63,12 +62,11 @@ function enviar(){
 		canvas : canvas.toDataURL("image/png"),
 		imagen : imagen.toDataURL("image/png")
 	}
-	$.post("saveCanvas", paquete);
+	$.post("../saveCanvas", paquete);
 	return false;
 }
 
-function inicio(){
-
+function inicioCanvas(){
 	canvas = document.getElementById('canvas');
 	imagen = document.getElementById('imagen');
 	ctx = canvas.getContext('2d');
