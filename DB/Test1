@@ -22,6 +22,19 @@
         "U2"
     ],
     "entries": {
+        "links": [
+            {
+                "title": "com.com",
+                "content": "www.comcom",
+                "timestamp": "0:00:04.15",
+                "tags": [
+                    ""
+                ],
+                "related": [
+                    ""
+                ]
+            }
+        ],
         "text": [
             {
                 "title": "entry1",
@@ -46,33 +59,9 @@
                     "scene",
                     "tutorial"
                 ]
-            },
-            {
-                "title": "Test",
-                "type": "text",
-                "content": "test lorem ipsum test lorem ipsum test lorem ipsum test lorem ipsum test lorem ipsum ",
-                "timestamp": "0:00:03.00",
-                "tags": [
-                    "lorem",
-                    " ipsum"
-                ],
-                "related": [
-                    "entry 1"
-                ]
-            },
-            {
-                "type": "text",
-                "title": "someEntry",
-                "content": "assafaw rfa rf a",
-                "timestamp": "0:00:00.01",
-                "tags": [
-                    "new"
-                ],
-                "related": [
-                    ""
-                ]
             }
-        ]
+        ],
+        "images": []
     },
     "layers": [
         {
