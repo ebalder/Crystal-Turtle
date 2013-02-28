@@ -2,21 +2,32 @@ hgroup.fragInfo
 	div#contents
 		div#entries
 			div#text text entries
+				br
 				each e in text
-					br
 					div.entry
 						span.eTitle 
-							h2
-								a #{e.title}
+							h2 #{e.title}
 						br
 						span.eBrief #{e.content.replace(/<[^>]*>/g, '').substr(0, 150)+"..."}
+						div.related related entries:
 							each r in e.related
 								br
-								div.related related entries:
-									br
-									a #{r}
-				div#link
-			div#img
+								a #{r}
+			div#link Link entries
+				br
+				each l in links
+					div.entry
+						span.eLink
+							h2 #{l.title}
+						br
+						span.eURL
+							a(href="#{l.content}") #{l.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
+						div.related related entries:
+							each r in l.related
+								br
+								a #{r}
+			div#img Image entries
+			br
 		div#guidelines
 		a.new(href="") New entry
 	div#layers

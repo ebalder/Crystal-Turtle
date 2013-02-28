@@ -66,7 +66,9 @@ function fragmentInfo(req, res){
 		query.exec({project: project}).then( 
 			function(data){  
 				var entries = {
-					text : []
+					text : [],
+					links : [],
+					img : []
 				};
 				var dLayers = data[0].layers;
 				var cLayers = [];
@@ -75,6 +77,15 @@ function fragmentInfo(req, res){
 				for (var i in dEntries.text){ //cada entrada de la cat.
 					if(dEntries.text[i].timestamp == timestamp){
 						entries.text.push(dEntries.text[i]);
+					}
+				}
+				for (var i in dEntries.links){ //cada entrada de la cat.
+					if(dEntries.links[i].timestamp == timestamp){
+						entries.links.push(dEntries.links[i]);
+					}
+				}for (var i in dEntries.images){ //cada entrada de la cat.
+					if(dEntries.images[i].timestamp == timestamp){
+						entries.images.push(dEntries.images[i]);
 					}
 				}
 				/*  Buscamos los layers con contenido de este fragmento */
@@ -94,6 +105,8 @@ function fragmentInfo(req, res){
 				} 
 				res.render("FragmentInfo", {
 					text : entries.text,
+					images : entries.images,
+					links : entries.links,
 					eLayers : dLayers.reverse(), //empty layers
 					cLayers : cLayers, //layers with contents
 					timestamp : timestamp,
@@ -152,7 +165,20 @@ function submitEntry(req, resp){
 				function(res){
 					req.body.related = req.body.related.split(",");
 					req.body.tags = req.body.tags.split(",");
-					res.entries.text.push(req.body);
+					switch (req.body.type){
+						case "text":
+							delete req.body.type;
+							res.entries.text.push(req.body);
+							break;
+						case "image":
+							delete req.body.type;
+							res.entries.images.push(req.body);
+							break;
+						case "link":
+							delete req.body.type;
+							console.log("link");
+							res.entries.links.push(req.body);
+					}
 					db.document.put(res._id, res).then(
 						function(res){console.log('Insertado: ', res); resp.send("ok")}
 					);
