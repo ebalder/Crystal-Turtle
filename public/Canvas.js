@@ -12,6 +12,7 @@ var loader = {
 	},
 	convertir : function(ev){
 		loader.img.src = ev.target.result;
+		console.log(ev.target.result);
 		$(loader.img).on('load', loader.mostrar);
 	},
 	mostrar : function(){
@@ -72,7 +73,7 @@ function inicioCanvas(){
 	ctx = canvas.getContext('2d');
 	imgctx = imagen.getContext('2d');
 
-	$('input').on('change', loader.cargar);
+	$('input[name="canvasFile"]').on('change', loader.cargar);
 	$(canvas).on('mousedown', dibujar);
 	$('#enviar').on('click', enviar);
 	ctx.strokeStyle = "rgb(200,0,0)";
