@@ -314,7 +314,7 @@ form input focus valid {
   display: inline-block;
   font-size: 0.8em;
   padding: 0.5em;
-  width: 27%;
+  width: 100%;
 }
 .entry h2 {
   line-height: 1em;
@@ -335,6 +335,11 @@ form input focus valid {
   display: inline-block;
   width: 70%;
 }
+#entries,
+#layers {
+  display: inline-block;
+  vertical-align: top;
+}
 #fragmentInfo {
   background-color: #e5e5d8;
   display: inline-block;
@@ -342,8 +347,13 @@ form input focus valid {
   padding: 0.5% 0.5%;
   width: 60%;
 }
-#layers {
+#img,
+#link,
+#text {
   display: inline-block;
+  margin: 0.5em;
+  vertical-align: top;
+  width: 27%;
 }
 #projectInfo {
   background-color: #e5e5d8;
