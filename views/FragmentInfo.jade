@@ -13,23 +13,42 @@ hgroup.fragInfo
 							each r in e.related
 								br
 								a #{r}
+						div.tags tags:
+							each r in e.tags
+								br
+								| #{r}
 			div#link Link entries
 				br
 				each l in links
 					div.entry
-						span.eLink
-							h2 #{l.title}
+						h2 #{l.title}
 						br
-						span.eURL
-							a(href="#{l.content}") #{l.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
+						a(href="#{l.content}") #{l.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
 						div.related related entries:
 							each r in l.related
 								br
 								a #{r}
+						div.tags tags:
+							each r in l.tags
+								br
+								| #{r}
 			div#img Image entries
-			br
+				br
+				each i in images
+					div.entry
+						h2 #{i.title}
+						img(src = "../#{project}/#{i.title}") test
+						br
+						div.related related entries:
+							each r in i.related
+								br
+								a #{r}
+						div.tags tags:
+							each r in i.tags
+								br
+								| #{r}
 		div#guidelines
-		a.new(href="") New entry
+		a.new(href="#") New entry
 	div#layers
 		each l in eLayers
 			div.layer.emptyLayer #{l.name}

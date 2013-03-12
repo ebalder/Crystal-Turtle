@@ -8,6 +8,7 @@ var express = require('express'),
 	stylus = require('stylus'),
 	nib = require('nib'),
 	arango = require('arango.client');
+	fs = require('fs');
 
 /* Servidor */
 server.listen(3000);
@@ -33,166 +34,224 @@ app.use(express.static('./public')); //esto debe ir después de stylus
 db = new arango.Connection;
 db.use("test");
 
-
 /* GET */
-app.get(/\/project\/[^\/]*/, loadProject);
-app.get('/canvas', loadAnnotations);
 app.get('/entryForm', loadEntryForm);
+app.get('/project/:project', openProject);
 app.get('/projectForm', loadProjectForm);
+app.get('/userForm', loadUserForm);
+app.get('/user/:user', openUserProfile);
 
 /* POST */
-app.post('/fragmentInfo', fragmentInfo);
-app.post('/fragmentThumb', fragmentThumb);
+app.post('/envisioning', loadEnvisioning);
+app.post('/fragmentInfo', loadFragmentInfo);
+app.post('/fragmentThumb', getFragmentThumb);
+app.post('/saveCanvas', submitCanvas);
+app.post('/saveImage', submitImage);
 app.post('/submitEntry', submitEntry);
 app.post('/submitProject', submitProject);
-app.post('/saveCanvas', saveCanvas);
-app.post('/envisioning', loadCanvas);
+app.post('/submitUser', submitNewUser);
 
 /* Functions */
-function fragmentInfo(req, res){
-	var timestamp;
-	project=req.headers['referer'].replace(/(http:\/\/[^\/]*\/project\/|\?.*)/g, '').replace(/\/.*/g, '');
-	query = db.query.for('r').in('test')
-          .filter('r.project == @project')
-          .collect('time = r.fragments[@index]')
-          .return('{"timestamp": time}');
-     query.exec({project: project, index: req.body.selection - 1}).then(
-     	function(data){ timestamp = data[0].timestamp;},
-		function(err){ console.log("err",err) }
-     ).then(function(data){ 
-     	query = db.query.for('r').in('test')
-		     .filter('r.project == @project')
-		     .return('{"entries": r.entries, "layers": r.layers}');
-		query.exec({project: project}).then( 
-			function(data){  
-				var entries = {
-					text : [],
-					links : [],
-					img : []
-				};
-				var dLayers = data[0].layers;
-				var cLayers = [];
-				var found; 
-				var dEntries = data[0].entries;
-				for (var i in dEntries.text){ //cada entrada de la cat.
-					if(dEntries.text[i].timestamp == timestamp){
-						entries.text.push(dEntries.text[i]);
-					}
-				}
-				for (var i in dEntries.links){ //cada entrada de la cat.
-					if(dEntries.links[i].timestamp == timestamp){
-						entries.links.push(dEntries.links[i]);
-					}
-				}for (var i in dEntries.images){ //cada entrada de la cat.
-					if(dEntries.images[i].timestamp == timestamp){
-						entries.images.push(dEntries.images[i]);
-					}
-				}
-				/*  Buscamos los layers con contenido de este fragmento */
-				while (dLayers.length > 0){ //cada capa. 
-					found = false;
-					for (var i in dLayers[0].fragments){ //cada fragmento en la capa
-						if(dLayers[0].fragments[i].timestamp == timestamp){
-							cLayers.unshift(dLayers[0].name);
-							dLayers.shift();
-							found = true;
-							break; 
-						}
-					}
-					if (found == false){ //Si ya no hubo el timestamp en esa capa, deja de buscar en las demás
-						break;
-					}
-				} 
-				res.render("FragmentInfo", {
-					text : entries.text,
-					images : entries.images,
-					links : entries.links,
-					eLayers : dLayers.reverse(), //empty layers
-					cLayers : cLayers, //layers with contents
-					timestamp : timestamp,
-					project : project
-				});
-			},
-			function(err){ console.log("err",err) }
-		);
-	});
-}
-function fragmentThumb(req, res){
-	project=req.headers['referer'].replace(/(http:\/\/[^\/]*\/project\/|\?.*)/g, '').replace(/\/.*/g, '');
+
+function getFragmentThumb(req, res){
+	var project = req.headers['referer'].split('/')[4];
 	db.query.for('r').in('test')
           .filter('r.project == @project')
           .collect('time = r.fragments[@index]')
           .return('{"timestamp": time}');
-	db.query.exec({project : project, index : req.body.index-1}).then(
-		function(data){ res.send({timestamp : data[0].timestamp, index : req.body.index});},
-		function(err){ console.log("err",err);}
+	db.query.exec({
+		project : project, 
+		index : req.body.index})
+	.then(
+		function(ret){  
+			res.send({
+				timestamp : ret[0].timestamp, 
+				index : req.body.index});
+		},
+		printError
 	);
 }
-function loadAnnotations(req, res){
-	res.render('Canvas',{
-		proyecto : "Demo"
-	});
-}
-function loadCanvas(req, resp){
-	resp.render("Canvas", {
-
-	}); 
-}
 function loadEntryForm(req, res){
-	res.render('EntryForm',{
-		proyecto : "Demo"
-	});
+	res.render('EntryForm');
 }
-function loadProject(req, res){
-	project=req.originalUrl.replace(/(\/project\/|\?.*)/g, '').replace(/\/.*/g, '');
-	res.render('Proyecto',{
-		proyecto : project
-	});
+function loadEnvisioning(req, res){
+	res.render('Canvas');
+}
+function loadFragmentInfo(req, res){
+	var project = req.headers['referer'].split('/')[4];
+	var query = db.query.for('r').in('test')
+          .filter('r.project == @project')
+          .collect('time = r.fragments[@index]')
+          .return('{"timestamp": time}');
+    query.exec({
+     	project: project, 
+     	index: req.body.selection
+    })
+    .then( 
+    	function(ret){ 
+     		var timestamp = ret[0].timestamp;
+	     	var query = db.query.for('r').in('test')
+			     .filter('r.project == @project')
+			     .return('{"entries": r.entries, "layers": r.layers}');
+			query.exec({
+				project: project
+			})
+			.then( 
+				function(ret){  
+					var entries = {
+						text : [],
+						links : [],
+						images : []
+					};
+					var dLayers = ret[0].layers;
+					var cLayers = [];
+					var found; 
+					var dEntries = ret[0].entries;
+					for (var i in dEntries.text){ //cada entrada de la cat.
+						if(dEntries.text[i].timestamp == timestamp){
+							entries.text.push(dEntries.text[i]);
+						}
+					}
+					for (var i in dEntries.links){ //cada entrada de la cat.
+						if(dEntries.links[i].timestamp == timestamp){
+							entries.links.push(dEntries.links[i]);
+						}
+					}for (var i in dEntries.images){ //cada entrada de la cat.
+						if(dEntries.images[i].timestamp == timestamp){
+							entries.images.push(dEntries.images[i]);
+						}
+					}
+					/*  Buscamos los layers con contenido de este fragmento */
+					while (dLayers.length > 0){ //cada capa. 
+						found = false;
+						for (var i in dLayers[0].fragments){ //cada fragmento en la capa
+							if(dLayers[0].fragments[i].timestamp == timestamp){
+								cLayers.unshift(dLayers[0].name);
+								dLayers.shift();
+								found = true;
+								break; 
+							}
+						}
+						if (found == false){ //Si ya no hubo el timestamp en esa capa, deja de buscar en las demás
+							break;
+						}
+					}
+					res.render("FragmentInfo", {
+						text : entries.text,
+						images : entries.images,
+						links : entries.links,
+						eLayers : dLayers.reverse(), //empty layers
+						cLayers : cLayers, //layers with contents
+						timestamp : timestamp,
+						project : project
+					});
+				},
+				printError
+			);
+		}
+	);
 }
 function loadProjectForm(req, res){
 	res.render('ProjectForm');
 }
-function saveCanvas(req, resp){
+function loadUserForm(req,res){
+	res.render('UserForm');
+}
+function openProject(req, res){
+	var project = req.params.project;
+	res.render('Proyecto',{
+		proyecto : project
+	});
+}
+function openUserProfile(req, res){
+	var user = req.params.user;
+	db.query.string = "FOR u IN testU FILTER u.name == @user RETURN {'email' : u.email}";
+	db.query.exec({'user': user})
+	.then(
+		function (ret){ 
+			res.render('UserProfile',{
+				user : user,
+				email: ret[0].email
+			});
+		},
+		printError
+	);
+}
+function submitCanvas(req, res){
 
 }
-function submitEntry(req, resp){
-	project=req.headers['referer'].split("/")[4];
-	console.log(project);
+function submitEntry(req, res){
+	var project = req.headers['referer'].split("/")[4];
 	db.query.string = "FOR r IN test FILTER r.project == '" + project + "' RETURN{'doc' : r._id}";
-	db.query.exec().then(
-		function(res){
-			db.document.get(res[0].doc).then(
-				function(res){
+	db.query.exec()
+	.then(
+		function(ret){ 
+			db.document.get(ret[0].doc)
+			.then( 
+				function(ret){
 					req.body.related = req.body.related.split(",");
 					req.body.tags = req.body.tags.split(",");
 					switch (req.body.type){
 						case "text":
 							delete req.body.type;
-							res.entries.text.push(req.body);
+							ret.entries.text.push(req.body);
 							break;
 						case "image":
-							delete req.body.type;
-							res.entries.images.push(req.body);
+								delete req.body.content;
+								delete req.body.type;
+								ret.entries.images.push(req.body);
 							break;
 						case "link":
 							delete req.body.type;
-							console.log("link");
-							res.entries.links.push(req.body);
+							ret.entries.links.push(req.body);
+							break;
 					}
-					db.document.put(res._id, res).then(
-						function(res){console.log('Insertado: ', res); resp.send("ok")}
-					);
+					db.document.put(ret._id, ret);
 				}
 			);
 		},
-		function(err){console.log(err)}
+		printError
 	);
 }
-function submitProject(req, resp){
-	db.document.create("test", req.body).then(
-		function(res){ resp.send("Project correctly submited") },
-		function(err){ resp.send(err)}
+function submitImage(req, res){
+	fs.exists('public/'+req.body.dir, function(exists){
+		if (!exists) {
+			fs.mkdir('public/'+req.body.dir, printError);
+		}
+		fs.writeFile('public/'+req.body.dir+'/'+req.body.name, req.body.image, encoding='utf8', printError);
+	});
+}
+function submitProject(req, res){
+	db.use("test")
+	db.document.create("test", req.body)
+	.then(function(ret){ 
+		res.send("Project correctly submited") 
+	},
+		printError
 	);
+}
+function submitNewUser(req,res){
+	/*Buscar que no haya un nombre de usuario igual*/
+	var name = req.body.name;
+	var email=req.body.email;
+	var pass=req.body.pass;
+	/*db.query.string = "FOR u IN testU FILTER u.Name == @nombre RETURN u";
+	db.query.exec()
+	.then(
+		function(ret){
+			console.log("User "+name+" already exists.");
+		}
+	);*/
+	db.document.create("testU",{"name":name,"email":email,"pass":pass})
+	.then(
+		function(ret){
+	  		resp.send("User '"+name+"' successfully registered.");
+		},
+		printError
+	)
+}
+function printError(err){
+	console.log(err);
 }
 
 

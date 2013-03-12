@@ -138,6 +138,22 @@ nav ul {
   display: inline;
 }
 /* ============================= Yet Unused =============================== */
+.dialog {
+  background-color: #f0f0f0;
+  border: solid 1px #121212;
+  left: 40%;
+  padding: 0.5em;
+  position: fixed;
+  top: 5pc;
+  width: 25%;
+}
+.dialog form {
+  margin-top: 0;
+  padding-top: 0;
+}
+.dialog h2 {
+  line-height: 1em;
+}
 .msg {
   display: none;
   padding: 10px;
@@ -147,6 +163,16 @@ nav ul {
   width: 350px;
   min-height: 26px;
   background: #c0c0c0;
+}
+.temp {
+  display: inline-block;
+  float: right;
+  vertical-align: top;
+}
+.temp a {
+  display: inline-block;
+  font-size: 16px;
+  width: 100px;
 }
 #area {
   margin: auto;
@@ -320,7 +346,8 @@ form input focus valid {
   line-height: 1em;
   margin: 0;
 }
-.entry .related {
+.entry .related,
+.entry .tags {
   margin-top: 0.5em;
 }
 .layer {
@@ -347,6 +374,12 @@ form input focus valid {
   padding: 0.5% 0.5%;
   width: 60%;
 }
+<<<<<<< HEAD
+=======
+#img img {
+  width: 90%;
+}
+>>>>>>> e3b7c06059b6cf5f197870dfb07ff77d249008a5
 #img,
 #link,
 #text {
