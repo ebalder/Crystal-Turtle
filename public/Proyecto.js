@@ -6,7 +6,7 @@ var carrousel;
 $(document).on('ready', init);
 
 function init(){
-	$('header .temp a').on('click', Navigation.load);
+	$('header .userArea a').on('click', Navigation.load);
 	viewer = new Viewer();
 	panel = new Panel();
 	carrousel = new Carrousel();
@@ -189,7 +189,7 @@ var Navigation = {
 				$('.dialog').remove();
 			});
 		});
-		$('body').trigger('click');
+		$('body').trigger('click'); //close panel if opened
 		return false;
 	}
 }

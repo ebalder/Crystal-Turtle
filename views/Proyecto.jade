@@ -14,7 +14,7 @@
 meta(charset="utf-8") 
 html(lang="en")
 	head
-		title #{proyecto}
+		title #{project}
 		link(rel="stylesheet", href="../Proyecto.css")
 		script(src="../jquery.js")
 		script(src="../Proyecto.js")
@@ -22,8 +22,8 @@ html(lang="en")
 		div#wrapper
 			header
 				h1 Crystal Turtle
-				a Animation Studio _ (pre-alpha 0.0.3).
-				div.temp 
+				a Animation Studio _ (pre-alpha 0.0.7).
+				div.userArea 
 					a(href = "../userForm") New User
 					a(href = "../projectForm") New Project
 			nav
@@ -40,7 +40,7 @@ html(lang="en")
 				div#panTab
 					span.verticalCenter >>
 				form
-					input (type="file", name="somename" size="20") 
+					input (type="file", name="somename", size="20") 
 					br
 					textarea(cols="30", rows="10", disabled) archivos
 					br
@@ -51,6 +51,8 @@ html(lang="en")
 					input(type="text", name="somename", size="7")
 			div#area
 				div#project
+					div#script 
+						a(href = "../script/#{project}") Script
 					div#timeline
 						div#bw
 							span.verticalCenter <

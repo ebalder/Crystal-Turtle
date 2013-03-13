@@ -37,6 +37,7 @@ db.use("test");
 /* GET */
 app.get('/entryForm', loadEntryForm);
 app.get('/project/:project', openProject);
+app.get('/script/:project', openScript);
 app.get('/projectForm', loadProjectForm);
 app.get('/userForm', loadUserForm);
 app.get('/user/:user', openUserProfile);
@@ -49,6 +50,7 @@ app.post('/saveCanvas', submitCanvas);
 app.post('/saveImage', submitImage);
 app.post('/submitEntry', submitEntry);
 app.post('/submitProject', submitProject);
+app.post('/submitScript', submitScript);
 app.post('/submitUser', submitNewUser);
 
 /* Functions */
@@ -160,7 +162,26 @@ function loadUserForm(req,res){
 function openProject(req, res){
 	var project = req.params.project;
 	res.render('Proyecto',{
-		proyecto : project
+		project : project
+	});
+}
+function openScript(req, res){
+	var project = req.params.project;
+	db.query.string = "For s IN test Filter s.project == @project RETURN {'script' : s.script}";
+	db.query.exec({'project' : project})
+	.then(
+		function (ret){
+			res.render("Script", {
+				content : ret,
+				project : project
+			});
+			console.log(ret[0]);
+		},
+		printError
+	);
+	res.render("Script", {
+		content : '',
+		project : project
 	});
 }
 function openUserProfile(req, res){
@@ -221,15 +242,6 @@ function submitImage(req, res){
 		fs.writeFile('public/'+req.body.dir+'/'+req.body.name, req.body.image, encoding='utf8', printError);
 	});
 }
-function submitProject(req, res){
-	db.use("test")
-	db.document.create("test", req.body)
-	.then(function(ret){ 
-		res.send("Project correctly submited") 
-	},
-		printError
-	);
-}
 function submitNewUser(req,res){
 	/*Buscar que no haya un nombre de usuario igual*/
 	var name = req.body.name;
@@ -249,6 +261,34 @@ function submitNewUser(req,res){
 		},
 		printError
 	)
+}
+function submitProject(req, res){
+	db.use("test")
+	db.document.create("test", req.body)
+	.then(function(ret){ 
+		res.send("Project correctly submited") 
+	},
+		printError
+	);
+}
+function submitScript(req, res){
+	var project = req.headers['referer'].split("/")[4];
+	db.query.string = "FOR r IN test FILTER r.project == '" + project + "' RETURN{'doc' : r._id}";
+	db.query.exec()
+	.then(
+		function(ret){ 
+					console.log(ret);
+			db.document.get(ret[0].doc)
+			.then( 
+				function(ret){
+					ret.script = req.body.script;
+					db.document.put(ret._id, ret);
+					console.log("ready");
+				}
+			);
+		},
+		printError
+	);
 }
 function printError(err){
 	console.log(err);

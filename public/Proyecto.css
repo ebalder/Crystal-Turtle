@@ -164,12 +164,12 @@ nav ul {
   min-height: 26px;
   background: #c0c0c0;
 }
-.temp {
+.userArea {
   display: inline-block;
   float: right;
   vertical-align: top;
 }
-.temp a {
+.userArea a {
   display: inline-block;
   font-size: 16px;
   width: 100px;
@@ -374,12 +374,9 @@ form input focus valid {
   padding: 0.5% 0.5%;
   width: 60%;
 }
-<<<<<<< HEAD
-=======
 #img img {
   width: 90%;
 }
->>>>>>> e3b7c06059b6cf5f197870dfb07ff77d249008a5
 #img,
 #link,
 #text {
