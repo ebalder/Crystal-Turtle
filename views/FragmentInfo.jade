@@ -1,7 +1,7 @@
 hgroup.fragInfo
 	div#contents
 		div#entries
-			div#text text entries
+			div#text Text entries
 				br
 				each e in text
 					div.entry
@@ -19,7 +19,7 @@ hgroup.fragInfo
 								| #{r}
 			div#link Link entries
 				br
-				each l in links
+				each l in link
 					div.entry
 						h2 #{l.title}
 						br
@@ -34,7 +34,7 @@ hgroup.fragInfo
 								| #{r}
 			div#img Image entries
 				br
-				each i in images
+				each i in image
 					div.entry
 						h2 #{i.title}
 						img(src = "../#{project}/#{i.title}") test
@@ -47,11 +47,20 @@ hgroup.fragInfo
 							each r in i.tags
 								br
 								| #{r}
-		div#guidelines
+		div#layers
+			each l in eLayers
+				div.layer.emptyLayer #{l.name}
+			each l in cLayers
+				div.layer.contentLayer
+					a(href="#", n=l, f=timestamp) #{l}
 		a.new(href="#") New entry
-	div#layers
-		each l in eLayers
-			div.layer.emptyLayer #{l.name}
-		each l in cLayers
-			div.layer.contentLayer
-				a(href="#", n=l, f=timestamp) #{l}
+	div#fragScript
+		| [ #{annotation} ]
+		br
+		each line in lines
+			br
+			if line.action != undefined
+				i (#{line.action})
+			else 
+				b #{line.chara} 
+				| : #{line.dialog}

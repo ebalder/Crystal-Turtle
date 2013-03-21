@@ -24,8 +24,8 @@ html(lang="en")
 				h1 Crystal Turtle
 				a Animation Studio _ (pre-alpha 0.0.7).
 				div.userArea 
-					a(href = "../userForm") New User
-					a(href = "../projectForm") New Project
+					a.load(href = "../userForm") New User
+					a.load(href = "../projectForm") New Project
 			nav
 				ul
 					li 
@@ -52,7 +52,8 @@ html(lang="en")
 			div#area
 				div#project
 					div#script 
-						a(href = "../script/#{project}") Script
+						a(href = "../script/#{project}") Script  |  
+						a.load(href = "../NewFragment") Add fragment
 					div#timeline
 						div#bw
 							span.verticalCenter <

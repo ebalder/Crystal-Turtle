@@ -6,7 +6,7 @@ var carrousel;
 $(document).on('ready', init);
 
 function init(){
-	$('header .userArea a').on('click', Navigation.load);
+	$('.load').on('click', Navigation.load);
 	viewer = new Viewer();
 	panel = new Panel();
 	carrousel = new Carrousel();
@@ -116,7 +116,7 @@ Viewer.prototype = {
 			imgindex = index;
 			$.get($(value).attr('src'), function(data){ 
 				$('#img img:eq(' + imgindex + ')').attr('src', data);
-			})
+			});
 		});
 	},
 	fragLayer : function(){
@@ -130,11 +130,12 @@ Viewer.prototype = {
 	newEntry : function(){
 		var timestamp = this.timestamp;
 		var img64 = '';
+		var index = this.index;
 		$.get("../entryForm", function(data){ 
 			$('#contents').html(data);
 			$('input[name="timestamp"]').val(timestamp);
 			$('#entryForm').on('submit', function(ev){
-				$.post("../submitEntry", $('#entryForm').serialize() , function(){
+				$.post("../submitEntry", $('#entryForm').serialize() + '&fragment=' + index , function(){
 					$('.msg').html("Submission complete");
 				});
 				if($('select[name="type"]').val() == 'image'){

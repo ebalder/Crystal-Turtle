@@ -12,7 +12,6 @@ var express = require('express'),
 
 /* Servidor */
 server.listen(3000);
-console.log( __dirname);
 
 /* Usar nib en Stylus */
 function compile(str, path) {
@@ -38,6 +37,7 @@ db.use("test");
 app.get('/entryForm', loadEntryForm);
 app.get('/project/:project', openProject);
 app.get('/script/:project', openScript);
+app.get('/newFragment',loadNewFragment);
 app.get('/projectForm', loadProjectForm);
 app.get('/userForm', loadUserForm);
 app.get('/user/:user', openUserProfile);
@@ -58,14 +58,14 @@ app.post('/submitUser', submitNewUser);
 function getFragmentThumb(req, res){
 	var project = req.headers['referer'].split('/')[4];
 	db.query.for('r').in('test')
-          .filter('r.project == @project')
-          .collect('time = r.fragments[@index]')
+          .filter('r._key == @project')
+          .collect('time = r.fragments[@index].timestamp')
           .return('{"timestamp": time}');
 	db.query.exec({
 		project : project, 
 		index : req.body.index})
 	.then(
-		function(ret){  
+		function(ret){ 
 			res.send({
 				timestamp : ret[0].timestamp, 
 				index : req.body.index});
@@ -82,76 +82,77 @@ function loadEnvisioning(req, res){
 function loadFragmentInfo(req, res){
 	var project = req.headers['referer'].split('/')[4];
 	var query = db.query.for('r').in('test')
-          .filter('r.project == @project')
-          .collect('time = r.fragments[@index]')
-          .return('{"timestamp": time}');
+		.filter('r._key == @project')
+		.collect('\
+			fragment = r.fragments[@index],\
+			layers = r.layers'
+		).return('{\
+			"layers" : layers, \
+			"fragment" : fragment}'
+		); //obtiene el timestamp a consultar
     query.exec({
      	project: project, 
      	index: req.body.selection
     })
     .then( 
     	function(ret){ 
-     		var timestamp = ret[0].timestamp;
-	     	var query = db.query.for('r').in('test')
-			     .filter('r.project == @project')
-			     .return('{"entries": r.entries, "layers": r.layers}');
-			query.exec({
-				project: project
-			})
-			.then( 
-				function(ret){  
-					var entries = {
-						text : [],
-						links : [],
-						images : []
-					};
-					var dLayers = ret[0].layers;
-					var cLayers = [];
-					var found; 
-					var dEntries = ret[0].entries;
-					for (var i in dEntries.text){ //cada entrada de la cat.
-						if(dEntries.text[i].timestamp == timestamp){
-							entries.text.push(dEntries.text[i]);
-						}
+     		var timestamp = null;
+			var dEntries = [];
+    		if (ret[0].fragment != null){
+	     		timestamp = ret[0].fragment.timestamp;
+				dEntries = ret[0].fragment.entries;
+    		}
+			var entries = {
+				text : [],
+				link : [],
+				image : []
+			};
+			var dLayers = ret[0].layers || [];
+			var cLayers = [];
+			var found; 
+			for (var i in dEntries){ //cada entrada
+				if(dEntries[i].type == "text"){
+					entries["text"].push(dEntries[i]);
+				}
+				else if(dEntries[i].type == "image"){
+					entries["image"].push(dEntries[i]);
+				}
+				else if(dEntries[i].type == "link"){
+					entries["link"].push(dEntries[i]);
+				}
+			}
+			/*  Buscamos los layers con contenido de este fragmento */
+			while (dLayers.length > 0){ //cada capa. 
+				found = false;
+				for (var i in dLayers[0].fragments){ //cada fragmento en la capa
+					if(dLayers[0].fragments[i].timestamp == timestamp){
+						cLayers.unshift(dLayers[0].name);
+						dLayers.shift();
+						found = true;
+						break; 
 					}
-					for (var i in dEntries.links){ //cada entrada de la cat.
-						if(dEntries.links[i].timestamp == timestamp){
-							entries.links.push(dEntries.links[i]);
-						}
-					}for (var i in dEntries.images){ //cada entrada de la cat.
-						if(dEntries.images[i].timestamp == timestamp){
-							entries.images.push(dEntries.images[i]);
-						}
-					}
-					/*  Buscamos los layers con contenido de este fragmento */
-					while (dLayers.length > 0){ //cada capa. 
-						found = false;
-						for (var i in dLayers[0].fragments){ //cada fragmento en la capa
-							if(dLayers[0].fragments[i].timestamp == timestamp){
-								cLayers.unshift(dLayers[0].name);
-								dLayers.shift();
-								found = true;
-								break; 
-							}
-						}
-						if (found == false){ //Si ya no hubo el timestamp en esa capa, deja de buscar en las demás
-							break;
-						}
-					}
-					res.render("FragmentInfo", {
-						text : entries.text,
-						images : entries.images,
-						links : entries.links,
-						eLayers : dLayers.reverse(), //empty layers
-						cLayers : cLayers, //layers with contents
-						timestamp : timestamp,
-						project : project
-					});
-				},
-				printError
-			);
-		}
+				}
+				if (found == false){ //Si ya no hubo el timestamp en esa capa, deja de buscar en las demás
+					break;
+				}
+			}
+			console.log(ret[0].fragment);
+			res.render("FragmentInfo", {
+				text : entries.text,
+				image : entries.image,
+				link : entries.link,
+				eLayers : dLayers.reverse(), //empty layers
+				cLayers : cLayers, //layers with contents
+				annotation : ret[0].fragment.annotation,
+				lines : ret[0].fragment.lines,
+				timestamp : ret[0].fragment.timestamp,
+				project : project
+			});
+		}, printError
 	);
+}
+function loadNewFragment(req,res){
+	res.render('NewFragment');
 }
 function loadProjectForm(req, res){
 	res.render('ProjectForm');
@@ -190,6 +191,9 @@ function openUserProfile(req, res){
 	db.query.exec({'user': user})
 	.then(
 		function (ret){ 
+			if(ret[0] == null){
+				res.send('User not found.');
+			}
 			res.render('UserProfile',{
 				user : user,
 				email: ret[0].email
@@ -203,33 +207,15 @@ function submitCanvas(req, res){
 }
 function submitEntry(req, res){
 	var project = req.headers['referer'].split("/")[4];
-	db.query.string = "FOR r IN test FILTER r.project == '" + project + "' RETURN{'doc' : r._id}";
-	db.query.exec()
+	db.document.get('test/'+project)
 	.then(
 		function(ret){ 
-			db.document.get(ret[0].doc)
-			.then( 
-				function(ret){
-					req.body.related = req.body.related.split(",");
-					req.body.tags = req.body.tags.split(",");
-					switch (req.body.type){
-						case "text":
-							delete req.body.type;
-							ret.entries.text.push(req.body);
-							break;
-						case "image":
-								delete req.body.content;
-								delete req.body.type;
-								ret.entries.images.push(req.body);
-							break;
-						case "link":
-							delete req.body.type;
-							ret.entries.links.push(req.body);
-							break;
-					}
-					db.document.put(ret._id, ret);
-				}
-			);
+			req.body.related = req.body.related.split(",");
+			req.body.tags = req.body.tags.split(",");
+			var index = req.body.fragment;
+			delete req.body.fragment;
+			ret.fragments[index].entries.push(req.body);
+			db.document.put(ret._id, ret);
 		},
 		printError
 	);
@@ -247,13 +233,6 @@ function submitNewUser(req,res){
 	var name = req.body.name;
 	var email=req.body.email;
 	var pass=req.body.pass;
-	/*db.query.string = "FOR u IN testU FILTER u.Name == @nombre RETURN u";
-	db.query.exec()
-	.then(
-		function(ret){
-			console.log("User "+name+" already exists.");
-		}
-	);*/
 	db.document.create("testU",{"name":name,"email":email,"pass":pass})
 	.then(
 		function(ret){
@@ -264,28 +243,44 @@ function submitNewUser(req,res){
 }
 function submitProject(req, res){
 	db.use("test")
+	req.body._key = req.body.title;
 	db.document.create("test", req.body)
-	.then(function(ret){ 
-		res.send("Project correctly submited") 
-	},
+	.then(
+		function(ret){ 
+			res.send("Project correctly submited") 
+		},
 		printError
 	);
 }
 function submitScript(req, res){
 	var project = req.headers['referer'].split("/")[4];
-	db.query.string = "FOR r IN test FILTER r.project == '" + project + "' RETURN{'doc' : r._id}";
-	db.query.exec()
-	.then(
+	var appends = {
+		entries : [],
+		timestamp : null
+	};
+	if (req.body.flag == '2'){
+		fragments = req.body;
+		fragments.entries = [];
+		fragments.timestamp = null;
+	} else {
+		fragments = req.body.script.fragments;
+		for (var i in fragments){
+			fragments[i].entries=[];
+			fragments[i].timestamp = null;
+		}
+	}
+	db.document.get('test/'+project)
+	.then( 
 		function(ret){ 
-					console.log(ret);
-			db.document.get(ret[0].doc)
-			.then( 
-				function(ret){
-					ret.script = req.body.script;
-					db.document.put(ret._id, ret);
-					console.log("ready");
-				}
-			);
+			if (req.body.flag == '2'){
+				console.log("dodalalala");
+				delete req.body.flag;
+				ret.fragments.push(fragments);
+			}else{
+				ret.fragments = req.body.script.fragments;
+			}
+			db.document.put(ret._id, ret);
+			res.send("ok");
 		},
 		printError
 	);

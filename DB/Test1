@@ -22,7 +22,7 @@
         "U2"
     ],
     "entries": {
-        "links": [
+        "link": [
             {
                 "title": "com.com",
                 "content": "www.comcom",
@@ -61,7 +61,7 @@
                 ]
             }
         ],
-        "images": []
+        "image": []
     },
     "layers": [
         {

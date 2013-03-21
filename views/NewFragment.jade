@@ -1,0 +1,14 @@
+
+script(src="../NewFragment.js")
+form#newFragment
+	|Fragment description:
+	br
+	textarea(name="fragDesc", cols="30", rows="3", autofocus)
+	br
+	|Script: 
+	br
+	input.addLine(type="button", name="addAction", value="Add Action")
+	input.addLine(type="button", name="addDialog", value="Add Dialog")
+	fieldset#lines
+	br
+	input(type="submit", name="submit", value="submit")
