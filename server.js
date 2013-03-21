@@ -244,6 +244,7 @@ function submitNewUser(req,res){
 function submitProject(req, res){
 	db.use("test")
 	req.body._key = req.body.title;
+	req.body.fragments = [];
 	db.document.create("test", req.body)
 	.then(
 		function(ret){ 
