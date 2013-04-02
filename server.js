@@ -1,22 +1,22 @@
 
 /* Dependencias */
 var express = require('express'),
-	app = express(),
-	server = require('http').createServer(app),
-	io = require('socket.io').listen(server),
-	cons = require('consolidate'),
-	stylus = require('stylus'),
-	nib = require('nib'),
-	arango = require('arango.client');
-	fs = require('fs');
+app = express(),
+server = require('http').createServer(app),
+io = require('socket.io').listen(server),
+cons = require('consolidate'),
+stylus = require('stylus'),
+nib = require('nib'),
+arango = require('arango.client');
+fs = require('fs');
 
 /* Servidor */
 server.listen(3000);
 
 /* Usar nib en Stylus */
 function compile(str, path) {
-	console.log("Parsing css");
-	return stylus(str).set('filename', path).use(nib());
+console.log("Parsing css");
+return stylus(str).set('filename', path).use(nib());
 }
 
 /* Configuraciones de los módulos */
@@ -33,25 +33,31 @@ app.use(express.static('./public')); //esto debe ir después de stylus
 db = new arango.Connection;
 db.use("test");
 
+
+/* ALL */ //areas que pueden ser abiertas o recargadas con diferentes datos
+app.all('/browse/s', openBrowse);
+
+
 /* GET */
-app.get('/entryForm', loadEntryForm);
-app.get('/project/:project', openProject);
-app.get('/script/:project', openScript);
-app.get('/newFragment',loadNewFragment);
-app.get('/projectForm', loadProjectForm);
-app.get('/userForm', loadUserForm);
-app.get('/user/:user', openUserProfile);
+app.get('/entryForm/s', loadEntryForm);
+app.get('/project/:project/s', openProject);
+app.get('/script/:project/s', openScript);
+app.get('/newFragment/s',loadNewFragment);
+app.get('/projectForm/s', loadProjectForm);
+app.get('/userForm/s', loadUserForm);
+app.get('/user/:user/s', openUserProfile);
+app.get('/*', openMain);
 
 /* POST */
-app.post('/envisioning', loadEnvisioning);
-app.post('/fragmentInfo', loadFragmentInfo);
-app.post('/fragmentThumb', getFragmentThumb);
-app.post('/saveCanvas', submitCanvas);
-app.post('/saveImage', submitImage);
-app.post('/submitEntry', submitEntry);
-app.post('/submitProject', submitProject);
-app.post('/submitScript', submitScript);
-app.post('/submitUser', submitNewUser);
+app.post('/fragmentInfo/s', loadFragmentInfo);
+app.post('/fragmentThumb/s', getFragmentThumb);
+app.post('/layer/:project/:layer/s', loadLayer);
+app.post('/saveCanvas/s', submitCanvas);
+app.post('/saveImage/s', submitImage);
+app.post('/submitEntry/s', submitEntry);
+app.post('/submitProject/s', submitProject);
+app.post('/submitScript/s', submitScript);
+app.post('/submitUser/s', submitNewUser);
 
 /* Functions */
 
@@ -62,8 +68,8 @@ function getFragmentThumb(req, res){
           .collect('time = r.fragments[@index].timestamp')
           .return('{"timestamp": time}');
 	db.query.exec({
-		project : project, 
-		index : req.body.index})
+		'project' : project, 
+		'index' : req.body.index})
 	.then(
 		function(ret){ 
 			res.send({
@@ -76,56 +82,36 @@ function getFragmentThumb(req, res){
 function loadEntryForm(req, res){
 	res.render('EntryForm');
 }
-function loadEnvisioning(req, res){
-	res.render('Canvas');
-}
 function loadFragmentInfo(req, res){
 	var project = req.headers['referer'].split('/')[4];
-	var query = db.query.for('r').in('test')
-		.filter('r._key == @project')
-		.collect('\
-			fragment = r.fragments[@index],\
-			layers = r.layers'
-		).return('{\
-			"layers" : layers, \
-			"fragment" : fragment}'
-		); //obtiene el timestamp a consultar
-    query.exec({
-     	project: project, 
-     	index: req.body.selection
+	var index = req.body.selection; 
+	db.query.string = "FOR p IN test FILTER p._key == @project \
+		RETURN { \
+			'layers' : p.layers, \
+			'fragment' : p.fragments[@index]}";
+    db.query.exec({
+     	'project': project, 
+     	'index': index
     })
     .then( 
     	function(ret){ 
-     		var timestamp = null;
-			var dEntries = [];
-    		if (ret[0].fragment != null){
-	     		timestamp = ret[0].fragment.timestamp;
-				dEntries = ret[0].fragment.entries;
-    		}
+			var dEntries = ret[0].fragment.entries != null ? ret[0].fragment.entries : [];
+			var dLayers = ret[0].layers != null ? ret[0].layers : [] || [];
+			var cLayers = [];
 			var entries = {
 				text : [],
 				link : [],
 				image : []
 			};
-			var dLayers = ret[0].layers || [];
-			var cLayers = [];
 			var found; 
 			for (var i in dEntries){ //cada entrada
-				if(dEntries[i].type == "text"){
-					entries["text"].push(dEntries[i]);
-				}
-				else if(dEntries[i].type == "image"){
-					entries["image"].push(dEntries[i]);
-				}
-				else if(dEntries[i].type == "link"){
-					entries["link"].push(dEntries[i]);
-				}
+				entries[dEntries[i].type].push(dEntries[i]);
 			}
 			/*  Buscamos los layers con contenido de este fragmento */
 			while (dLayers.length > 0){ //cada capa. 
 				found = false;
 				for (var i in dLayers[0].fragments){ //cada fragmento en la capa
-					if(dLayers[0].fragments[i].timestamp == timestamp){
+					if(dLayers[0].fragments[i].index == index){
 						cLayers.unshift(dLayers[0].name);
 						dLayers.shift();
 						found = true;
@@ -136,7 +122,6 @@ function loadFragmentInfo(req, res){
 					break;
 				}
 			}
-			console.log(ret[0].fragment);
 			res.render("FragmentInfo", {
 				text : entries.text,
 				image : entries.image,
@@ -151,6 +136,9 @@ function loadFragmentInfo(req, res){
 		}, printError
 	);
 }
+function loadLayer(req, res){
+	res.render("Canvas");
+}
 function loadNewFragment(req,res){
 	res.render('NewFragment');
 }
@@ -159,6 +147,64 @@ function loadProjectForm(req, res){
 }
 function loadUserForm(req,res){
 	res.render('UserForm');
+}
+function openBrowse(req, res){
+	var filter = '';
+	req.body.already != null || req.body.type != null || req.body.tags != null ? filter = 'FILTER ' : null;
+	if(req.body.already != null){
+		for(var i=0 in req.body.already){
+			filter += 'p._key != "' + req.body.already[i] + '" &&';
+		}
+		filter = filter.substr(0, filter.length -2);
+		if(req.body.type != null || req.body.tags != null){
+			filter += ' && ';
+		}
+	}
+	if (req.body.type != null){
+		filter += '(';
+		for(var i=0 in req.body.type){
+			filter += 'p.type == "' + req.body.type[i] + '" || ';
+		}
+		filter = filter.substr(0, filter.length -3);
+		filter += ')';
+	}
+	if (req.body.tags != null){
+		if(req.body.already != null || req.body.type != null){
+			filter += ' && ';
+		}
+		filter += '('
+		for(var i=0 in req.body.tags){
+			filter += 'like(to_string(p.tags), "%' + req.body.tags[i] + '%", true) || ';
+		}
+		filter = filter.substr(0, filter.length -3);
+		filter += ') ';
+	}
+	db.query.string = "FOR p IN test " + filter + " RETURN {'type' : p.type, 'title' : p.title, 'thumb' : p.thumb, tags : p.tags}";
+	console.log(db.query.string);
+	db.query.exec().then(
+		function(ret){
+			req.body.tags == null ? req.body.tags = [] : null;
+			for(var i=0; i < ret.length; i++){
+				for(var j=0; j < req.body.tags; j++){ 
+					if(ret[i].tags == null || ret[i].tags.indexOf(req.body.tags[j]) == -1){ 
+						ret.splice(i,1);
+						i--;
+					}
+				}
+			}
+			if(req.body.reload == null){
+				res.render('Browse', {
+					projects : ret
+				});
+			} else { 
+				res.send(ret);
+			}
+		},
+		printError
+	);
+}
+function openMain(req,res){
+	res.render('Main');
 }
 function openProject(req, res){
 	var project = req.params.project;
@@ -176,7 +222,6 @@ function openScript(req, res){
 				content : ret,
 				project : project
 			});
-			console.log(ret[0]);
 		},
 		printError
 	);
@@ -274,7 +319,6 @@ function submitScript(req, res){
 	.then( 
 		function(ret){ 
 			if (req.body.flag == '2'){
-				console.log("dodalalala");
 				delete req.body.flag;
 				ret.fragments.push(fragments);
 			}else{

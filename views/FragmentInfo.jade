@@ -49,10 +49,11 @@ hgroup.fragInfo
 								| #{r}
 		div#layers
 			each l in eLayers
-				div.layer.emptyLayer #{l.name}
+				div.layer.emptyLayer 
+					a(href="/layer/#{project}/#{l.name}", n=l, f=timestamp) #{l.name}
 			each l in cLayers
 				div.layer.contentLayer
-					a(href="#", n=l, f=timestamp) #{l}
+					a(href="/layer/#{project}/#{l}", n=l, f=timestamp) #{l}
 		a.new(href="#") New entry
 	div#fragScript
 		pre [ #{annotation} ]

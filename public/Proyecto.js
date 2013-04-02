@@ -3,10 +3,7 @@ var viewer;
 var panel;
 var carrousel;
 
-$(document).on('ready', init);
-
-function init(){
-	$('.load').on('click', Navigation.load);
+function initArea(){ 
 	viewer = new Viewer();
 	panel = new Panel();
 	carrousel = new Carrousel();
@@ -38,7 +35,7 @@ Carrousel.prototype = {
 					<span class="fragment"> \
 					</span> <!--fragment-->'); 
 				$('.fragment:eq(' + (this.loaded) + ')').on('click', viewer.fragInfo.bind(viewer));
-				$.post('../fragmentThumb', {index: this.loaded}, this.loadFrag.bind(this));
+				$.post('../fragmentThumb' + '/s', {index: this.loaded}, this.loadFrag.bind(this));
 				this.loaded++;
 			} 
 			$('#tlIn').css(this.cssFw); 
@@ -51,7 +48,7 @@ Carrousel.prototype = {
 			$("#tlIn").append('\
 				<span class="fragment"> \
 				</span> <!--fragment-->');
-			$.post('../fragmentThumb', {index:this.loaded}, this.loadFrag.bind(this));
+			$.post('../fragmentThumb' + '/s', {index:this.loaded}, this.loadFrag.bind(this));
 			this.i++;
 			this.loaded++;
 		}
@@ -74,21 +71,21 @@ Carrousel.prototype = {
 
 function Panel(){
 	this.timestamp = "dfaf";
-	this.cssShow = {'transform' : 'translate(94.5%)'};
-	this.cssHide = {'transform' : 'translate(0px)' };
+	this.cssShow = {'left' : '0'};
+	this.cssHide = {'left' : '-27%'};
 	$('#panel').on('click', stopPropagation); //click al panel no lo oculta
 	this.hide(this);
 }
 Panel.prototype = {
 	hide : function (){ 
-		$("body").off('click', this.triggerHide);
-		$("#panel").css(this.cssHide);
+		$('body').off('click', this.triggerHide);
+		$('#panel').css(this.cssHide);
 		$('#panTab').one('click', this.show.bind(this));
 	},
 	show : function(){
 		this.timestamp = viewer.timestamp;
 		$('#panel').css(this.cssShow); 
-		$("body").one('click', this.triggerHide);
+		$('body').one('click', this.triggerHide);
 		$('#panTab').one('click', this.hide.bind(this));
 	},
 	triggerHide : function(){
@@ -96,7 +93,7 @@ Panel.prototype = {
 	}
 }
 
-function Viewer(){
+function Viewer(){ 
 	this.timestamp = null;
 	this.index = null;
 }
@@ -104,24 +101,24 @@ Viewer.prototype = {
 	fragInfo : function(ev){
 		this.index = $('.fragment').index(ev.currentTarget);
 		this.timestamp = $(ev.currentTarget).find('.timestamp').text();
-		$.post('../fragmentInfo', {selection: this.index}, this.showData.bind(this));	
+		$.post('../fragmentInfo' + '/s', {selection: this.index}, this.showData.bind(this));	
 	},
 	showData : function(data){
 		$('#fragmentInfo').empty();
 		var imgindex;
 		$("#fragmentInfo").html(data); 
 		$(".new").on('click', this.newEntry.bind(this));
-		$(".contentLayer a").on('click', this.fragLayer.bind(this));
+		$(".layer a").on('click', this.fragLayer.bind(this));
 		$.each($('#fragmentInfo img'), function(index, value){
 			imgindex = index;
-			$.get($(value).attr('src'), function(data){ 
+			$.get($(value).attr('src') + '/s', function(data){ 
 				$('#img img:eq(' + imgindex + ')').attr('src', data);
 			});
 		});
 	},
-	fragLayer : function(){
-		var n = $(this).attr("n");
-		$.post("../envisioning",{name : n, fragment : this.timestamp}, function(data){
+	fragLayer : function(ev){
+		var n = $(ev.target).attr("n");
+		$.post(ev.target.href + '/s',{name : n, timestamp : this.timestamp, fragment : this.index}, function(data){ 
 			$('#loaded').html(data);
 			inicioCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto
 		});
@@ -131,11 +128,11 @@ Viewer.prototype = {
 		var timestamp = this.timestamp;
 		var img64 = '';
 		var index = this.index;
-		$.get("../entryForm", function(data){ 
+		$.get("../entryForm" + '/s', function(data){ 
 			$('#contents').html(data);
 			$('input[name="timestamp"]').val(timestamp);
 			$('#entryForm').on('submit', function(ev){
-				$.post("../submitEntry", $('#entryForm').serialize() + '&fragment=' + index , function(){
+				$.post("../submitEntry + '/s'", $('#entryForm').serialize() + '&fragment=' + index , function(){
 					$('.msg').html("Submission complete");
 				});
 				if($('select[name="type"]').val() == 'image'){
@@ -144,7 +141,7 @@ Viewer.prototype = {
 						name : $('input[name="title"]').val(),
 						image : img64
 					}
-					$.post("../saveImage", submit, function(){
+					$.post("../saveImage" + '/s', submit, function(){
 						$('.msg').html("ok");
 					})
 				}
@@ -171,26 +168,6 @@ Viewer.prototype = {
 				}
 			});
 		});
-		return false;
-	}
-}
-
-function stopPropagation(event){
-	event.stopPropagation();
-}
-	
-var Navigation = {
-	load : function(ev){
-		var url = ev.target.href;
-		$.get(url, function(data){
-			$('body').append('<div class="dialog">' + data + '</div>');
-			initDialog();
-			$('.dialog').on('click', stopPropagation);
-			$('body').one('click', function(){ 
-				$('.dialog').remove();
-			});
-		});
-		$('body').trigger('click'); //close panel if opened
 		return false;
 	}
 }

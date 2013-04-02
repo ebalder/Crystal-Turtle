@@ -1,0 +1,26 @@
+
+link(rel="stylesheet", href="../Browse.css")
+script(src="../Browse.js")
+form#filter
+	input(type="checkbox", value="movie", name="type", checked) 
+	|  Movie
+	input(type="checkbox", value="short", name="type", checked)  
+	|  Short
+	input(type="checkbox", value="series", name="type", checked)  
+	|  Series
+	input(type="checkbox", value="miniseries", name="type", checked)  
+	|  Mini Series
+	|  Search tags
+	input(type="text", name="tags")
+	div#results
+		each p in projects
+			div.project
+				div.title
+					a.open(href="../project/#{p.title}") #{p.title}
+				div.thumb
+					img(src="#{p.thumb}")
+				div.detail 
+					span.type #{p.type}
+					if p.tags != null
+						||
+						span.tags #{p.tags}
