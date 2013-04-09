@@ -30,7 +30,8 @@ function  submitFrag(){
 		}
 	});
 	script.flag = 2;
-	$.post('../submitScript', script);
+	script.sid = sessionStorage.sid;
+	$.post('../submitScript' + '/s', script);
 	return false;
 }
 

@@ -1,4 +1,16 @@
 
+function inicioCanvas(){
+	canvas = document.getElementById('canvas');
+	imagen = document.getElementById('imagen');
+	ctx = canvas.getContext('2d');
+	imgctx = imagen.getContext('2d');
+
+	$('input[name="canvasFile"]').on('change', loader.cargar);
+	$(canvas).on('mousedown', dibujar);
+	$('#enviar').on('click', enviar.bind(this));
+	ctx.strokeStyle = "rgb(200,0,0)";
+}
+
 var loader = {
 
 	img : new Image(),
@@ -59,22 +71,16 @@ function dibujar(ev){
 }
 
 function enviar(){
-	paquete = {
-		canvas : canvas.toDataURL("image/png"),
-		imagen : imagen.toDataURL("image/png")
-	}
-	$.post("../saveCanvas", paquete);
+	submit = {
+		planes : [canvas.toDataURL("image/png")],
+		fragment : viewer.index,
+		timestamp : viewer.timestamp,
+		project : window.location.pathname.split('/')[2],
+		layer : viewer.layer,
+		sid : sessionStorage.sid
+	};
+	$.post("/saveCanvas" + "/s", submit);
 	return false;
 }
 
-function inicioCanvas(){
-	canvas = document.getElementById('canvas');
-	imagen = document.getElementById('imagen');
-	ctx = canvas.getContext('2d');
-	imgctx = imagen.getContext('2d');
 
-	$('input[name="canvasFile"]').on('change', loader.cargar);
-	$(canvas).on('mousedown', dibujar);
-	$('#enviar').on('click', enviar);
-	ctx.strokeStyle = "rgb(200,0,0)";
-}

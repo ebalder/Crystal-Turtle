@@ -2,6 +2,13 @@
 $(document).on('ready', init);
 
 function init(){
+	if(localStorage.sid != null){
+		sessionStorage.user = localStorage.user;
+		sessionStorage.email = localStorage.email;
+		sessionStorage.pass = localStorage.pass;
+		sessionStorage.sid = localStorage.sid;
+	}
+	console.log(sessionStorage.sid, sessionStorage.user);
 	$('.load').on('click', Navigation.load);
 	$('.open').on('click', Navigation.open);
 	if(window.location.pathname != '/'){
@@ -17,10 +24,14 @@ function init(){
 var Navigation = {
 	load : function(ev){
 		var url = ev.target.href;
-		$.get(url + "/s", function(data){
+		$.get(url + "/s" + "?sid=" + sessionStorage.sid, function(data){
 			$('body').append('<div class="dialog">' + data + '</div>');
-			initDialog();
 			$('.dialog').on('click', stopPropagation);
+			typeof(initDialog) != "undefined" ? initDialog() : null;
+			$('.dialog form').one('submit', function(){
+				typeof(initDialog) == "undefined" ? submitForm() : null;
+				return false;
+			});
 			$('body').one('click', function(){ 
 				$('.dialog').remove();
 			});

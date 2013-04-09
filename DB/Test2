@@ -1,0 +1,141 @@
+{
+    "members": "",
+    "type": "movie",
+    "c": "9",
+    "title": "avatar:the_last_airbender",
+    "tags": [
+        "test",
+        "a",
+        "b"
+    ],
+    "fragments": [
+        {
+            "timestamp": null,
+            "annotation": "Fragmento 1. Una escena",
+            "lines": [
+                {
+                    "action": "Juan se sienta"
+                },
+                {
+                    "chara": "Juan ",
+                    "dialog": " hola"
+                }
+            ],
+            "entries": [
+                {
+                    "title": "asdf",
+                    "timestamp": "null",
+                    "type": "text",
+                    "content": "asdfadsfdafdasfadfdasf",
+                    "tags": [
+                        "asdf"
+                    ],
+                    "related": [
+                        "asdf"
+                    ]
+                },
+                {
+                    "title": "sfad",
+                    "timestamp": "null",
+                    "type": "image",
+                    "content": "2012-04-01 15.33.26.png",
+                    "tags": [
+                        ""
+                    ],
+                    "related": [
+                        ""
+                    ]
+                }
+            ]
+        },
+        {
+            "timestamp": null,
+            "annotation": "Fragmento 2. Otra escena",
+            "entries": [
+                {
+                    "title": "asdas",
+                    "content": "asdsad",
+                    "timestamp": "null",
+                    "type": "link",
+                    "tags": [
+                        "sd"
+                    ],
+                    "related": [
+                        ""
+                    ]
+                }
+            ],
+            "lines": [
+                {
+                    "action": "Mary asiente"
+                },
+                {
+                    "chara": "Mary ",
+                    "dialog": " te esperaba"
+                },
+                {
+                    "chara": "Juen ",
+                    "dialog": " pues ya estoy aquí"
+                }
+            ]
+        },
+        {
+            "timestamp": null,
+            "annotation": "dfadf",
+            "entries": [],
+            "lines": [
+                {
+                    "action": "dafa"
+                },
+                {
+                    "chara": "adsfa",
+                    "dialog": "adsfa"
+                }
+            ]
+        }
+    ],
+    "layers": [
+        {
+            "name": "storyboard",
+            "fragments": [
+                {
+                    "timestamp": "0:00:00.01"
+                }
+            ]
+        },
+        {
+            "name": "animatic",
+            "fragments": [
+                {
+                    "timestamp": "0:00:00.01"
+                }
+            ]
+        },
+        {
+            "name": "envisioning",
+            "fragments": [
+                {
+                    "timestamp": "0:00:00.01"
+                }
+            ]
+        },
+        {
+            "name": "keys"
+        },
+        {
+            "name": "tweening"
+        },
+        {
+            "name": "lineart"
+        },
+        {
+            "name": "color"
+        },
+        {
+            "name": "color2"
+        },
+        {
+            "name": "effects"
+        }
+    ]
+}

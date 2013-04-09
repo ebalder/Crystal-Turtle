@@ -40,13 +40,14 @@ app.all('/browse/s', openBrowse);
 
 /* GET */
 app.get('/entryForm/s', loadEntryForm);
-app.get('/project/:project/s', openProject);
+app.get('/login/s', loadLogin);
 app.get('/script/:project/s', openScript);
 app.get('/newFragment/s',loadNewFragment);
 app.get('/projectForm/s', loadProjectForm);
+app.get('/project/:project/s', openProject);
 app.get('/userForm/s', loadUserForm);
 app.get('/user/:user/s', openUserProfile);
-app.get('/*', openMain);
+app.get('/', openMain);
 
 /* POST */
 app.post('/fragmentInfo/s', loadFragmentInfo);
@@ -58,9 +59,46 @@ app.post('/submitEntry/s', submitEntry);
 app.post('/submitProject/s', submitProject);
 app.post('/submitScript/s', submitScript);
 app.post('/submitUser/s', submitNewUser);
+app.post('/logout/s', doLogout);
+app.post('/login/s', doLogin);
+
+var session = [];
+
 
 /* Functions */
 
+function doLogin(req, res){
+	db.query.string = "FOR u IN testU FILTER u.pass == @pass && ( u.name == @id || u.email == @id ) RETURN { \
+			email : u.email, \
+			name : u.name \
+	 	}";
+	db.query.exec({
+		'pass' : req.body.pass,
+		'id' : req.body.name
+	}).then(
+		function(ret){
+			if (ret[0] == null){
+				 res.send('Wrong username or password.');
+				 console.log("Wrong username or passowrd.")
+			}
+			var sid = Date.now() + new Date().getUTCMilliseconds();
+			var userInfo = {
+				email : ret[0].email,
+				user : ret[0].name,
+				pass : ret[0].pass,
+				sid : sid
+			};
+			session[sid] = userInfo;
+			console.log(session[sid], "a");
+			res.send(userInfo);
+		},
+		printError
+	);
+}
+function doLogout(req, res){
+	delete session[req.body.sid];
+	res.send('Logged out.');
+}
 function getFragmentThumb(req, res){
 	var project = req.headers['referer'].split('/')[4];
 	db.query.for('r').in('test')
@@ -82,13 +120,17 @@ function getFragmentThumb(req, res){
 function loadEntryForm(req, res){
 	res.render('EntryForm');
 }
+function loadLogin(req, res){
+	res.render('Login');
+}
 function loadFragmentInfo(req, res){
 	var project = req.headers['referer'].split('/')[4];
 	var index = req.body.selection; 
 	db.query.string = "FOR p IN test FILTER p._key == @project \
 		RETURN { \
 			'layers' : p.layers, \
-			'fragment' : p.fragments[@index]}";
+			'fragment' : p.fragments[@index] \
+		}";
     db.query.exec({
      	'project': project, 
      	'index': index
@@ -204,13 +246,15 @@ function openBrowse(req, res){
 	);
 }
 function openMain(req,res){
-	res.render('Main');
+	res.render('Main', {
+		logged : session[req.body.sid]
+	});
 }
 function openProject(req, res){
 	var project = req.params.project;
-	res.render('Proyecto',{
-		project : project
-	});
+			res.render('Proyecto',{
+				project : project
+			});
 }
 function openScript(req, res){
 	var project = req.params.project;
@@ -231,7 +275,7 @@ function openScript(req, res){
 	});
 }
 function openUserProfile(req, res){
-	var user = req.params.user;
+	var sid = req.params.user;
 	db.query.string = "FOR u IN testU FILTER u.name == @user RETURN {'email' : u.email}";
 	db.query.exec({'user': user})
 	.then(
@@ -248,13 +292,39 @@ function openUserProfile(req, res){
 	);
 }
 function submitCanvas(req, res){
-
+	fragment = {
+		"timestamp" : req.body.timestamp,
+		"index" : req.body.index,
+		"planes" : req.body.planes,
+	};
+	db.document.get('test/'+req.body.project)
+	.then(
+		function(ret){ 
+			if(session[req.body.sid] == undefined || ret.members.indexOf(session[req.body.sid].user) < 0){
+				res.send('Permission dennied.'); 
+				return 0
+			}
+			ret.layers[req.body.layer].fragments[index] = fragment;
+			db.document.put(ret);
+		},
+		printError
+	);
+	for (var i in req.body.planes){
+		fs.exists('public/'+req.body.project+'/'+req.body.layer, function(exists){
+			!exists ? fs.mkdir('public/'+req.body.project+'/'+req.body.layer) : printError;
+			fs.writeFile('public/'+req.body.project+'/'+req.body.layer+'/'+req.body.fragment+'_'+req.body.timestamp, req.body.planes[i], encoding='utf8', printError);
+		});
+	}
 }
 function submitEntry(req, res){
 	var project = req.headers['referer'].split("/")[4];
 	db.document.get('test/'+project)
 	.then(
 		function(ret){ 
+			if(session[req.body.sid] == undefined || ret.members.indexOf(session[req.body.sid].user) < 0){
+				res.send('Permission dennied.'); 
+				return 0
+			}
 			req.body.related = req.body.related.split(",");
 			req.body.tags = req.body.tags.split(",");
 			var index = req.body.fragment;
@@ -278,7 +348,7 @@ function submitNewUser(req,res){
 	var name = req.body.name;
 	var email=req.body.email;
 	var pass=req.body.pass;
-	db.document.create("testU",{"name":name,"email":email,"pass":pass})
+	db.document.create("testU",{"_key":name+'_'+email, "name":name,"email":email,"pass":pass})
 	.then(
 		function(ret){
 	  		resp.send("User '"+name+"' successfully registered.");
@@ -309,7 +379,7 @@ function submitScript(req, res){
 		fragments.entries = [];
 		fragments.timestamp = null;
 	} else {
-		fragments = req.body.script.fragments;
+		fragments = req.body.fragments;
 		for (var i in fragments){
 			fragments[i].entries=[];
 			fragments[i].timestamp = null;
@@ -318,11 +388,16 @@ function submitScript(req, res){
 	db.document.get('test/'+project)
 	.then( 
 		function(ret){ 
+			console.log(session[req.body.sid], req.body.sid);
+			if(session[req.body.sid] == undefined || ret.members.indexOf(session[req.body.sid].user) < 0){
+				res.send('Permission dennied.'); 
+				return 0
+			}
 			if (req.body.flag == '2'){
 				delete req.body.flag;
 				ret.fragments.push(fragments);
 			}else{
-				ret.fragments = req.body.script.fragments;
+				ret.fragments = req.body.fragments;
 			}
 			db.document.put(ret._id, ret);
 			res.send("ok");

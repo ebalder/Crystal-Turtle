@@ -96,6 +96,7 @@ Panel.prototype = {
 function Viewer(){ 
 	this.timestamp = null;
 	this.index = null;
+	this.layer = null;
 }
 Viewer.prototype = {
 	fragInfo : function(ev){
@@ -118,6 +119,7 @@ Viewer.prototype = {
 	},
 	fragLayer : function(ev){
 		var n = $(ev.target).attr("n");
+		this.layer = ev.target.href.split('/')[5];
 		$.post(ev.target.href + '/s',{name : n, timestamp : this.timestamp, fragment : this.index}, function(data){ 
 			$('#loaded').html(data);
 			inicioCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto
@@ -132,7 +134,7 @@ Viewer.prototype = {
 			$('#contents').html(data);
 			$('input[name="timestamp"]').val(timestamp);
 			$('#entryForm').on('submit', function(ev){
-				$.post("../submitEntry + '/s'", $('#entryForm').serialize() + '&fragment=' + index , function(){
+				$.post("../submitEntry" + "/s", $('#entryForm').serialize() + '&fragment=' + index +'&sid=' + sessionStorage.sid , function(){
 					$('.msg').html("Submission complete");
 				});
 				if($('select[name="type"]').val() == 'image'){

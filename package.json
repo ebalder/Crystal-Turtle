@@ -7,6 +7,7 @@
         "socket.io": "0.9.13",
         "stylus" : "0.32.0",
         "nib" : "0.9.1",
-        "arango.client" : "0.6.2"
+        "arango.client" : "0.6.2",
+        "client-sessions" : "0.1.1"
     }
 }

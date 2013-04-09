@@ -4,7 +4,7 @@ function initDialog(){
 }
 
 function submitForm(){
-	$.post('../submitUser', $("#newUser").serialize(), function(data){
+	$.post('../submitUser' + '/s', $("#newUser").serialize(), function(data){
 		$('body').append(data);
 	})
 	return false;
