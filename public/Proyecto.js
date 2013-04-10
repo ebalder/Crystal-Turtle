@@ -112,7 +112,7 @@ Viewer.prototype = {
 		$(".layer a").on('click', this.fragLayer.bind(this));
 		$.each($('#fragmentInfo img'), function(index, value){
 			imgindex = index;
-			$.get($(value).attr('src') + '/s', function(data){ 
+			$.get($(value).attr('src'), function(data){ 
 				$('#img img:eq(' + imgindex + ')').attr('src', data);
 			});
 		});

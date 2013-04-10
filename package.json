@@ -1,6 +1,6 @@
 {
     "name": "CrystalTurtle",
-    "version": "0.0.9",
+    "version": "0.0.11",
     "dependencies" : {
     	"consolidate" : "0.8.0",
         "jade": "0.28.1",
@@ -8,6 +8,7 @@
         "stylus" : "0.32.0",
         "nib" : "0.9.1",
         "arango.client" : "0.6.2",
-        "client-sessions" : "0.1.1"
+        "client-sessions" : "0.1.1",
+        "mkdirp" : "0.3.5"
     }
 }

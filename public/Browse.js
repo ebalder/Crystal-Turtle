@@ -53,6 +53,8 @@ Browse.prototype = {
 				$('#results').prepend(add);
 				add = $('.project:first');
 				$(add).find('.title a').attr('href', '../project/' + data[i].title);
+				$(add).find('.title a').attr('class', 'open');
+				$(add).find('.title a').on('click', Navigation.open);
 				$(add).find('.title a').text(data[i].title);
 				console.log($(add).filter('a'));
 				$(add).find('.thumb').attr('src', data[i].thumb);

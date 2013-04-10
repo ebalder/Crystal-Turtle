@@ -9,6 +9,7 @@ stylus = require('stylus'),
 nib = require('nib'),
 arango = require('arango.client');
 fs = require('fs');
+fs.mkdirp = require('mkdirp');
 
 /* Servidor */
 server.listen(3000);
@@ -89,7 +90,6 @@ function doLogin(req, res){
 				sid : sid
 			};
 			session[sid] = userInfo;
-			console.log(session[sid], "a");
 			res.send(userInfo);
 		},
 		printError
@@ -222,7 +222,6 @@ function openBrowse(req, res){
 		filter += ') ';
 	}
 	db.query.string = "FOR p IN test " + filter + " RETURN {'type' : p.type, 'title' : p.title, 'thumb' : p.thumb, tags : p.tags}";
-	console.log(db.query.string);
 	db.query.exec().then(
 		function(ret){
 			req.body.tags == null ? req.body.tags = [] : null;
@@ -310,9 +309,15 @@ function submitCanvas(req, res){
 		printError
 	);
 	for (var i in req.body.planes){
-		fs.exists('public/'+req.body.project+'/'+req.body.layer, function(exists){
-			!exists ? fs.mkdir('public/'+req.body.project+'/'+req.body.layer) : printError;
-			fs.writeFile('public/'+req.body.project+'/'+req.body.layer+'/'+req.body.fragment+'_'+req.body.timestamp, req.body.planes[i], encoding='utf8', printError);
+		fs.exists('public/' + req.body.project + '/' + req.body.layer + '/' 
+			+ req.body.fragment + '_' + req.body.timestamp, 
+			function(exists){
+			if(!exists){ 
+				fs.mkdirp('public/' + req.body.project + '/' + req.body.layer,
+					function(){
+						fs.writeFile('public/' + req.body.project + '/' + req.body.layer + '/' + req.body.fragment + '_' + req.body.timestamp, req.body.planes[i], encoding='utf8');
+					});
+			}
 		});
 	}
 }
@@ -357,16 +362,19 @@ function submitNewUser(req,res){
 	)
 }
 function submitProject(req, res){
-	db.use("test")
-	req.body._key = req.body.title;
-	req.body.fragments = [];
-	db.document.create("test", req.body)
-	.then(
-		function(ret){ 
-			res.send("Project correctly submited") 
-		},
-		printError
-	);
+	fs.readFile("project.json", 'utf8', function(err, data){
+		data = JSON.parse(data);
+		data._key = data.title = req.body.title;
+		data.members = req.body.members.split(", ");
+		data.type = req.body.type;
+		db.document.create("test", data)
+		.then(
+			function(ret){ 
+				res.send("Project correctly submited") 
+			},
+			printError
+		);
+	});
 }
 function submitScript(req, res){
 	var project = req.headers['referer'].split("/")[4];
@@ -388,7 +396,6 @@ function submitScript(req, res){
 	db.document.get('test/'+project)
 	.then( 
 		function(ret){ 
-			console.log(session[req.body.sid], req.body.sid);
 			if(session[req.body.sid] == undefined || ret.members.indexOf(session[req.body.sid].user) < 0){
 				res.send('Permission dennied.'); 
 				return 0

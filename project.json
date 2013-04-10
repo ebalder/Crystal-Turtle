@@ -1,0 +1,41 @@
+{
+    "_key" : "",
+    "title" : "",
+    "type" : "",
+    "tags": [],
+    "members": [],
+    "start" : Date.now(),
+    "fragments": [],
+    "layers": [
+        {
+            "name": "storyboard",
+            "fragments": []
+        },
+        {
+            "name": "animatic",
+            "fragments": []
+        },
+        {
+            "name": "envisioning",
+            "fragments": []
+        },
+        {
+            "name": "keys"
+        },
+        {
+            "name": "tweening"
+        },
+        {
+            "name": "lineart"
+        },
+        {
+            "name": "color"
+        },
+        {
+            "name": "color2"
+        },
+        {
+            "name": "effects"
+        }
+    ]
+}

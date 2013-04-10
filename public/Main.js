@@ -24,19 +24,25 @@ function init(){
 var Navigation = {
 	load : function(ev){
 		var url = ev.target.href;
+		$('body').trigger('click'); //close panel if opened
 		$.get(url + "/s" + "?sid=" + sessionStorage.sid, function(data){
 			$('body').append('<div class="dialog">' + data + '</div>');
 			$('.dialog').on('click', stopPropagation);
 			typeof(initDialog) != "undefined" ? initDialog() : null;
 			$('.dialog form').one('submit', function(){
+		console.log(typeof(initDialog));
 				typeof(initDialog) == "undefined" ? submitForm() : null;
+				$('body').trigger('click'); //close panel if opened
 				return false;
 			});
 			$('body').one('click', function(){ 
+				console.log($('.dialog').html());
 				$('.dialog').remove();
+				typeof(initDialog) != "undefined" 
+					? delete initDialog
+					: null;
 			});
 		});
-		$('body').trigger('click'); //close panel if opened
 		return false;
 	},
 	open : function(ev){
