@@ -292,9 +292,7 @@ function openUserProfile(req, res){
 }
 function submitCanvas(req, res){
 	fragment = {
-		"timestamp" : req.body.timestamp,
-		"index" : req.body.index,
-		"planes" : req.body.planes,
+		planes : req.body.planes.length
 	};
 	db.document.get('test/'+req.body.project)
 	.then(
@@ -303,8 +301,15 @@ function submitCanvas(req, res){
 				res.send('Permission dennied.'); 
 				return 0
 			}
-			ret.layers[req.body.layer].fragments[index] = fragment;
-			db.document.put(ret);
+			ret.layers[req.body.layern].fragments[req.body.fragment] = fragment;
+	console.log("a");
+			db.document.put(ret._id, ret)
+			.then(
+				function(){
+					console.log('ok');
+				}, 
+				printError
+			);
 		},
 		printError
 	);
@@ -367,6 +372,7 @@ function submitProject(req, res){
 		data._key = data.title = req.body.title;
 		data.members = req.body.members.split(", ");
 		data.type = req.body.type;
+		data.start = Data.now();
 		db.document.create("test", data)
 		.then(
 			function(ret){ 

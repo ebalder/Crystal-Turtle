@@ -97,11 +97,12 @@ function Viewer(){
 	this.timestamp = null;
 	this.index = null;
 	this.layer = null;
+	this.layern = null;
 }
 Viewer.prototype = {
 	fragInfo : function(ev){
-		this.index = $('.fragment').index(ev.currentTarget);
 		this.timestamp = $(ev.currentTarget).find('.timestamp').text();
+		this.index = $('.fragment').index(ev.currentTarget);
 		$.post('../fragmentInfo' + '/s', {selection: this.index}, this.showData.bind(this));	
 	},
 	showData : function(data){
@@ -120,6 +121,7 @@ Viewer.prototype = {
 	fragLayer : function(ev){
 		var n = $(ev.target).attr("n");
 		this.layer = ev.target.href.split('/')[5];
+		this.layern = $("#layers .layer a").length - $("#layers .layer a").index(ev.target) - 1;
 		$.post(ev.target.href + '/s',{name : n, timestamp : this.timestamp, fragment : this.index}, function(data){ 
 			$('#loaded').html(data);
 			inicioCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto

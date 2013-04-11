@@ -77,6 +77,7 @@ function enviar(){
 		timestamp : viewer.timestamp,
 		project : window.location.pathname.split('/')[2],
 		layer : viewer.layer,
+		layern : viewer.layern,
 		sid : sessionStorage.sid
 	};
 	$.post("/saveCanvas" + "/s", submit);
