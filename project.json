@@ -20,22 +20,28 @@
             "fragments": []
         },
         {
-            "name": "keys"
+            "name": "keys",
+            "fragments": []
         },
         {
-            "name": "tweening"
+            "name": "tweening",
+            "fragments": []
         },
         {
-            "name": "lineart"
+            "name": "lineart",
+            "fragments": []
         },
         {
-            "name": "color"
+            "name": "color",
+            "fragments": []
         },
         {
-            "name": "color2"
+            "name": "color2",
+            "fragments": []
         },
         {
-            "name": "effects"
+            "name": "effects",
+            "fragments": []
         }
     ]
 }

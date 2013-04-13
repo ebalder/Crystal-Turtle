@@ -372,7 +372,7 @@ function submitProject(req, res){
 		data._key = data.title = req.body.title;
 		data.members = req.body.members.split(", ");
 		data.type = req.body.type;
-		data.start = Data.now();
+		data.start = Date.now();
 		db.document.create("test", data)
 		.then(
 			function(ret){ 
