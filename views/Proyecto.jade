@@ -1,30 +1,40 @@
 ﻿
 link(rel="stylesheet", href="../Proyecto.css")
-script(src="../Proyecto.js")
-div#area
-	div#panel
-		div#panTab
-			span.verticalCenter >>
-		form
-			input (type="file", name="somename", size="20") 
-			br
-			textarea(cols="30", rows="10", disabled) archivos
-			br
-			input(type="text", name="somename", size="30") 
-			br
-			input(type="text", name="somename", size="7") -
-			br
-			input(type="text", name="somename", size="7")
-	div#project
-		div#script 
-			a(href = "../script/#{project}", class="open") Script  |  
-			a.load(href = "../NewFragment", class="load") Add fragment
-		div#timeline
-			div#bw
-				span.verticalCenter <
-			div#fw
-				span.verticalCenter >
-			div#tlView
-				div#tlIn
-		div#fragmentInfo
-		div#loaded
+script(src="/Proyecto.js")
+div#panel
+	div#panTab
+		span.verticalCenter >>
+	form
+		input (type="file", name="somename", size="20") 
+		br
+		textarea(cols="30", rows="10", disabled) archivos
+		br
+		input(type="text", name="somename", size="30") 
+		br
+		input(type="text", name="somename", size="7") -
+		br
+		input(type="text", name="somename", size="7")
+div#project
+	div#script 
+		a.open(href = "/script/#{project}") Script  
+		| |   
+		a.load(href = "/NewFragment") Add fragment
+	div#timeline
+		div#bw
+			span.verticalCenter <
+		div#fw
+			span.verticalCenter >
+		div#tlView
+			div#tlIn
+	div#proyInfo
+		| Repp : #{stats.reputation}
+		br
+		| Vp : #{stats.views}
+		br
+		| Act : #{stats.activity}
+		br
+		| Dev : #{stats.development}
+		br
+		a.open(href = "/log/#{project}") View Log
+	div#fragmentInfo
+	div#loaded

@@ -6,6 +6,8 @@
     "members": [],
     "start" : "",
     "fragments": [],
+    "log" : [],
+    "stats" : {},
     "layers": [
         {
             "name": "storyboard",

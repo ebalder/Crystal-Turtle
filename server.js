@@ -47,6 +47,7 @@ app.get('/newFragment/s',loadNewFragment);
 app.get('/projectForm/s', loadProjectForm);
 app.get('/project/:project/s', openProject);
 app.get('/userForm/s', loadUserForm);
+app.get('/log/:project/s', openLog);
 app.get('/user/:user/s', openUserProfile);
 app.get('/', openMain);
 
@@ -244,6 +245,18 @@ function openBrowse(req, res){
 		printError
 	);
 }
+function openLog(req, res){
+	var project = req.params.project;
+	db.query.string= "FOR p IN test FILTER p._key == @project RETURN{log : p.log}";
+	db.query.exec({project : project})
+	.then(
+		function(ret){
+			res.render("log.jade", {
+				log : ret[0].log.reverse()
+			});
+		}
+	);
+}
 function openMain(req,res){
 	res.render('Main', {
 		logged : session[req.body.sid]
@@ -251,9 +264,50 @@ function openMain(req,res){
 }
 function openProject(req, res){
 	var project = req.params.project;
+	db.document.get('test/'+project).
+	then(
+		function(ret){
+			ret.stats.viewsWeek == null 
+				? ret.stats.viewsWeek = 1 
+				: ret.stats.viewsWeek += 1;
+			db.document.put(ret._id, ret);
+		},
+		printError
+	);
+	db.query.string = "FOR p IN test FILTER p._key == @project RETURN{ \
+		'members' : p.members, \
+		'stats' : p.stats \
+	}";
+	db.query.exec({'project' : project}).
+	then(
+		function(ret){
+			if(ret[0].stats == null){
+				ret[0].stats = {}
+			}
+			var eval = [
+				'viewsWeek',
+				'viewsMonth',
+				'viewsYear',
+				'viewsEver',
+				'activityWeek',
+				'activityMonth',
+				'activityYear'
+			];
+			for(var i = 0 in eval){
+				isNaN(ret[0].stats[eval[i]]) ? ret[0].stats[eval[i]] = 0 : null;
+			}
+			var Vp = ret[0].stats.viewsWeek + ret[0].stats.viewsMonth + ret[0].stats.viewsYear + ret[0].stats.viewsEver;
+			var Ap = ret[0].stats.activityWeek + ret[0].stats.activityMonth + ret[0].stats.activityYear;
+			ret[0].stats.views = Vp;
+			ret[0].stats.activity = Ap;
 			res.render('Proyecto',{
+				members : ret[0].members,
+				stats : ret[0].stats,
 				project : project
 			});
+		}, 
+		printError
+	);
 }
 function openScript(req, res){
 	var project = req.params.project;
@@ -302,7 +356,18 @@ function submitCanvas(req, res){
 				return 0
 			}
 			ret.layers[req.body.layern].fragments[req.body.fragment] = fragment;
-	console.log("a");
+			console.log('a');
+			ret.stats.activityWeek == null 
+				? ret.stats.activityWeek = 3
+				: ret.stats.activityWeek += 3;
+			var log = {
+				date : new Date(),
+				user : session[req.body.sid].user + " / " + session[req.body.sid].email,
+				details : req.body.layer + " " 
+					+ "added at fragment " + req.body.fragment + " [" + req.body.timestamp + "]",
+				action : "Layer content"
+			};
+			ret.log.push(log);
 			db.document.put(ret._id, ret)
 			.then(
 				function(){
@@ -335,6 +400,16 @@ function submitEntry(req, res){
 				res.send('Permission dennied.'); 
 				return 0
 			}
+			var log = {
+				date : new Date(),
+				user : session[req.body.sid].user + " / " + session[req.body.sid].email,
+				details : req.body.type + " entry added at fragment " + req.body.fragment + " [" + req.body.timestamp + "]",
+				action : "New fragment info"
+			};
+			ret.log.push(log);
+			ret.stats.activityWeek == null 
+				? ret.stats.activityWeek = 1
+				: ret.stats.activityWeek += 1;
 			req.body.related = req.body.related.split(",");
 			req.body.tags = req.body.tags.split(",");
 			var index = req.body.fragment;
@@ -372,7 +447,7 @@ function submitProject(req, res){
 		data._key = data.title = req.body.title;
 		data.members = req.body.members.split(", ");
 		data.type = req.body.type;
-		data.start = Date.now();
+		data.start = new Date();
 		db.document.create("test", data)
 		.then(
 			function(ret){ 
@@ -406,12 +481,28 @@ function submitScript(req, res){
 				res.send('Permission dennied.'); 
 				return 0
 			}
+			var details;
 			if (req.body.flag == '2'){
+				details = fragments.annotation;
 				delete req.body.flag;
 				ret.fragments.push(fragments);
+				ret.stats.activityWeek == null 
+					? ret.stats.activityWeek = 1
+					: ret.stats.activityWeek += 1;
 			}else{
+				details = "Script rewrite.";
 				ret.fragments = req.body.fragments;
+				ret.stats.activityWeek == null 
+					? ret.stats.activityWeek = req.body.fragments.length
+					: ret.stats.activityWeek += req.body.fragments.length;
 			}
+			var log = {
+				date : new Date(),
+				user : session[req.body.sid].email + " / " + session[req.body.sid].email,
+				details : details,
+				action : "Script"
+			};
+			ret.log.push(log);
 			db.document.put(ret._id, ret);
 			res.send("ok");
 		},

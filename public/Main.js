@@ -48,11 +48,12 @@ var Navigation = {
 	open : function(ev){
 		$('#area').empty();
 		delete initArea;
-		var url = '/' + $(ev.target).attr('href');
+		var url = $(ev.target).attr('href');
+			console.log(url);
 		window.history.pushState(url, url, url);
 		$.get(url + "/s", function(data){
 			$('#area').html(data);
-			typeof(initArea) == 'function' ? initArea() : null ;
+			typeof(initArea) == 'function' ? initArea() : null;
 			$('#area .load').on('click', Navigation.load);
 			$('#area .open').on('click', Navigation.open);
 		});
