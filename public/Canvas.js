@@ -80,7 +80,7 @@ function enviar(){
 		layern : viewer.layern,
 		sid : sessionStorage.sid
 	};
-	$.post("/saveCanvas" + "/s", submit);
+	$.post("/saveCanvas", submit);
 	return false;
 }
 

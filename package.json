@@ -1,6 +1,6 @@
 {
     "name": "CrystalTurtle",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "dependencies" : {
     	"consolidate" : "0.8.0",
         "jade": "0.28.1",

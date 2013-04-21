@@ -36,33 +36,36 @@ db.use("test");
 
 
 /* ALL */ //areas que pueden ser abiertas o recargadas con diferentes datos
-app.all('/browse/s', openBrowse);
 
 
 /* GET */
-app.get('/entryForm/s', loadEntryForm);
-app.get('/login/s', loadLogin);
-app.get('/script/:project/s', openScript);
-app.get('/newFragment/s',loadNewFragment);
-app.get('/projectForm/s', loadProjectForm);
-app.get('/project/:project/s', openProject);
-app.get('/userForm/s', loadUserForm);
-app.get('/log/:project/s', openLog);
-app.get('/user/:user/s', openUserProfile);
 app.get('/', openMain);
+app.get('/browse', openMain);
+app.get('/entryForm', loadEntryForm);
+app.get('/login', loadLogin);
+app.get('/script/:project', openMain);
+app.get('/newFragment',loadNewFragment);
+app.get('/projectForm', loadProjectForm);
+app.get('/project/:project', openMain);
+app.get('/userForm', loadUserForm);
+app.get('/log/:project', openMain);
 
 /* POST */
-app.post('/fragmentInfo/s', loadFragmentInfo);
-app.post('/fragmentThumb/s', getFragmentThumb);
-app.post('/layer/:project/:layer/s', loadLayer);
-app.post('/saveCanvas/s', submitCanvas);
-app.post('/saveImage/s', submitImage);
-app.post('/submitEntry/s', submitEntry);
-app.post('/submitProject/s', submitProject);
-app.post('/submitScript/s', submitScript);
-app.post('/submitUser/s', submitNewUser);
-app.post('/logout/s', doLogout);
-app.post('/login/s', doLogin);
+app.post('/browse', openBrowse);
+app.post('/fragmentInfo', loadFragmentInfo);
+app.post('/fragmentThumb', getFragmentThumb);
+app.post('/layer/:project/:layer', loadLayer);
+app.post('/logout', doLogout);
+app.post('/login', doLogin);
+app.post('/log/:project', openLog);
+app.post('/project/:project', openProject);
+app.post('/saveCanvas', submitCanvas);
+app.post('/saveImage', submitImage);
+app.post('/script/:project', openScript);
+app.post('/submitEntry', submitEntry);
+app.post('/submitProject', submitProject);
+app.post('/submitScript', submitScript);
+app.post('/submitUser', submitNewUser);
 
 var session = [];
 
@@ -97,7 +100,7 @@ function doLogin(req, res){
 	);
 }
 function doLogout(req, res){
-	delete session[req.body.sid];
+	delete session[req.params.sid];
 	res.send('Logged out.');
 }
 function getFragmentThumb(req, res){
@@ -258,9 +261,7 @@ function openLog(req, res){
 	);
 }
 function openMain(req,res){
-	res.render('Main', {
-		logged : session[req.body.sid]
-	});
+	res.render('Main');
 }
 function openProject(req, res){
 	var project = req.params.project;
@@ -328,7 +329,7 @@ function openScript(req, res){
 	});
 }
 function openUserProfile(req, res){
-	var sid = req.params.user;
+	var user = req.params.user;
 	db.query.string = "FOR u IN testU FILTER u.name == @user RETURN {'email' : u.email}";
 	db.query.exec({'user': user})
 	.then(
@@ -442,11 +443,18 @@ function submitNewUser(req,res){
 	)
 }
 function submitProject(req, res){
+	if(session[req.body.sid] == undefined || ret.members.indexOf(session[req.body.sid].user) < 0){
+		res.send('Permission dennied.'); 
+		return 0
+	}
+	delete req.body.sid;
+	delete req.body.user;
 	fs.readFile("project.json", 'utf8', function(err, data){
 		data = JSON.parse(data);
 		data._key = data.title = req.body.title;
 		data.members = req.body.members.split(", ");
 		data.type = req.body.type;
+		data.tags = req.body.tags.split(', ');
 		data.start = new Date();
 		db.document.create("test", data)
 		.then(

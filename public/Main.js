@@ -2,17 +2,17 @@
 $(document).on('ready', init);
 
 function init(){
-	if(localStorage.sid != null){
-		sessionStorage.user = localStorage.user;
-		sessionStorage.email = localStorage.email;
-		sessionStorage.pass = localStorage.pass;
-		sessionStorage.sid = localStorage.sid;
+	if(localStorage.sid != null || sessionStorage.sid != null){
+		Navigation.login();
+	} else {
+		$('a[href="/logout"]').hide();
+		$('a[href="/projectForm"]').hide();
 	}
-	console.log(sessionStorage.sid, sessionStorage.user);
 	$('.load').on('click', Navigation.load);
 	$('.open').on('click', Navigation.open);
+	$('.logout').on('click', Navigation.logout);
 	if(window.location.pathname != '/'){
-		$.get(window.location.href + '/s', function(data){
+		$.post(window.location.href, sessionStorage, function(data){
 			$('#area').html(data);
 			typeof(initArea) == 'function' ? initArea() : null ;
 			$('#area .load').on('click', Navigation.load);
@@ -22,10 +22,35 @@ function init(){
 }
 
 var Navigation = {
+	login : function(ev){
+		sessionStorage.user = localStorage.user != null ? localStorage.user : sessionStorage.user;
+		sessionStorage.email = localStorage.email != null ? localStorage.email : sessionStorage.email;
+		sessionStorage.pass = localStorage.pass != null ? localStorage.pass : sessionStorage.pass;
+		sessionStorage.sid = localStorage.sid != null ? localStorage.sid : sessionStorage.sid;
+		$('a[href="/login"]').after('<a class="open user" href="/user/' + sessionStorage.user + '"> ' + sessionStorage.user + '</a>');
+		$('a[href="/login"], a[href="/userForm"]').hide();
+		$('a[href="/logout"]').show();
+		$('a[href="/projectForm"]').show();
+	},
+	logout : function(ev){
+		$.post("/logout", {sid : sessionStorage.sid}, function(data){	
+			sessionStorage.clear(); 
+			delete localStorage.user;
+			delete localStorage.email;
+			delete localStorage.pass;
+			delete localStorage.sid;
+			$('.msg').html(data);
+			$('.user').remove();
+			$('.logout, a[href="/projectForm"]').hide();
+			$('a[href="/login"], a[href="/userForm"]').show();
+		});
+		$('body').trigger('click'); //close panel if opened
+		return false;
+	},
 	load : function(ev){
 		var url = ev.target.href;
 		$('body').trigger('click'); //close panel if opened
-		$.get(url + "/s" + "?sid=" + sessionStorage.sid, function(data){
+		$.get(url + "?sid=" + sessionStorage.sid, function(data){
 			$('body').append('<div class="dialog">' + data + '</div>');
 			$('.dialog').on('click', stopPropagation);
 			typeof(initDialog) != "undefined" ? initDialog() : null;
@@ -51,7 +76,7 @@ var Navigation = {
 		var url = $(ev.target).attr('href');
 			console.log(url);
 		window.history.pushState(url, url, url);
-		$.get(url + "/s", function(data){
+		$.post(url, sessionStorage, function(data){
 			$('#area').html(data);
 			typeof(initArea) == 'function' ? initArea() : null;
 			$('#area .load').on('click', Navigation.load);

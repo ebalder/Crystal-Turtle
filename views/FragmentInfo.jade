@@ -6,7 +6,8 @@ hgroup.fragInfo
 				each e in text
 					div.entry
 						span.eTitle 
-							h2 #{e.title}
+							a.group
+								h2 #{e.title}
 						br
 						span.eBrief #{e.content.replace(/<[^>]*>/g, '').substr(0, 150)+"..."}
 						div.related related entries:
@@ -21,7 +22,8 @@ hgroup.fragInfo
 				br
 				each l in link
 					div.entry
-						h2 #{l.title}
+						a.group
+							h2 #{l.title}
 						br
 						a(href="#{l.content}") #{l.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
 						div.related related entries:
@@ -36,7 +38,8 @@ hgroup.fragInfo
 				br
 				each i in image
 					div.entry
-						h2 #{i.title}
+						a.group
+							h2 #{i.title}
 						img(src = "../#{project}/#{i.title}") test
 						br
 						div.related related entries:

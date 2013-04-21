@@ -45,7 +45,7 @@ Browse.prototype = {
 		for(var i = 0; i < len; i++){ 
 			this.currResults.push($('.project:eq(' + i + ') .title').text());
 		}
-		$.post('/browse' + '/s', {tags : tags, already : this.currResults, type: types, reload:true}, function(data){
+		$.post('/browse', {tags : tags, already : this.currResults, type: types, reload:true}, function(data){
 			var add;
 			//agregar resultados
 			for(var i=0 in data){ 

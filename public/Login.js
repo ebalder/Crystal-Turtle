@@ -1,8 +1,6 @@
 
 function submitForm(){
-				console.log("aa");
-	$.post('/login' + '/s', $("#login").serialize(), function(data){
-				console.log("bb");
+	$.post('/login', $("#login").serialize(), function(data){
 		var remember;
 		$('.dialog [name="remember"]:checked').length > 0 ? remember = true : remember = false;
 		$('body').trigger('click');
@@ -18,5 +16,6 @@ function submitForm(){
 				console.log("Sorry! no web storage support.");
 			}
 		}
+		Navigation.login();
 	});
 }

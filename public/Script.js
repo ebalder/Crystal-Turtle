@@ -43,6 +43,6 @@ function  submitScript(){
 		}
 	});
 	script.sid = sessionStorage.sid;
-	$.post('../submitScript' + '/s', script, function(){console.log('ok')});
+	$.post('../submitScript', script, function(){console.log('ok')});
 	return false;
 }

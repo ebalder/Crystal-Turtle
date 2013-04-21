@@ -35,7 +35,7 @@ Carrousel.prototype = {
 					<span class="fragment"> \
 					</span> <!--fragment-->'); 
 				$('.fragment:eq(' + (this.loaded) + ')').on('click', viewer.fragInfo.bind(viewer));
-				$.post('../fragmentThumb' + '/s', {index: this.loaded}, this.loadFrag.bind(this));
+				$.post('../fragmentThumb', {index: this.loaded}, this.loadFrag.bind(this));
 				this.loaded++;
 			} 
 			$('#tlIn').css(this.cssFw); 
@@ -48,7 +48,7 @@ Carrousel.prototype = {
 			$("#tlIn").append('\
 				<span class="fragment"> \
 				</span> <!--fragment-->');
-			$.post('../fragmentThumb' + '/s', {index:this.loaded}, this.loadFrag.bind(this));
+			$.post('../fragmentThumb', {index:this.loaded}, this.loadFrag.bind(this));
 			this.i++;
 			this.loaded++;
 		}
@@ -100,10 +100,14 @@ function Viewer(){
 	this.layern = null;
 }
 Viewer.prototype = {
+	group : function(ev){
+		$('#area').after('<div id="area2"></div>');
+		$('#area').hide();
+	},
 	fragInfo : function(ev){
 		this.timestamp = $(ev.currentTarget).find('.timestamp').text();
 		this.index = $('.fragment').index(ev.currentTarget);
-		$.post('../fragmentInfo' + '/s', {selection: this.index}, this.showData.bind(this));	
+		$.post('../fragmentInfo', {selection: this.index}, this.showData.bind(this));	
 	},
 	showData : function(data){
 		$('#fragmentInfo').empty();
@@ -117,12 +121,13 @@ Viewer.prototype = {
 				$('#img img:eq(' + imgindex + ')').attr('src', data);
 			});
 		});
+		$(".group").on('click', this.group);
 	},
 	fragLayer : function(ev){
 		var n = $(ev.target).attr("n");
 		this.layer = ev.target.href.split('/')[5];
 		this.layern = $("#layers .layer a").length - $("#layers .layer a").index(ev.target) - 1;
-		$.post(ev.target.href + '/s',{name : n, timestamp : this.timestamp, fragment : this.index}, function(data){ 
+		$.post(ev.target.href,{name : n, timestamp : this.timestamp, fragment : this.index}, function(data){ 
 			$('#loaded').html(data);
 			inicioCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto
 		});
@@ -132,11 +137,11 @@ Viewer.prototype = {
 		var timestamp = this.timestamp;
 		var img64 = '';
 		var index = this.index;
-		$.get("../entryForm" + '/s', function(data){ 
+		$.get("../entryForm", function(data){ 
 			$('#contents').html(data);
 			$('input[name="timestamp"]').val(timestamp);
 			$('#entryForm').on('submit', function(ev){
-				$.post("../submitEntry" + "/s", $('#entryForm').serialize() + '&fragment=' + index +'&sid=' + sessionStorage.sid , function(){
+				$.post("../submitEntry", $('#entryForm').serialize() + '&fragment=' + index +'&sid=' + sessionStorage.sid , function(){
 					$('.msg').html("Submission complete");
 				});
 				if($('select[name="type"]').val() == 'image'){
@@ -145,7 +150,7 @@ Viewer.prototype = {
 						name : $('input[name="title"]').val(),
 						image : img64
 					}
-					$.post("../saveImage" + '/s', submit, function(){
+					$.post("../saveImage", submit, function(){
 						$('.msg').html("ok");
 					})
 				}
