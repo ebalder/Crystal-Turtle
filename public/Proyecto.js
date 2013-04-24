@@ -100,9 +100,28 @@ function Viewer(){
 	this.layern = null;
 }
 Viewer.prototype = {
-	group : function(ev){
-		$('#area').after('<div id="area2"></div>');
-		$('#area').hide();
+	board : function(ev){
+		var project = window.location.pathname.split( '/' )[2];
+		var group = {
+			related : $(ev.target).parents('.entry').find('.related a').text().split(' '),
+			base : $(ev.target).parents('.entry').find('a.group').text()
+		};
+		$.post('/InfoBoard/' + project, group, function(data){
+			$('#area').after('<div id="area2">' + data + '</div>');
+			$('#area').hide();
+			$.each($('.entry img'), function(index, value){
+				imgindex = index;
+				$.get($(value).attr('src'), function(data){ 
+					$('.entry img:eq(' + imgindex + ')').attr('src', data);
+				});
+			});
+		});
+		$('#area2 .back, :not(#area2 a)').on('click', function(){
+			$('#area2').remove();
+			$('#area').show();
+		});
+		$(".group").on('click', this.board);
+		return false;
 	},
 	fragInfo : function(ev){
 		this.timestamp = $(ev.currentTarget).find('.timestamp').text();
@@ -121,7 +140,7 @@ Viewer.prototype = {
 				$('#img img:eq(' + imgindex + ')').attr('src', data);
 			});
 		});
-		$(".group").on('click', this.group);
+		$(".group").on('click', this.board);
 	},
 	fragLayer : function(ev){
 		var n = $(ev.target).attr("n");
@@ -150,7 +169,7 @@ Viewer.prototype = {
 						name : $('input[name="title"]').val(),
 						image : img64
 					}
-					$.post("../saveImage", submit, function(){
+					$.post("/saveImage", submit, function(){
 						$('.msg').html("ok");
 					})
 				}

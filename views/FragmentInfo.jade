@@ -6,50 +6,44 @@ hgroup.fragInfo
 				each e in text
 					div.entry
 						span.eTitle 
-							a.group
+							a.group(href="/infoBoard")
 								h2 #{e.title}
 						br
 						span.eBrief #{e.content.replace(/<[^>]*>/g, '').substr(0, 150)+"..."}
 						div.related related entries:
 							each r in e.related
-								br
 								a #{r}
 						div.tags tags:
 							each r in e.tags
-								br
-								| #{r}
+								a #{r}
 			div#link Link entries
 				br
 				each l in link
 					div.entry
-						a.group
+						a.group(href="/infoBoard")
 							h2 #{l.title}
 						br
 						a(href="#{l.content}") #{l.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
 						div.related related entries:
 							each r in l.related
-								br
 								a #{r}
 						div.tags tags:
 							each r in l.tags
-								br
-								| #{r}
+								a #{r}
 			div#img Image entries
 				br
 				each i in image
 					div.entry
-						a.group
+						a.group(href="/infoBoard")
 							h2 #{i.title}
 						img(src = "../#{project}/#{i.title}") test
 						br
 						div.related related entries:
 							each r in i.related
-								br
 								a #{r}
 						div.tags tags:
 							each r in i.tags
-								br
-								| #{r}
+								a #{r}
 		div#layers
 			each l in eLayers
 				div.layer.emptyLayer 

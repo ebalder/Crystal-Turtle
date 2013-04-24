@@ -53,6 +53,8 @@ app.get('/log/:project', openMain);
 /* POST */
 app.post('/browse', openBrowse);
 app.post('/fragmentInfo', loadFragmentInfo);
+app.post('/InfoTag/:project', loadInfoTagSearch);
+app.post('/infoBoard/:project', openInfoBoard);
 app.post('/fragmentThumb', getFragmentThumb);
 app.post('/layer/:project/:layer', loadLayer);
 app.post('/logout', doLogout);
@@ -182,6 +184,39 @@ function loadFragmentInfo(req, res){
 		}, printError
 	);
 }
+function loadInfoTagSearch (req, res){
+	///***** quitar lo que sobre ****/////
+	var project = req.params.project;
+		db.query.string='FOR p IN test FILTER p._key == @project RETURN { \
+			entries : p.fragments[*].entries \
+		}';
+		var tags = [];
+		var related = [];
+		db.query.exec({project : project})
+		.then(
+			function(ret){
+				for(var i = 0 in ret[0].entries){
+					for(var f = 0 in ret[0].entries[i]){
+						for(var j = 0 in req.body.related){
+							if(ret[0].entries[i][f].title == req.body.related[j]){
+								related.push(ret[0].entries[i][f]);
+								continue;
+							}
+							for (var h = 0 in req.body.tags){
+								if(ret[0].entries[i][f].tags.indexOf(req.body.tags[h]) >= 0){
+									tags.push(ret[0].entries[i][f]);
+									break;
+								}
+							}
+						}
+					}
+				}
+				console.log(tags);
+				console.log(related);
+			},
+			printError
+	);
+}
 function loadLayer(req, res){
 	res.render("Canvas");
 }
@@ -248,6 +283,35 @@ function openBrowse(req, res){
 		printError
 	);
 }
+function openInfoBoard(req, res){
+	var project = req.params.project;
+	db.query.string='FOR p IN test FILTER p._key == @project RETURN { \
+		entries : p.fragments[*].entries \
+	}';
+	db.query.exec({project : project})
+	.then(
+		function(ret){
+			var related = [];
+			for(var i = 0 in ret[0].entries){
+				for(var f = 0 in ret[0].entries[i]){
+					for(var j = 0 in req.body.related){
+						if(ret[0].entries[i][f].title == req.body.related[j] 
+							|| ret[0].entries[i][f].title == req.body.base
+							|| ret[0].entries[i][f].related.indexOf(req.body.base) >= 0){
+							related.push(ret[0].entries[i][f]);
+						}
+					}
+				}
+			}
+			console.log(related);
+			res.render('InfoBoard', {
+				project : project,
+				entries : related
+			});
+		},
+		printError
+	);
+}
 function openLog(req, res){
 	var project = req.params.project;
 	db.query.string= "FOR p IN test FILTER p._key == @project RETURN{log : p.log}";
@@ -255,6 +319,7 @@ function openLog(req, res){
 	.then(
 		function(ret){
 			res.render("log.jade", {
+				project : project,
 				log : ret[0].log.reverse()
 			});
 		}
