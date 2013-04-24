@@ -44,6 +44,7 @@ app.get('/browse', openMain);
 app.get('/entryForm', loadEntryForm);
 app.get('/login', loadLogin);
 app.get('/script/:project', openMain);
+app.get('/user/:user', openMain)
 app.get('/newFragment',loadNewFragment);
 app.get('/projectForm', loadProjectForm);
 app.get('/project/:project', openMain);
@@ -68,6 +69,7 @@ app.post('/submitEntry', submitEntry);
 app.post('/submitProject', submitProject);
 app.post('/submitScript', submitScript);
 app.post('/submitUser', submitNewUser);
+app.post('/user/:user', openUserProfile)
 
 var session = [];
 
@@ -295,11 +297,15 @@ function openInfoBoard(req, res){
 			for(var i = 0 in ret[0].entries){
 				for(var f = 0 in ret[0].entries[i]){
 					for(var j = 0 in req.body.related){
-						if(ret[0].entries[i][f].title == req.body.related[j] 
-							|| ret[0].entries[i][f].title == req.body.base
-							|| ret[0].entries[i][f].related.indexOf(req.body.base) >= 0){
+						console.log(ret[0].entries[i][f].related);
+						console.log(req.body.related);
+						if(ret[0].entries[i][f].title == req.body.related[j]){
 							related.push(ret[0].entries[i][f]);
 						}
+					}
+					if(ret[0].entries[i][f].title == req.body.base
+						|| ret[0].entries[i][f].related.indexOf(req.body.base) >= 0){
+						related.push(ret[0].entries[i][f]);
 					}
 				}
 			}
@@ -489,7 +495,7 @@ function submitEntry(req, res){
 function submitImage(req, res){
 	fs.exists('public/'+req.body.dir, function(exists){
 		if (!exists) {
-			fs.mkdir('public/'+req.body.dir, printError);
+			fs.mkdirp('public/'+req.body.dir, printError);
 		}
 		fs.writeFile('public/'+req.body.dir+'/'+req.body.name, req.body.image, encoding='utf8', printError);
 	});
@@ -499,7 +505,7 @@ function submitNewUser(req,res){
 	var name = req.body.name;
 	var email=req.body.email;
 	var pass=req.body.pass;
-	db.document.create("testU",{"_key":name+'_'+email, "name":name,"email":email,"pass":pass})
+	db.document.create("testU",{"_key":name, "name":name,"email":email,"pass":pass})
 	.then(
 		function(ret){
 	  		resp.send("User '"+name+"' successfully registered.");
@@ -508,7 +514,7 @@ function submitNewUser(req,res){
 	)
 }
 function submitProject(req, res){
-	if(session[req.body.sid] == undefined || ret.members.indexOf(session[req.body.sid].user) < 0){
+	if(session[req.body.sid] == undefined ){
 		res.send('Permission dennied.'); 
 		return 0
 	}

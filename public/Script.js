@@ -3,7 +3,7 @@ var script;
 
 $(document).on('ready', init);
 
-function init(){
+function initArea(){
 	$('#script').on('submit', submitScript);
 }
 
