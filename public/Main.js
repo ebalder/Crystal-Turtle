@@ -73,7 +73,7 @@ var Navigation = {
 	open : function(ev){
 		$('#area').empty();
 		delete initArea;
-		var url = $(ev.target).attr('href');
+		var url = $(ev.target).attr('href') + "/";
 			console.log(url);
 		window.history.pushState(url, url, url);
 		$.post(url, sessionStorage, function(data){

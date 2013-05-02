@@ -1,6 +1,6 @@
 
-link(rel="stylesheet", href="../Browse.css")
-script(src="../Browse.js")
+link(rel="stylesheet", href="/Browse.css")
+script(src="/Browse.js")
 form#filter
 	input(type="checkbox", value="movie", name="type", checked) 
 	|  Movie
@@ -16,7 +16,7 @@ form#filter
 		each p in projects
 			div.project
 				div.title
-					a.open(href="../project/#{p.title}") #{p.title}
+					a.open(href="/project/#{p.title}") #{p.title}
 				div.thumb
 					img(src="#{p.thumb}")
 				div.detail 

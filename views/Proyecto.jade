@@ -1,5 +1,5 @@
 ﻿
-link(rel="stylesheet", href="../Proyecto.css")
+link(rel="stylesheet", href="/Proyecto.css")
 script(src="/Proyecto.js")
 div#panel
 	div#panTab
@@ -20,12 +20,20 @@ div#project
 		| |   
 		a.load(href = "/NewFragment") Add fragment
 	div#timeline
-		div#bw
+		div.bw
 			span.verticalCenter <
-		div#fw
+		div.fw
 			span.verticalCenter >
 		div#tlView
 			div#tlIn
+	div#frames
+		div.bw
+			span.verticalCenter <
+		div.fw
+			span.verticalCenter >
+		div#frView
+			div#frIn
+			
 	div#proyInfo
 		| Repp : #{stats.reputation}
 		br

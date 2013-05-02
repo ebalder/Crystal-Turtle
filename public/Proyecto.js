@@ -2,70 +2,168 @@
 var viewer;
 var panel;
 var carrousel;
+var project = window.location.pathname.split( '/' )[2];
 
 function initArea(){ 
 	viewer = new Viewer();
 	panel = new Panel();
 	carrousel = new Carrousel();
+	return 0;
 }
 
 function Carrousel(){
+	this.fps = 30;
+	this.last = 100;
+	this.lastFrame = 3000;
 	this.bodyWidth = $('body').width();
-	this.total = 12; //Fragmentos disponibles /-quitar
-	this.loaded = 0; //mayor cargado
-	this.i = 0; //Menor visible
-	this.j = 0; //Mayor visible
-	this.cssBw = { left: '+=' + 182 };
-	this.cssFw = { left: '-=' +182 };
+	this.loaded = []; //fragmentos cargados
+	this.fragRange = [0,0];
+	this.framRange = [0,0];
+	this.cssBw = { left: '+=' + 182*3 };
+	this.cssFw = { left: '-=' +182*3 };
 	this.init();
+	return 1;
 }
 Carrousel.prototype = {
 	backward : function(){  
-		if (this.i >= 0){
-			$('#tlIn').css(this.cssBw);
-			this.j--;
-			this.i--;
+		if (this.fragRange[0] > 0){
+			$('#tlIn').animate(this.cssBw);
+			this.fragRange[0]-=3;
+			this.fragRange[1]-=3;
+		}
+		return 1;
+	},
+	bwFrame : function(){
+		if( this.framRange[0] > 0){
+			$('#frIn').css({"left" : -182});
+			$('#frIn').animate({"left" : 0}, 200, 'swing');
+			this.framRange[0] -= 12;
+			this.framRange[0] -= 12;
 		}
 	},
 	forward : function(){ 
-		if(this.j <= this.total){ 
-			if (this.j == this.loaded){ 
-				$("#tlIn").width(this.j * 182);
-				$("#tlIn").append('\
-					<span class="fragment"> \
-					</span> <!--fragment-->'); 
-				$('.fragment:eq(' + (this.loaded) + ')').on('click', viewer.fragInfo.bind(viewer));
-				$.post('../fragmentThumb', {index: this.loaded}, this.loadFrag.bind(this));
-				this.loaded++;
-			} 
-			$('#tlIn').css(this.cssFw); 
-			this.j++;
-			this.i++;
+		if (this.fragRange[1] < this.last){
+			$('#tlIn').animate(this.cssFw);
+			this.loadFrags(this.fragRange[0]+3, this.fragRange[1]+3);
 		}
+		return 1;
+	},
+	fwFrame : function(){
+		if( this.framRange[1] < this.lastFrame){
+			$('#frIn').animate({"left" : -182}, 200, 'swing', function(){
+				$('#frIn').css({"left" : 0});
+			});
+			this.framRange[0] += 12;
+			this.framRange[0] += 12;
+		}
+		return 1;
 	},
 	init : function(){ 
-		while ((this.bodyWidth / ((180+2) * this.i + 1) >= 1) && this.loaded <= this.total) { 
+		var self = this;
+		/*======== Create fragment list =====*/
+		for (var i = 0; i <= this.last; i++){
 			$("#tlIn").append('\
 				<span class="fragment"> \
-				</span> <!--fragment-->');
-			$.post('../fragmentThumb', {index:this.loaded}, this.loadFrag.bind(this));
-			this.i++;
-			this.loaded++;
+					<span class="thumb">\
+						<img /> \
+					</span><!--thumb-->\
+					<span class="timestamp"> \
+					</span><!--timestamp--> \
+				</span> <!--fragment--> \
+			');
 		}
-		this.i = 0;
-		this.j = this.loaded;
+		$("#tlIn").css({"width" : 182 * this.last});
+		/*======= Load visible fragments ======*/
+		this.loadFrags(0, Math.ceil(this.bodyWidth / 182));
+		/*====== Set scrollbar actions =====*/
+		var scrollTop = $('#tlView').scrollTop();
+		var width = $('#tlView').width();	
+		var scroll = [0];
+		$("#tlView").on('scroll', function(){
+			setTimeout(function(){ //reduce precision for easier handling
+				$(".fragment").each(function(index, val){
+					var offset = $(this).offset();
+					if (scroll.indexOf(index) < 0 && scrollTop <= offset.left
+						&& $(this).width() + offset.left < scrollTop + width){
+						self.loadFrags(index, index + Math.ceil(self.bodyWidth / 182));
+						scroll.push(index);
+						return false;
+					} 
+				});
+			}, 500);
+			return false;
+		});
+		/*======= Create frame list =======*/
+		var range = Math.ceil(this.bodyWidth / 15 + 12);
+		this.framRange[1] = range;
+		$("#frIn").css({"width" : 15 * range})
+		for (var i = 0; i <= range; i++){
+			$("#frIn").append('<div class="frame"></div>');
+		}
+		/* ====== Drag drop ====== */
+		$('.frame').draggable({
+			revert : true,
+			stack : ".frame, .fragment" 
+		});
+		$('.fragment').droppable({
+			drop : function(ev, ui){
+				var ts = self.parseTs(ui.draggable);
+				$(this).find('.timestamp').html(ts);
+				console.log($('.frame').index(ui.draggable) + self.framRange[0]);
+				var data = {
+					ts : $('.frame').index(ui.draggable) + self.framRange[0],
+					project : project,
+					fragment : $('.fragment').index(this)
+				};
+				$.post('/setFragTs', data);
+			}
+		});
+		/* ======= Set events ======= */
+		$('.frame').on('click', viewer.frame.bind(viewer));
 		$('.fragment').on('click', viewer.fragInfo.bind(viewer));
-		$("#fw").on('click', this.forward.bind(this));
-		$("#bw").on('click', this.backward.bind(this));
+		$("#timeline .fw").on('click', this.forward.bind(this));
+		$("#timeline .bw").on('click', this.backward.bind(this));
+		$("#frames .fw").on('click', this.fwFrame.bind(this));
+		$("#frames .bw").on('click', this.bwFrame.bind(this));
+		$('.timestamp').on('click', function(ev){
+			console.log(ev.target, "asdf");
+		});
+		return 1;
 	},
-	loadFrag : function(data){
-		var time = data.timestamp;
-		var thumb = Number(data.index) ; // /-quitar, los thumbs tendrán el mismo nombre del timestamp
-		$("#tlIn > .fragment:eq(" + thumb +")").html('\
-			<span class="thumb">\
-				<img src ="../Frames/' + (thumb+1) + '.jpg">\
-			</span><!--thumb-->\
-			<span class="timestamp">' + time + '</span><!--timestamp-->');
+	loadFrags : function(start, end){
+		var self = this;
+		this.fragRange = [start, end];
+		$.post('/fragmentThumbs', {range: this.fragRange}, function(data){
+			var ts = data.timestamps;
+			for (var i = 0 in ts){
+				var num = Number(i) + 1;
+				if(self.loaded.indexOf(self.fragRange[0]+i) < 0){
+					$(".fragment:eq(" + i + ") img").attr("src", 'fragments/' + num + '.jpg');
+					$(".fragment:eq(" + i + ") .timestamp").html(self.parseTs(ts[i]));
+					self.loaded.push(self.fragRange[0]+i);
+				}
+			}
+			return 1;
+		});
+	},
+	parseTs : function(obj){
+		var index;
+		console.log(typeof(obj));
+		if (typeof(obj) == "object"){
+			index = $('.frame').index(obj) + carrousel.framRange[0];
+		} else if(typeof(obj) == "Number" || typeof(obj) == "string"){
+			index = Number(obj);
+		}
+		var aux = index;
+		var hr = Math.floor(aux / (30*60*60));
+		aux -= hr * (30*60*60);
+		var min = Math.floor(aux / (30*60));
+		aux -= min * (30*60);
+		var sec = Math.floor(aux / (30));
+		aux -= sec * (30);
+		var fr = aux;
+		var ts = hr + ":" + min + ":" + sec + "." + fr;
+		return ts;
 	}
 }
 
@@ -75,21 +173,25 @@ function Panel(){
 	this.cssHide = {'left' : '-27%'};
 	$('#panel').on('click', stopPropagation); //click al panel no lo oculta
 	this.hide(this);
+	return 1;
 }
 Panel.prototype = {
 	hide : function (){ 
 		$('body').off('click', this.triggerHide);
 		$('#panel').css(this.cssHide);
 		$('#panTab').one('click', this.show.bind(this));
+		return 1;
 	},
 	show : function(){
 		this.timestamp = viewer.timestamp;
 		$('#panel').css(this.cssShow); 
 		$('body').one('click', this.triggerHide);
 		$('#panTab').one('click', this.hide.bind(this));
+		return 1;
 	},
 	triggerHide : function(){
 		$("#panTab").trigger('click');
+		return 1;
 	}
 }
 
@@ -126,7 +228,10 @@ Viewer.prototype = {
 	fragInfo : function(ev){
 		this.timestamp = $(ev.currentTarget).find('.timestamp').text();
 		this.index = $('.fragment').index(ev.currentTarget);
-		$.post('../fragmentInfo', {selection: this.index}, this.showData.bind(this));	
+		$.post('/fragmentInfo', {selection: this.index}, this.showData.bind(this));	
+	},
+	frame : function(ev){
+		carrousel.parseTs(ev.target);
 	},
 	showData : function(data){
 		$('#fragmentInfo').empty();

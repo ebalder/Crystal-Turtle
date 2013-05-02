@@ -31,7 +31,7 @@ function  submitFrag(){
 	});
 	script.flag = 2;
 	script.sid = sessionStorage.sid;
-	$.post('../submitScript', script);
+	$.post('/submitScript', script);
 	return false;
 }
 

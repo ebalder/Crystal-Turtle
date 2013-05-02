@@ -56,7 +56,7 @@ app.post('/browse', openBrowse);
 app.post('/fragmentInfo', loadFragmentInfo);
 app.post('/InfoTag/:project', loadInfoTagSearch);
 app.post('/infoBoard/:project', openInfoBoard);
-app.post('/fragmentThumb', getFragmentThumb);
+app.post('/fragmentThumbs', getFragmentThumbs);
 app.post('/layer/:project/:layer', loadLayer);
 app.post('/logout', doLogout);
 app.post('/login', doLogin);
@@ -65,6 +65,7 @@ app.post('/project/:project', openProject);
 app.post('/saveCanvas', submitCanvas);
 app.post('/saveImage', submitImage);
 app.post('/script/:project', openScript);
+app.post('/setFragTs', submitFragTs)
 app.post('/submitEntry', submitEntry);
 app.post('/submitProject', submitProject);
 app.post('/submitScript', submitScript);
@@ -107,20 +108,19 @@ function doLogout(req, res){
 	delete session[req.params.sid];
 	res.send('Logged out.');
 }
-function getFragmentThumb(req, res){
+function getFragmentThumbs(req, res){
 	var project = req.headers['referer'].split('/')[4];
 	db.query.for('r').in('test')
           .filter('r._key == @project')
-          .collect('time = r.fragments[@index].timestamp')
-          .return('{"timestamp": time}');
+          .collect('time = r.fragments[*].timestamp')
+          .return('{"timestamps": time}');
 	db.query.exec({
-		'project' : project, 
-		'index' : req.body.index})
+		'project' : project})
 	.then(
 		function(ret){ 
 			res.send({
-				timestamp : ret[0].timestamp, 
-				index : req.body.index});
+				timestamps : ret[0].timestamps.slice(req.body.range[0], req.body.range[1] + 1)
+			});
 		},
 		printError
 	);
@@ -455,9 +455,9 @@ function submitCanvas(req, res){
 			+ req.body.fragment + '_' + req.body.timestamp, 
 			function(exists){
 			if(!exists){ 
-				fs.mkdirp('public/' + req.body.project + '/' + req.body.layer,
+				fs.mkdirp('public/project/' + req.body.project + '/' + req.body.layer,
 					function(){
-						fs.writeFile('public/' + req.body.project + '/' + req.body.layer + '/' + req.body.fragment + '_' + req.body.timestamp, req.body.planes[i], encoding='utf8');
+						fs.writeFile('public/project/' + req.body.project + '/' + req.body.layer + '/' + req.body.fragment + '_' + req.body.timestamp, req.body.planes[i], encoding='utf8');
 					});
 			}
 		});
@@ -492,12 +492,23 @@ function submitEntry(req, res){
 		printError
 	);
 }
+function submitFragTs(req, res){
+	var project = req.body.project;
+	db.document.get('test/'+project)
+	.then(
+		function(ret){
+			ret.fragments[req.body.fragment].timestamp = req.body.ts;
+			db.document.put(ret._id, ret);
+			res.send("ok");
+		}
+	);
+}
 function submitImage(req, res){
 	fs.exists('public/'+req.body.dir, function(exists){
 		if (!exists) {
-			fs.mkdirp('public/'+req.body.dir, printError);
+			fs.mkdirp('public/project/'+req.body.dir, printError);
 		}
-		fs.writeFile('public/'+req.body.dir+'/'+req.body.name, req.body.image, encoding='utf8', printError);
+		fs.writeFile('public/project/'+req.body.dir+'/'+req.body.name, req.body.image, encoding='utf8', printError);
 	});
 }
 function submitNewUser(req,res){
@@ -538,6 +549,7 @@ function submitProject(req, res){
 }
 function submitScript(req, res){
 	var project = req.headers['referer'].split("/")[4];
+	console.log(req.headers['referer']);
 	var appends = {
 		entries : [],
 		timestamp : null

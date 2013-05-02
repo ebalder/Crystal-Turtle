@@ -11,7 +11,7 @@ function  submitScript(){
 	var value = $('#content').val().split('[');
 	value.shift();
 	script = {
-		fragments : value,
+		fragments : value
 	};
 	$.each(script.fragments, function(index, value){
 		if(value != ''){
@@ -43,6 +43,6 @@ function  submitScript(){
 		}
 	});
 	script.sid = sessionStorage.sid;
-	$.post('../submitScript', script, function(){console.log('ok')});
+	$.post('/submitScript', script, function(){console.log('ok')});
 	return false;
 }
