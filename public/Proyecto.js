@@ -261,19 +261,20 @@ Viewer.prototype = {
 		var timestamp = this.timestamp;
 		var img64 = '';
 		var index = this.index;
-		$.get("../entryForm", function(data){ 
+		$.get("/entryForm", function(data){ 
 			$('#contents').html(data);
 			$('input[name="timestamp"]').val(timestamp);
 			$('#entryForm').on('submit', function(ev){
-				$.post("../submitEntry", $('#entryForm').serialize() + '&fragment=' + index +'&sid=' + sessionStorage.sid , function(){
+				$.post("/submitEntry", $('#entryForm').serialize() + '&fragment=' + index +'&sid=' + sessionStorage.sid , function(){
 					$('.msg').html("Submission complete");
 				});
 				if($('select[name="type"]').val() == 'image'){
 					var submit = {
-						dir : window.location.pathname.split( '/' )[2],
+						dir : 'project/'+window.location.pathname.split( '/' )[2],
 						name : $('input[name="title"]').val(),
-						image : img64
-					}
+						image : img64,
+						type : "b64"
+					};
 					$.post("/saveImage", submit, function(){
 						$('.msg').html("ok");
 					})

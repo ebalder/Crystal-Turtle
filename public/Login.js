@@ -7,11 +7,10 @@ function submitForm(){
 		sessionStorage.user = data.user;
 		sessionStorage.email = data.email;
 		sessionStorage.sid = data.sid;
-		console.log(sessionStorage);
-		console.log(localStorage);
 		if(remember){
 			if(typeof(Storage) != "undefined"){
 				localStorage = data;
+				console.log = data;
 			} else {
 				console.log("Sorry! no web storage support.");
 			}

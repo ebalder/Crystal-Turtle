@@ -67,6 +67,7 @@ app.post('/saveImage', submitImage);
 app.post('/script/:project', openScript);
 app.post('/setFragTs', submitFragTs)
 app.post('/submitEntry', submitEntry);
+app.post('/submitProfileData', submitProfileData);
 app.post('/submitProject', submitProject);
 app.post('/submitScript', submitScript);
 app.post('/submitUser', submitNewUser);
@@ -213,8 +214,6 @@ function loadInfoTagSearch (req, res){
 						}
 					}
 				}
-				console.log(tags);
-				console.log(related);
 			},
 			printError
 	);
@@ -297,8 +296,6 @@ function openInfoBoard(req, res){
 			for(var i = 0 in ret[0].entries){
 				for(var f = 0 in ret[0].entries[i]){
 					for(var j = 0 in req.body.related){
-						console.log(ret[0].entries[i][f].related);
-						console.log(req.body.related);
 						if(ret[0].entries[i][f].title == req.body.related[j]){
 							related.push(ret[0].entries[i][f]);
 						}
@@ -309,7 +306,6 @@ function openInfoBoard(req, res){
 					}
 				}
 			}
-			console.log(related);
 			res.render('InfoBoard', {
 				project : project,
 				entries : related
@@ -401,16 +397,20 @@ function openScript(req, res){
 }
 function openUserProfile(req, res){
 	var user = req.params.user;
-	db.query.string = "FOR u IN testU FILTER u.name == @user RETURN {'email' : u.email}";
+	db.query.string = "FOR u IN testU FILTER u.name == @user RETURN {'info' : u}";
 	db.query.exec({'user': user})
 	.then(
 		function (ret){ 
 			if(ret[0] == null){
 				res.send('User not found.');
 			}
+			var owner = false;
+			if(typeof(req.body.sid) != "undefined" && typeof(session[req.body.sid]) != "undefined" && ret[0].info.name == session[req.body.sid].user) {
+				owner = true;
+			}
 			res.render('UserProfile',{
-				user : user,
-				email: ret[0].email
+				usr : ret[0].info,
+				owner : owner
 			});
 		},
 		printError
@@ -428,7 +428,6 @@ function submitCanvas(req, res){
 				return 0
 			}
 			ret.layers[req.body.layern].fragments[req.body.fragment] = fragment;
-			console.log('a');
 			ret.stats.activityWeek == null 
 				? ret.stats.activityWeek = 3
 				: ret.stats.activityWeek += 3;
@@ -441,11 +440,12 @@ function submitCanvas(req, res){
 			};
 			ret.log.push(log);
 			db.document.put(ret._id, ret)
+			db.document.get("testU/"+session[req.body.sid].user)
 			.then(
-				function(){
-					console.log('ok');
-				}, 
-				printError
+				function(ret){
+					ret.projects[req.body.project].ap += 3;
+					db.document.put(ret._id, ret);
+				}
 			);
 		},
 		printError
@@ -488,6 +488,13 @@ function submitEntry(req, res){
 			delete req.body.fragment;
 			ret.fragments[index].entries.push(req.body);
 			db.document.put(ret._id, ret);
+			db.document.get("testU/"+session[req.body.sid].user)
+			.then(
+				function(ret){
+					ret.projects[project].ap += 1;
+					db.document.put(ret._id, ret);
+				}
+			);
 		},
 		printError
 	);
@@ -505,43 +512,98 @@ function submitFragTs(req, res){
 }
 function submitImage(req, res){
 	fs.exists('public/'+req.body.dir, function(exists){
-		if (!exists) {
-			fs.mkdirp('public/project/'+req.body.dir, printError);
+		var ext;
+		var encode;
+		switch (req.body.type){
+			case "b64" : 
+				ext = "";
+				encode = 'utf8';
+				break;
+			case "jpg" : 
+				ext = ".jpg";
+				encode = 'binary'
+				break;
 		}
-		fs.writeFile('public/project/'+req.body.dir+'/'+req.body.name, req.body.image, encoding='utf8', printError);
+		if (!exists) {
+			fs.mkdirp('public/'+req.body.dir, printError);
+		}
+		fs.writeFile('public/'+req.body.dir+'/'+req.body.name+ext, req.body.image, encoding=encode, printError);
 	});
 }
 function submitNewUser(req,res){
-	/*Buscar que no haya un nombre de usuario igual*/
-	var name = req.body.name;
-	var email=req.body.email;
-	var pass=req.body.pass;
-	db.document.create("testU",{"_key":name, "name":name,"email":email,"pass":pass})
+	fs.readFile("user.json", 'utf8', function(err, data){
+		data = JSON.parse(data);
+		data.name = req.body.name;
+		data.email = req.body.email;
+		data.pass = req.body.pass;
+		db.document.create("testU",{"_key":name, "name":name,"email":email,"pass":pass})
+		.then(
+			function(ret){
+		  		res.send("User '" + name + "' successfully registered.");
+			},
+			printError
+		);
+	});
+	
+}
+function submitProfileData(req, res){
+	db.document.get('testU/'+session[req.body.sid].user)
 	.then(
-		function(ret){
-	  		resp.send("User '"+name+"' successfully registered.");
+		function(ret){ 
+			if(session[req.body.sid] == undefined || session[req.body.sid].user != ret.name){
+				res.send('Permission dennied.'); 
+				return 0;
+			}
+			ret[req.body.field] = req.body.value;
+			db.document.put(ret._id, ret)
+			.then(
+				function(){
+					console.log('asdfa')
+				},
+				printError
+			);
 		},
 		printError
-	)
+	);
 }
 function submitProject(req, res){
 	if(session[req.body.sid] == undefined ){
 		res.send('Permission dennied.'); 
 		return 0
 	}
-	delete req.body.sid;
-	delete req.body.user;
 	fs.readFile("project.json", 'utf8', function(err, data){
 		data = JSON.parse(data);
 		data._key = data.title = req.body.title;
 		data.members = req.body.members.split(", ");
+		data.members.push(req.body.user);
+		delete req.body.sid;
+		delete req.body.user;
 		data.type = req.body.type;
 		data.tags = req.body.tags.split(', ');
 		data.start = new Date();
 		db.document.create("test", data)
 		.then(
-			function(ret){ 
-				res.send("Project correctly submited") 
+			function(){ 
+				for(var i = 0 in data.members){
+					db.document.get("testU/" + data.members[i])
+					.then(
+							function(ret2){ 
+								if (ret2.projects != null ){
+									ret2.projects[data.title] = {
+										ap : 0
+									}
+								} else { 
+									ret2.projects = {};
+									ret2.projects[data.title] = {
+										ap : 0
+									}
+								}
+									db.document.put(ret2._id, ret2);
+									res.send("Project correctly submited");
+							},
+							printError
+						);
+				}
 			},
 			printError
 		);
@@ -549,7 +611,6 @@ function submitProject(req, res){
 }
 function submitScript(req, res){
 	var project = req.headers['referer'].split("/")[4];
-	console.log(req.headers['referer']);
 	var appends = {
 		entries : [],
 		timestamp : null
@@ -595,6 +656,15 @@ function submitScript(req, res){
 			};
 			ret.log.push(log);
 			db.document.put(ret._id, ret);
+			db.document.get("testU/"+session[req.body.sid].user)
+			.then(
+				function(ret){
+					ret.projects[project].ap += details ==  "Script rewrite."
+						? req.body.fragments.length
+						: 1;
+					db.document.put(ret._id, ret);
+				}
+			);
 			res.send("ok");
 		},
 		printError

@@ -24,7 +24,6 @@ var loader = {
 	},
 	convertir : function(ev){
 		loader.img.src = ev.target.result;
-		console.log(ev.target.result);
 		$(loader.img).on('load', loader.mostrar);
 	},
 	mostrar : function(){

@@ -6,7 +6,7 @@ each i in entries
 			h2 #{i.title}
 		case i.type
 			when "image"
-				img.biggerImg(src = "/#{project}/#{i.title}") test
+				img.biggerImg(src = "/project/#{project}/#{i.title}") test
 			when "link"
 				a.eLink(href="#{i.content}") #{i.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
 			when "text"

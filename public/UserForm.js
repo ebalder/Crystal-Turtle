@@ -4,8 +4,9 @@ function initDialog(){
 }
 
 function submitForm(){
-	$.post('../submitUser', $("#newUser").serialize(), function(data){
+	$.post('/submitUser', $("#newUser").serialize(), function(data){
 		$('body').append(data);
+		Navigation.login();
 	})
 	return false;
 }

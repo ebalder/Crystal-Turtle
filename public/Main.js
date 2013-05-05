@@ -23,10 +23,12 @@ function init(){
 
 var Navigation = {
 	login : function(ev){
-		sessionStorage.user = localStorage.user != null ? localStorage.user : sessionStorage.user;
-		sessionStorage.email = localStorage.email != null ? localStorage.email : sessionStorage.email;
-		sessionStorage.pass = localStorage.pass != null ? localStorage.pass : sessionStorage.pass;
-		sessionStorage.sid = localStorage.sid != null ? localStorage.sid : sessionStorage.sid;
+		if (localStorage.sid != null){
+			sessionStorage.user = localStorage.user != null ? localStorage.user : sessionStorage.user;
+			sessionStorage.email = localStorage.email != null ? localStorage.email : sessionStorage.email;
+			sessionStorage.pass = localStorage.pass != null ? localStorage.pass : sessionStorage.pass;
+			sessionStorage.sid = localStorage.sid != null ? localStorage.sid : sessionStorage.sid;
+		}
 		$('a[href="/login"]').after('<a class="open user" href="/user/' + sessionStorage.user + '"> ' + sessionStorage.user + '</a>');
 		$('a[href="/login"], a[href="/userForm"]').hide();
 		$('a[href="/logout"]').show();

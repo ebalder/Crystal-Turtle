@@ -1,14 +1,27 @@
-!!!
-meta(charset="utf-8")
-html(lang="en")
-	head
-		title #{user}'s Profile
-		link(rel="stylesheet", href="../Proyecto.css")
-		script(src="../jquery.js")
-	body
-		div#UserProfile
-			img(src="../media/img/newUser.jpeg")
-			br
-			span#name #{user}
-			br		
-			span#email #{email}
+link(rel="stylesheet", href="/UserProfile.css")
+script(src="/UserProfile.js")
+
+img#avatar(src="/uImages/#{usr.name}.jpg")
+div#userInfo
+	if(owner)
+		span#avatar
+			input#uImage(type="file") Change user image
+	| Username: 
+	span#name #{usr.name}
+	| Location: 
+	span.data#location #{usr.location}
+	| Email: 
+	span.data#email #{usr.email}
+	| Bio: 
+	span.paragraph#bio #{usr.bio}
+	| Projects: 
+	span#projects
+		each val, key in usr.projects
+			span 
+				a(href="/project/#{key}") #{key} (#{val.ap})
+	| Skills: 
+	span.paragraph#skills #{usr.skills}
+	| Studies: 
+	span.paragraph#studies #{usr.studies}
+
+
