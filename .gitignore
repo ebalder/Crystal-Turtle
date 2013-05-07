@@ -1,5 +1,13 @@
 nginx.conf
 node_modules
 public/media
-public/*
+.log
+.*
+*~
+*.css
+public/jquery.js
+public/jquery-ui
+public/Frames
+public/project
+public/uImages
 BD.js
