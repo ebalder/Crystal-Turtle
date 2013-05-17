@@ -1,12 +1,12 @@
 nginx.conf
 node_modules
 public/media
+sessions
 .log
 .*
 *~
 *.css
-public/jquery.js
-public/jquery-ui
+public/libs
 public/Frames
 public/project
 public/uImages

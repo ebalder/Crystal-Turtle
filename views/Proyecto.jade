@@ -16,9 +16,10 @@ div#panel
 		input(type="text", name="somename", size="7")
 div#project
 	div#script 
-		a.open(href = "/script/#{project}") Script  
-		| |   
-		a.load(href = "/NewFragment") Add fragment
+		a.open(href = "/script/#{project}") Script 
+		if isMember
+			| |   
+			a.load(href = "/NewFragment") Add fragment
 	div#timeline
 		div.bw
 			span.verticalCenter <
@@ -35,14 +36,25 @@ div#project
 			div#frIn
 			
 	div#proyInfo
-		| Repp : #{stats.reputation}
-		br
-		| Vp : #{stats.views}
-		br
-		| Act : #{stats.activity}
-		br
-		| Dev : #{stats.development}
-		br
-		a.open(href = "/log/#{project}") View Log
+		div#stats
+			| Repp : #{stats.reputation}
+			br
+			| Vp : #{stats.views}
+			br
+			| Act : #{stats.activity}
+			br
+			| Dev : #{stats.development}
+			br
+			a.open(href = "/log/#{project}") View Log
+			if isMember
+				|  | 
+				a#nIssue(href = "/loadIssueForm/#{project}") New Issue
+		div#issues
+			each i in issues
+				div.issue
+					h2 #{i.title}
+					div.content !{i.content}
+					span.author by #{i.author} - 
+					span.date on #{i.date} 
 	div#fragmentInfo
 	div#loaded

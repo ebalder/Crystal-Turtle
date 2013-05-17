@@ -44,14 +44,15 @@ hgroup.fragInfo
 						div.tags tags:
 							each r in i.tags
 								a #{r}
-		div#layers
-			each l in eLayers
-				div.layer.emptyLayer 
-					a(href="/layer/#{project}/#{l.name}", n=l, f=timestamp) #{l.name}
-			each l in cLayers
-				div.layer.contentLayer
-					a(href="/layer/#{project}/#{l}", n=l, f=timestamp) #{l}
-		a.new(href="#") New entry
+		if isMember
+			div#layers
+				each l in eLayers
+					div.layer.emptyLayer 
+						a(href="/layer/#{project}/#{l.name}", n=l, f=timestamp) #{l.name}
+				each l in cLayers
+					div.layer.contentLayer
+						a(href="/layer/#{project}/#{l}", n=l, f=timestamp) #{l}
+			a.new(href="#") New entry
 	div#fragScript
 		pre [ #{annotation} ]
 		br

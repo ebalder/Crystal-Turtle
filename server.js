@@ -42,38 +42,61 @@ db.use("test");
 app.get('/', openMain);
 app.get('/browse', openMain);
 app.get('/entryForm', loadEntryForm);
+app.get('/newIssue', loadNewIssue);
+app.get('/log/:project', openMain);
 app.get('/login', loadLogin);
+app.get('/newFragment',loadNewFragment);
+app.get('/project/:project', openMain);
+app.get('/projectForm', loadProjectForm);
 app.get('/script/:project', openMain);
 app.get('/user/:user', openMain)
-app.get('/newFragment',loadNewFragment);
-app.get('/projectForm', loadProjectForm);
-app.get('/project/:project', openMain);
 app.get('/userForm', loadUserForm);
-app.get('/log/:project', openMain);
 
 /* POST */
 app.post('/browse', openBrowse);
 app.post('/fragmentInfo', loadFragmentInfo);
-app.post('/InfoTag/:project', loadInfoTagSearch);
-app.post('/infoBoard/:project', openInfoBoard);
 app.post('/fragmentThumbs', getFragmentThumbs);
+app.post('/infoBoard/:project', openInfoBoard);
+app.post('/InfoTag/:project', loadInfoTagSearch);
 app.post('/layer/:project/:layer', loadLayer);
-app.post('/logout', doLogout);
-app.post('/login', doLogin);
 app.post('/log/:project', openLog);
+app.post('/login', doLogin);
+app.post('/logout', doLogout);
 app.post('/project/:project', openProject);
 app.post('/saveCanvas', submitCanvas);
 app.post('/saveImage', submitImage);
 app.post('/script/:project', openScript);
 app.post('/setFragTs', submitFragTs)
 app.post('/submitEntry', submitEntry);
+app.post('/submitIssue', submitIssue);
 app.post('/submitProfileData', submitProfileData);
 app.post('/submitProject', submitProject);
 app.post('/submitScript', submitScript);
 app.post('/submitUser', submitNewUser);
 app.post('/user/:user', openUserProfile)
 
-var session = [];
+var session;
+
+fs.exists('sessions', function(exists){
+	if (!exists) {
+		session = {};
+	} else {
+		fs.readFile("sessions", 'utf8', function(err, data){
+			data = JSON.parse(data);
+			session = data;
+		});
+	}
+});
+process.on("SIGINT", function() {
+  	console.log("exiting...");
+    fs.exists('sessions', function(exists){
+		if (exists) {
+			session = JSON.stringify(session, null, 4);
+			fs.writeFileSync('sessions', session, encoding='utf8');
+		} 
+    	process.exit();
+	});
+});
 
 
 /* Functions */
@@ -138,7 +161,8 @@ function loadFragmentInfo(req, res){
 	db.query.string = "FOR p IN test FILTER p._key == @project \
 		RETURN { \
 			'layers' : p.layers, \
-			'fragment' : p.fragments[@index] \
+			'fragment' : p.fragments[@index], \
+			'members' : p.members \
 		}";
     db.query.exec({
      	'project': project, 
@@ -173,7 +197,14 @@ function loadFragmentInfo(req, res){
 					break;
 				}
 			}
+			var isMember = typeof(req.body.sid) != "undefined" 
+				&& typeof(session[req.body.sid]) != "undefined" 
+				&& ret[0].members.indexOf(session[req.body.sid].user) >= 0
+				? true
+				: false;
+			console.log(isMember);
 			res.render("FragmentInfo", {
+				isMember : isMember,
 				text : entries.text,
 				image : entries.image,
 				link : entries.link,
@@ -223,6 +254,9 @@ function loadLayer(req, res){
 }
 function loadNewFragment(req,res){
 	res.render('NewFragment');
+}
+function loadNewIssue(req, res){
+	res.render('NewIssue');
 }
 function loadProjectForm(req, res){
 	res.render('ProjectForm');
@@ -344,7 +378,8 @@ function openProject(req, res){
 	);
 	db.query.string = "FOR p IN test FILTER p._key == @project RETURN{ \
 		'members' : p.members, \
-		'stats' : p.stats \
+		'stats' : p.stats, \
+		'issues' : p.issues \
 	}";
 	db.query.exec({'project' : project}).
 	then(
@@ -368,9 +403,16 @@ function openProject(req, res){
 			var Ap = ret[0].stats.activityWeek + ret[0].stats.activityMonth + ret[0].stats.activityYear;
 			ret[0].stats.views = Vp;
 			ret[0].stats.activity = Ap;
+			var isMember = typeof(req.body.sid) != "undefined" 
+				&& typeof(session[req.body.sid]) != "undefined" 
+				&& ret[0].members.indexOf(session[req.body.sid].user) >= 0
+				? true
+				: false;
 			res.render('Proyecto',{
+				isMember : isMember,
 				members : ret[0].members,
 				stats : ret[0].stats,
+				issues : ret[0].issues,
 				project : project
 			});
 		}, 
@@ -529,6 +571,34 @@ function submitImage(req, res){
 		}
 		fs.writeFile('public/'+req.body.dir+'/'+req.body.name+ext, req.body.image, encoding=encode, printError);
 	});
+}
+function submitIssue(req, res){
+	var project = req.headers['referer'].split("/")[4];
+	db.document.get("test/"+project)
+	.then(
+		function(ret){
+				if(session[req.body.sid] == undefined || ret.members.indexOf(session[req.body.sid].user) < 0){
+					res.send('Permission dennied.'); 
+					return 0;
+				}
+				var issue = {
+					content : req.body.issue,
+					date : new Date(),
+					title : req.body.title,
+					author : session[req.body.sid].user
+				};
+				console.log(issue.date);
+				typeof(ret.issues) == "undefined"
+					? ret.issues = [issue]
+					: ret.issues.push(issue);
+				db.document.put(ret._id, ret)
+				.then(
+					function(){
+						res.send("ok");
+					});
+		},
+		printError
+	);
 }
 function submitNewUser(req,res){
 	fs.readFile("user.json", 'utf8', function(err, data){

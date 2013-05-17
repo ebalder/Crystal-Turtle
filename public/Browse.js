@@ -52,7 +52,7 @@ Browse.prototype = {
 				add = '<div class="project">' + self.template + '</div>';
 				$('#results').prepend(add);
 				add = $('.project:first');
-				$(add).find('.title a').attr('href', '../project/' + data[i].title);
+				$(add).find('.title a').attr('href', '/project/' + data[i].title);
 				$(add).find('.title a').attr('class', 'open');
 				$(add).find('.title a').on('click', Navigation.open);
 				$(add).find('.title a').text(data[i].title);

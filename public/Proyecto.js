@@ -8,6 +8,7 @@ function initArea(){
 	viewer = new Viewer();
 	panel = new Panel();
 	carrousel = new Carrousel();
+	$("#nIssue").on('click', newIssue);
 	return 0;
 }
 
@@ -125,9 +126,6 @@ Carrousel.prototype = {
 		$("#timeline .bw").on('click', this.backward.bind(this));
 		$("#frames .fw").on('click', this.fwFrame.bind(this));
 		$("#frames .bw").on('click', this.bwFrame.bind(this));
-		$('.timestamp').on('click', function(ev){
-			console.log(ev.target, "asdf");
-		});
 		return 1;
 	},
 	loadFrags : function(start, end){
@@ -165,6 +163,55 @@ Carrousel.prototype = {
 		var ts = hr + ":" + min + ":" + sec + "." + fr;
 		return ts;
 	}
+}
+
+function newIssue(){
+	$.get('/newIssue', function(data){
+		$('#issues').css("display", "none");
+		$('#proyInfo').append(data);
+		console.log("dafd");
+		var editor = new TINY.editor.edit('editor',{
+		    id:'issueWriter', // (required) ID of the textarea
+		    width:584, 
+		    height:175, 
+		  	cssclass:'tinyeditor', // (optional) CSS class of the editor
+		    controlclass:'tinyeditor-control', // (optional) CSS class of the buttons
+		    rowclass:'tinyeditor-header', // (optional) CSS class of the button rows
+		    dividerclass:'tinyeditor-divider', // (optional) CSS class of the button diviers
+		    controls:[
+		    	'bold', 'italic', 'underline', 'strikethrough', '|', 
+		    	'orderedlist', 'unorderedlist', '|' ,
+		    	'outdent' ,'indent', '|', 
+		    	'leftalign', 'centeralign', 'rightalign', 'blockjustify', '|', 
+		    	'unformat', '|', 
+		    	'undo', 'redo', 'n', 'font', 'size', 'style', '|', 
+		    	'image', 'hr', 'link', 'unlink'], 
+		    footer:true, 
+		    fonts:['Verdana','Arial','Georgia','Trebuchet MS'], 
+		    xhtml:true, // (optional) generate XHTML vs HTML
+		    //cssfile:'style.css', // (optional) attach an external CSS 
+		    content:'starting content', // (optional) set the starting content else it will default to the textarea content
+		    //css:'body{background-color:#ccc}', // (optional) attach CSS to the editor
+		    bodyid:'editor', // (optional) attach an ID to the editor body
+		    footerclass:'tinyeditor-footer', // (optional) CSS class of the footer
+		    toggle:{text:'advanced',activetext:'basic',cssclass:'toggle'}, // (optional) toggle to markup view options
+		    resize:{cssclass:'resize'} // (optional) display options for the editor resize
+		});
+		$('#submitIssue').one("click", function(){
+			editor.post();
+			var submit = {
+				issue : $('#issueWriter').val(),
+				title : $('#issueTitle').val(),
+				sid : sessionStorage.sid
+			};
+			$.post('/submitIssue', submit, function(data){
+				$('body').append(submit.issue);
+			});
+			$('#wysiwyg').remove();
+			$('#issues').css('display', 'inline-block');
+		})
+	});
+	return false;
 }
 
 function Panel(){
@@ -228,7 +275,11 @@ Viewer.prototype = {
 	fragInfo : function(ev){
 		this.timestamp = $(ev.currentTarget).find('.timestamp').text();
 		this.index = $('.fragment').index(ev.currentTarget);
-		$.post('/fragmentInfo', {selection: this.index}, this.showData.bind(this));	
+		var json ={
+			selection: this.index,
+			sid : sessionStorage.sid
+		};
+		$.post('/fragmentInfo', json, this.showData.bind(this));	
 	},
 	frame : function(ev){
 		carrousel.parseTs(ev.target);
