@@ -32,51 +32,6 @@
 	display inline
  
 
-/*! ============================= Yet Unused =============================== */
-
-
-.dialog
-	background-color #F0F0F0
-	border solid 1px #121212
-	left 40%
-	padding 0.5em
-	position fixed
-	top 5pc
-	width 25%
-	form
-		margin-top 0
-		padding-top 0
-	h2
-		line-height 1em
-
-.msg  
-	display none 
-	padding 10px 
-	position fixed 
-	bottom  5% 
-	right  5% 
-	width 350px 
-	min-height 26px 
-	background #C0C0C0 
-
-.userArea
-	display inline-block
-	float right
-	vertical-align top
-	a
-		display inline-block
-		font-size 16px
-		width 100px
-
-#area  
-	margin auto 
-	margin-top 20px 
-	width 100% 
-	min-width 950px 
-
-#logout  
-	float  right 
- 
 
 /*! ============================== Carrousel =============================== */
 
@@ -178,10 +133,19 @@
 
 /*! ============================== Panel =============================== */
 
-
+#fileUploader
+	ul
+		max-height 200px
+		overflow-y scroll
+		position relative
+		li
+			display inline-block
+			font-size 0.9em
+			height 2.5em
+			position relative
 #panel 
 	display block 
-	position absolute 
+	position fixed
 	top 0
 	left -27% 
 	width 27% 
@@ -218,6 +182,9 @@
 #issues
 	display block
 	float right
+	max-height 30em
+	overflow-y scroll
+	padding 1em
 	text-align justify
 	vertical-align top
 	width 45%
@@ -316,3 +283,6 @@
 	display inline-block
 	text-align center
 	width 39%	
+
+.issue > .content
+	display none

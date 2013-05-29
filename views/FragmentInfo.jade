@@ -12,10 +12,10 @@ hgroup.fragInfo
 						span.eBrief #{e.content.replace(/<[^>]*>/g, '').substr(0, 150)+"..."}
 						div.related related entries:
 							each r in e.related
-								a #{r}
+								a, #{r}
 						div.tags tags:
 							each r in e.tags
-								a #{r}
+								a, #{r}
 			div#link Link entries
 				br
 				each l in link
@@ -26,10 +26,10 @@ hgroup.fragInfo
 						a(href="#{l.content}") #{l.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
 						div.related related entries:
 							each r in l.related
-								a #{r}
+								a, #{r}
 						div.tags tags:
 							each r in l.tags
-								a #{r}
+								a, #{r}
 			div#img Image entries
 				br
 				each i in image
@@ -40,10 +40,10 @@ hgroup.fragInfo
 						br
 						div.related related entries:
 							each r in i.related
-								a #{r}
+								a, #{r}
 						div.tags tags:
 							each r in i.tags
-								a #{r}
+								a, #{r}
 		if isMember
 			div#layers
 				each l in eLayers

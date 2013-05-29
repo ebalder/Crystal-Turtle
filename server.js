@@ -136,14 +136,23 @@ function getFragmentThumbs(req, res){
 	var project = req.headers['referer'].split('/')[4];
 	db.query.for('r').in('test')
           .filter('r._key == @project')
-          .collect('time = r.fragments[*].timestamp')
-          .return('{"timestamps": time}');
+          .return("{'timestamps': r.fragments[*].timestamp}");
 	db.query.exec({
-		'project' : project})
+		'project' : project}
+	)
 	.then(
 		function(ret){ 
+			var i = req.body.range[0];
+			while(i <= req.body.range[1]){
+				if (ret[0].timestamps[i] == null && i > 0){
+					ret[0].timestamps[i] = ret[0].timestamps[i-1];
+				} else if (i == 0){
+					ret[0].timestamps[i] = "0";
+				}
+				i++;
+			}
 			res.send({
-				timestamps : ret[0].timestamps.slice(req.body.range[0], req.body.range[1] + 1)
+				timestamps : ret[0].timestamps.slice(req.body.range[0], req.body.range[1])
 			});
 		},
 		printError
@@ -202,7 +211,9 @@ function loadFragmentInfo(req, res){
 				&& ret[0].members.indexOf(session[req.body.sid].user) >= 0
 				? true
 				: false;
-			console.log(isMember);
+			ret[0].fragment.lines == null
+				? ret[0].fragment.lines = []
+				: null;
 			res.render("FragmentInfo", {
 				isMember : isMember,
 				text : entries.text,
@@ -295,6 +306,7 @@ function openBrowse(req, res){
 		filter = filter.substr(0, filter.length -3);
 		filter += ') ';
 	}
+	console.log(filter);
 	db.query.string = "FOR p IN test " + filter + " RETURN {'type' : p.type, 'title' : p.title, 'thumb' : p.thumb, tags : p.tags}";
 	db.query.exec().then(
 		function(ret){
@@ -327,12 +339,11 @@ function openInfoBoard(req, res){
 	.then(
 		function(ret){
 			var related = [];
+			console.log()
 			for(var i = 0 in ret[0].entries){
 				for(var f = 0 in ret[0].entries[i]){
-					for(var j = 0 in req.body.related){
-						if(ret[0].entries[i][f].title == req.body.related[j]){
-							related.push(ret[0].entries[i][f]);
-						}
+					if(req.body.related.indexOf(ret[0].entries[i][f].title) >= 0){
+						related.push(ret[0].entries[i][f]);
 					}
 					if(ret[0].entries[i][f].title == req.body.base
 						|| ret[0].entries[i][f].related.indexOf(req.body.base) >= 0){
@@ -379,7 +390,8 @@ function openProject(req, res){
 	db.query.string = "FOR p IN test FILTER p._key == @project RETURN{ \
 		'members' : p.members, \
 		'stats' : p.stats, \
-		'issues' : p.issues \
+		'issues' : p.issues, \
+		'fragCount' : LENGTH(p.fragments) \
 	}";
 	db.query.exec({'project' : project}).
 	then(
@@ -413,7 +425,8 @@ function openProject(req, res){
 				members : ret[0].members,
 				stats : ret[0].stats,
 				issues : ret[0].issues,
-				project : project
+				project : project,
+				fragCount : ret[0].fragCount - 1
 			});
 		}, 
 		printError
@@ -524,8 +537,8 @@ function submitEntry(req, res){
 			ret.stats.activityWeek == null 
 				? ret.stats.activityWeek = 1
 				: ret.stats.activityWeek += 1;
-			req.body.related = req.body.related.split(",");
-			req.body.tags = req.body.tags.split(",");
+			req.body.related = req.body.related.split(", ");
+			req.body.tags = req.body.tags.split(", ");
 			var index = req.body.fragment;
 			delete req.body.fragment;
 			ret.fragments[index].entries.push(req.body);
@@ -546,10 +559,14 @@ function submitFragTs(req, res){
 	db.document.get('test/'+project)
 	.then(
 		function(ret){
+			ret.fragments[req.body.fragment] == null
+				? res.send("Fragment undefined")
+				: null;
 			ret.fragments[req.body.fragment].timestamp = req.body.ts;
 			db.document.put(ret._id, ret);
 			res.send("ok");
-		}
+		},
+		printError
 	);
 }
 function submitImage(req, res){
@@ -561,15 +578,28 @@ function submitImage(req, res){
 				ext = "";
 				encode = 'utf8';
 				break;
+			case "png" :
+			case "jpeg" :
 			case "jpg" : 
 				ext = ".jpg";
 				encode = 'binary'
 				break;
 		}
-		if (!exists) {
-			fs.mkdirp('public/'+req.body.dir, printError);
+		console.log("asdf", req.body.type, encode, ext);
+		if(typeof(req.body.upload) != "undefined"){
+			req.body.image = fs.readFileSync(req.files.qqfile.path, encoding = encode);
 		}
-		fs.writeFile('public/'+req.body.dir+'/'+req.body.name+ext, req.body.image, encoding=encode, printError);
+		if (!exists) {
+			fs.mkdirp('public/'+req.body.dir, function(){
+				fs.writeFile('public/'+req.body.dir+'/'+req.body.name+ext, req.body.image, encoding=encode, function(){
+				res.send({success:true});
+				});
+			});
+		} else {
+			fs.writeFile('public/'+req.body.dir+'/'+req.body.name+ext, req.body.image, encoding=encode, function(){
+				res.send({success:true});
+			});
+		}
 	});
 }
 function submitIssue(req, res){
@@ -590,7 +620,7 @@ function submitIssue(req, res){
 				console.log(issue.date);
 				typeof(ret.issues) == "undefined"
 					? ret.issues = [issue]
-					: ret.issues.push(issue);
+					: ret.issues.unshift(issue);
 				db.document.put(ret._id, ret)
 				.then(
 					function(){
@@ -603,10 +633,11 @@ function submitIssue(req, res){
 function submitNewUser(req,res){
 	fs.readFile("user.json", 'utf8', function(err, data){
 		data = JSON.parse(data);
+		data._key = req.body.name;
 		data.name = req.body.name;
 		data.email = req.body.email;
 		data.pass = req.body.pass;
-		db.document.create("testU",{"_key":name, "name":name,"email":email,"pass":pass})
+		db.document.create("testU", data)
 		.then(
 			function(ret){
 		  		res.send("User '" + name + "' successfully registered.");

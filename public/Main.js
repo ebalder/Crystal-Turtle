@@ -57,18 +57,11 @@ var Navigation = {
 			$('.dialog').on('click', stopPropagation);
 			typeof(initDialog) != "undefined" ? initDialog() : null;
 			$('.dialog form').one('submit', function(){
-		console.log(typeof(initDialog));
 				typeof(initDialog) == "undefined" ? submitForm() : null;
 				$('body').trigger('click'); //close panel if opened
 				return false;
 			});
-			$('body').one('click', function(){ 
-				console.log($('.dialog').html());
-				$('.dialog').remove();
-				typeof(initDialog) != "undefined" 
-					? delete initDialog
-					: null;
-			});
+			$('body').one('click', destroyDialog);
 		});
 		return false;
 	},
@@ -91,4 +84,11 @@ var Navigation = {
 
 function stopPropagation(event){
 	event.stopPropagation();
+}
+
+function destroyDialog(event){
+	$('.dialog').remove();
+	typeof(initDialog) != "undefined" 
+		? delete initDialog
+		: null;
 }

@@ -9,12 +9,18 @@ function initArea(){
 	panel = new Panel();
 	carrousel = new Carrousel();
 	$("#nIssue").on('click', newIssue);
+	$('a.expand').on('click', function(ev){
+		$('body').one('click', destroyDialog);
+		var data = $(ev.target).parents('div:first').html();
+		$('body').append('<div class="dialog">' + data + '</div>');
+		return false;
+	});
 	return 0;
 }
 
 function Carrousel(){
 	this.fps = 30;
-	this.last = 100;
+	this.last = $('meta#fragCount').attr('count');
 	this.lastFrame = 3000;
 	this.bodyWidth = $('body').width();
 	this.loaded = []; //fragmentos cargados
@@ -75,7 +81,9 @@ Carrousel.prototype = {
 		}
 		$("#tlIn").css({"width" : 182 * this.last});
 		/*======= Load visible fragments ======*/
-		this.loadFrags(0, Math.ceil(this.bodyWidth / 182));
+		(Math.ceil(this.bodyWidth / 182)) > self.last
+			? this.loadFrags(0, self.last)
+			: this.loadFrags(0, Math.ceil(this.bodyWidth / 182));
 		/*====== Set scrollbar actions =====*/
 		var scrollTop = $('#tlView').scrollTop();
 		var width = $('#tlView').width();	
@@ -87,11 +95,13 @@ Carrousel.prototype = {
 					if (scroll.indexOf(index) < 0 && scrollTop <= offset.left
 						&& $(this).width() + offset.left < scrollTop + width){
 						self.loadFrags(index, index + Math.ceil(self.bodyWidth / 182));
+						self.fragRange[0] = index;
+						self.fragRange[1] = index + Math.ceil(self.bodyWidth / 182);
 						scroll.push(index);
 						return false;
 					} 
 				});
-			}, 500);
+			}, 1000);
 			return false;
 		});
 		/*======= Create frame list =======*/
@@ -133,15 +143,25 @@ Carrousel.prototype = {
 		this.fragRange = [start, end];
 		$.post('/fragmentThumbs', {range: this.fragRange}, function(data){
 			var ts = data.timestamps;
+			$.ajaxSetup({async:false});
 			for (var i = 0 in ts){
-				var num = Number(i) + 1;
-				if(self.loaded.indexOf(self.fragRange[0]+i) < 0){
-					$(".fragment:eq(" + i + ") img").attr("src", 'fragments/' + num + '.jpg');
-					$(".fragment:eq(" + i + ") .timestamp").html(self.parseTs(ts[i]));
+				var time = self.parseTs(ts[i]);
+				if(self.loaded.indexOf(self.fragRange[0]+i) < 0 && self.fragRange[1] <= self.last){
+					$.get('storyboard/'+ i + '_' + time, function(data){
+						console.log(i, time);
+						self.fragImage(data, i, time);
+					});
+					$(".fragment:eq(" + i + ") .timestamp").html(time);
 					self.loaded.push(self.fragRange[0]+i);
 				}
 			}
+			$.ajaxSetup({async:true});
 			return 1;
+		});
+	},
+	fragImage : function(data, i, time){
+		$(".fragment:eq(" + i + ") img").attr("src", data).css({
+			'background-color' : '#F0F0F0'
 		});
 	},
 	parseTs : function(obj){
@@ -160,7 +180,7 @@ Carrousel.prototype = {
 		var sec = Math.floor(aux / (30));
 		aux -= sec * (30);
 		var fr = aux;
-		var ts = hr + ":" + min + ":" + sec + "." + fr;
+		var ts = hr + ":" + ("0" + min).slice(-2) + ":" +  ("0" + sec).slice(-2) + "." +  ("0" + fr).slice(-2);
 		return ts;
 	}
 }
@@ -215,11 +235,80 @@ function newIssue(){
 }
 
 function Panel(){
-	this.timestamp = "dfaf";
+	var self = this;
+	this.timestamp = "0:00:00.00";
 	this.cssShow = {'left' : '0'};
 	this.cssHide = {'left' : '-27%'};
 	$('#panel').on('click', stopPropagation); //click al panel no lo oculta
 	this.hide(this);
+	var image;
+	var dir;
+	var name;
+	var timestamp;
+	var fragment = 0;
+	var layer;
+	var params;
+	var images = [];
+	$('#fileUploader').fineUploader({
+		request : {
+			method : "POST",
+			forceMultipart: false,
+			endpoint : "/saveImage",
+			paramsInBody : true
+		},
+		autoUpload : false,
+		text : {
+			 uploadButton: '<i class="icon-plus icon-white"></i> Select Files',
+			 retry : 'Retry'
+		},
+		validation: {
+			allowedExtensions: ['jpeg', 'jpg', 'png'],
+			sizeLimit: 1024 * 700
+		},
+		resume : {
+			enabled : true
+		}
+	})
+	.on('upload', function(ev, id, file){
+		fragment = carrousel.last;
+		var type = file.split('.');
+		type =  type[type.length-1];
+		for (var i = 0; i <= carrousel.last; i++){
+			if($('.fragment:eq('+i+') .timestamp').text() > timestamp){
+				console.log(i);
+				fragment = i-1;
+				break;
+			}
+		}
+		name = fragment + '_' + timestamp;
+		params = {
+			dir : dir,
+			name : name,
+			upload : "multiple",
+			type : type
+		};
+
+		console.log(params);
+		console.log(id, file);
+		$('#fileUploader').fineUploader('setParams', params);
+		timestamp = self.plusOne(timestamp);
+		return false;
+		$.post('/submitImage', params, function(){
+			console.log("ok");
+		});
+		console.log("posted");
+	})
+	.on('cancel', function(){
+		console.log("cancelled");
+	});
+	$('#multiple').on('submit', function(){
+		timestamp = $('input[name="from"]').val();
+		timestamp == "" ? timestamp = "0:00:00.00" : null;
+		layer = $('input[name="layer"]').val();
+		dir = 'project/' + project + '/' + layer;
+		$('#fileUploader').fineUploader('uploadStoredFiles');
+		return false;
+	});
 	return 1;
 }
 Panel.prototype = {
@@ -236,9 +325,36 @@ Panel.prototype = {
 		$('#panTab').one('click', this.hide.bind(this));
 		return 1;
 	},
+	submit : function(ev){
+		console.log(ev.target.files);
+	},
 	triggerHide : function(){
 		$("#panTab").trigger('click');
 		return 1;
+	},
+	plusOne : function(timestamp){
+		var aux = timestamp.split(':');
+		var aux2 = aux[2].split('.');
+		aux[2] = aux2[0];
+		aux[3] = aux2[1];
+		if (aux[3] == 29){
+			if(aux[2] == 59){
+				if(aux[1] == 59){
+					if(aux[0] == 9){
+						return false;
+					} else {
+						aux[0]++;
+					}
+				} else {
+					aux[1]++;
+				}
+			} else {
+				aux[2]++;
+			}
+		} else {
+			aux[3]++;
+		}
+		return aux[0] + ":" + aux[1] + ":" + aux[2] + "." + aux[3];
 	}
 }
 
@@ -252,7 +368,7 @@ Viewer.prototype = {
 	board : function(ev){
 		var project = window.location.pathname.split( '/' )[2];
 		var group = {
-			related : $(ev.target).parents('.entry').find('.related a').text().split(' '),
+			related : $(ev.target).parents('.entry').find('.related a').text().split(', '),
 			base : $(ev.target).parents('.entry').find('a.group').text()
 		};
 		$.post('/InfoBoard/' + project, group, function(data){
