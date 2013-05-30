@@ -55,6 +55,7 @@ var Navigation = {
 		$.get(url + "?sid=" + sessionStorage.sid, function(data){
 			$('body').append('<div class="dialog">' + data + '</div>');
 			$('.dialog').on('click', stopPropagation);
+			$('.dialog').css({'z-index' : 99});
 			typeof(initDialog) != "undefined" ? initDialog() : null;
 			$('.dialog form').one('submit', function(){
 				typeof(initDialog) == "undefined" ? submitForm() : null;

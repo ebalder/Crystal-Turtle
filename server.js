@@ -178,7 +178,7 @@ function loadFragmentInfo(req, res){
      	'index': index
     })
     .then( 
-    	function(ret){ 
+    	function(ret){
 			var dEntries = ret[0].fragment.entries != null ? ret[0].fragment.entries : [];
 			var dLayers = ret[0].layers != null ? ret[0].layers : [] || [];
 			var cLayers = [];
@@ -194,13 +194,14 @@ function loadFragmentInfo(req, res){
 			/*  Buscamos los layers con contenido de este fragmento */
 			while (dLayers.length > 0){ //cada capa. 
 				found = false;
-				for (var i in dLayers[0].fragments){ //cada fragmento en la capa
+				/*for (var i in dLayers[0].fragments){ //cada fragmento en la capa
 					if(dLayers[0].fragments[i].index == index){
+						console.log("aeiou");
 						cLayers.unshift(dLayers[0].name);
 						dLayers.shift();
 						found = true;
 						break; 
-					}
+					}*/
 				}
 				if (found == false){ //Si ya no hubo el timestamp en esa capa, deja de buscar en las demás
 					break;
@@ -306,7 +307,6 @@ function openBrowse(req, res){
 		filter = filter.substr(0, filter.length -3);
 		filter += ') ';
 	}
-	console.log(filter);
 	db.query.string = "FOR p IN test " + filter + " RETURN {'type' : p.type, 'title' : p.title, 'thumb' : p.thumb, tags : p.tags}";
 	db.query.exec().then(
 		function(ret){

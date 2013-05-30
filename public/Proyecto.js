@@ -51,7 +51,9 @@ Carrousel.prototype = {
 	forward : function(){ 
 		if (this.fragRange[1] < this.last){
 			$('#tlIn').animate(this.cssFw);
-			this.loadFrags(this.fragRange[0]+3, this.fragRange[1]+3);
+			this.last - this.fragRange[1] < 0
+				? this.loadFrags(this.fragRange[0]+1, this.fragRange[1]+1)
+				: this.loadFrags(this.fragRange[0]+3, this.fragRange[1]+3);
 		}
 		return 1;
 	},

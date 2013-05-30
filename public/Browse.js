@@ -16,7 +16,7 @@ Browse.prototype = {
 		this.delTypes = [];
 		this.currResults = [];
 		var self = this;
-		var tags = $(this.tagInput).val().split(' ');
+		var tags = $(this.tagInput).val().split(', ');
 		var types = [];
 		var len;
 		//evitar duplicados y vacíos
@@ -29,6 +29,7 @@ Browse.prototype = {
 		//obtener tipos a filtrar. y quitar resultados de tipos ya no solicitados
 		len = $(this.typeInput).length;
 		for(var i = 0; i < len; i++){ 
+			console.log(this.typeInput[i].checked);
 			if(this.typeInput[i].checked){
 				types.push(this.typeInput[i].value);
 			} else {
@@ -37,8 +38,10 @@ Browse.prototype = {
 		}
 		//quitar tags ya no solicitados. No hacer nada si no hay filtros
 		len = tags.length;
+		console.log(tags);
 		for(var i=1; i <= len; i++){ 
-			$('.project .tags:not(:contains("' + tags[i-1] + '")), .project .detail:not(:has(.tags))').parents('.project').remove();
+			console.log(tags[i-1]);
+			$('.project.tags:not(:contains("' + tags[i-1] + '")), .project.detail:not(:has(.tags))').parents('.project').remove();
 		}
 		//evitar que la query nos regrese títulos duplicados
 		len =  $('.project').length;
@@ -58,7 +61,7 @@ Browse.prototype = {
 				$(add).find('.title a').text(data[i].title);
 				console.log($(add).filter('a'));
 				$(add).find('.thumb').attr('src', data[i].thumb);
-				$(add).find('.detail').text(data[i].type);
+				$(add).find('.detail.type').text(data[i].type);
 				$(add).find('.detail').append('<span class="tags">'+data[i].tags+'</span>');
 			}
 		});
