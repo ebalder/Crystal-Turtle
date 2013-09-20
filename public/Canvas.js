@@ -1,86 +1,56 @@
 
-function inicioCanvas(){
+function _initCanvas(){
 	canvas = document.getElementById('canvas');
 	imagen = document.getElementById('imagen');
 	ctx = canvas.getContext('2d');
 	imgctx = imagen.getContext('2d');
-
-	$('input[name="canvasFile"]').on('change', loader.cargar);
-	$(canvas).on('mousedown', dibujar);
-	$('#enviar').on('click', enviar.bind(this));
-	ctx.strokeStyle = "rgb(200,0,0)";
+	canvas.onmousedown = press;
+	ctx.strokeStyle = "rgba(200,0,0,1)";
+	prevx = 0, prevy = 0;
+	_liveP2p(canvas);
 }
 
-var loader = {
 
-	img : new Image(),
-	reader : new FileReader(),
-	ancho : 1200,
-	alto : 650,
-
-	cargar : function(ev){ 
-		$(loader.reader).on('load', loader.convertir);
-		loader.reader.readAsDataURL(ev.target.files[0]);
-	},
-	convertir : function(ev){
-		loader.img.src = ev.target.result;
-		$(loader.img).on('load', loader.mostrar);
-	},
-	mostrar : function(){
-		switch (true){
-			case (loader.img.width > 1200):
-				loader.alto = loader.img.height / (loader.img.width / 1200);
-				loader.ancho = 1200;
-			case (loader.img.height > 650):
-				loader.ancho = loader.img.width / (loader.img.height / 650);
-				loader.alto = 650;
-				break;
-		}
-		imgctx.canvas.width = loader.img.width;
-		imgctx.canvas.height = loader.img.height;
-		imgctx.drawImage(loader.img, 0, 0, loader.img.width, loader.img.height);
-		imgctx.stroke();
-
-		ctx.canvas.width = loader.img.width;
-		ctx.canvas.height = loader.img.height;
-		ctx.strokeStyle = "rgb(200,0,0)";
-	}
-}
-
-function dibujar(ev){
+function press(ev){
 	var x = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
 	var y = ev.clientY + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
-	console.log(ev.clientY);
 
-	$(this).on('mousemove', pintar);
-	$(document).on('mouseup', desactivar);
-	ctx.beginPath();
-    ctx.moveTo(x, y);
+	ev.target.onmousemove = drag;
+	document.onmouseup = release;
 
-	function pintar(ev){
+	prevx = x;
+	prevy = y;
+
+	var len = remotes.length;
+	var i = 0;
+	for(; i < len; i++){
+		if(typeof(peer.connections[remotes[i]]) == 'object' && peer.connections[remotes[i]].peerjs.open){
+	    	peer.connections[remotes[i]].peerjs.send({ acc : 'press', x : x, y : y});
+	    }
+	}
+
+	function drag(ev){
 		var x = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
 		var y = ev.clientY + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
-		ctx.lineTo(x, y);
-   		ctx.stroke();
+		if(x != prevx || y != prevy){
+			ctx.beginPath();
+			ctx.moveTo(prevx, prevy);
+			ctx.lineTo(x, y);
+	   		ctx.stroke();
+		    prevx = x;
+		    prevy = y;
+			var len = remotes.length;
+			var i = 0;
+			for(; i < len; i++){
+				if(typeof(peer.connections[remotes[i]]) == 'object' && peer.connections[remotes[i]].peerjs.open){
+			    	peer.connections[remotes[i]].peerjs.send({ acc : 'stroke', x : x, y : y});
+			    }
+			}
+		}
 	}
-	function desactivar (){
-		$(canvas).off('mousemove', pintar);
-		$(document).off('mouseup', desactivar);
+	function release (){
+		ev.target.onmousemove = null;
+		document.onmouseup = null;
 	}
 }
-
-function enviar(){
-	submit = {
-		planes : [canvas.toDataURL("image/png")],
-		fragment : viewer.index,
-		timestamp : viewer.timestamp,
-		project : window.location.pathname.split('/')[2],
-		layer : viewer.layer,
-		layern : viewer.layern,
-		sid : sessionStorage.sid
-	};
-	$.post("/saveCanvas", submit);
-	return false;
-}
-
 

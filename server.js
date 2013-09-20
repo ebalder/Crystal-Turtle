@@ -13,6 +13,7 @@ fs.mkdirp = require('mkdirp');
 
 /* Servidor */
 server.listen(3000);
+console.log("running");
 
 /* Usar nib en Stylus */
 function compile(str, path) {
@@ -75,7 +76,33 @@ app.post('/submitScript', submitScript);
 app.post('/submitUser', submitNewUser);
 app.post('/user/:user', openUserProfile)
 
-var session;
+var session = [];
+var peerMembers = [];
+var projectMembers = [];
+
+/* SOCKETS */
+io.sockets.on('connection', function (socket) {
+	socket.on('join', function (data, res) {
+		if(projectMembers[data.project].indexOf(session[data.sid].user) >= 0){
+			socket.sid = data.sid;
+			if(typeof(peerMembers[data.project]) == 'undefined'){
+				peerMembers[data.project] = [socket];
+			}
+			else if(peerMembers[data.project].indexOf(data.sid) < 0){
+				peerMembers[data.project].push(socket);
+			}
+			var peers = [];
+			var len = peerMembers[data.project].length;
+			for(i = 0; i < len; i++){
+				if(peerMembers[data.project][i].sid != data.sid){
+					peers.push(peerMembers[data.project][i].sid);
+					//peerMembers[data.project][i].emit('newPeer', {sid : data.sid});
+				}
+			}
+			res(peers);
+		}
+	});
+});
 
 fs.exists('sessions', function(exists){
 	if (!exists) {
@@ -95,6 +122,16 @@ process.on("SIGINT", function() {
 			fs.writeFileSync('sessions', session, encoding='utf8');
 		} 
     	process.exit();
+	});
+});
+process.once('SIGUSR2', function () {
+  	console.log("exiting...");
+    fs.exists('sessions', function(exists){
+		if (exists) {
+			session = JSON.stringify(session, null, 4);
+			fs.writeFileSync('sessions', session, encoding='utf8');
+		}
+		process.kill(process.pid, 'SIGUSR2'); 
 	});
 });
 
@@ -194,14 +231,14 @@ function loadFragmentInfo(req, res){
 			/*  Buscamos los layers con contenido de este fragmento */
 			while (dLayers.length > 0){ //cada capa. 
 				found = false;
-				/*for (var i in dLayers[0].fragments){ //cada fragmento en la capa
+				for (var i in dLayers[0].fragments){ //cada fragmento en la capa
 					if(dLayers[0].fragments[i].index == index){
 						console.log("aeiou");
 						cLayers.unshift(dLayers[0].name);
 						dLayers.shift();
 						found = true;
 						break; 
-					}*/
+					}
 				}
 				if (found == false){ //Si ya no hubo el timestamp en esa capa, deja de buscar en las demás
 					break;
@@ -420,6 +457,7 @@ function openProject(req, res){
 				&& ret[0].members.indexOf(session[req.body.sid].user) >= 0
 				? true
 				: false;
+			projectMembers[project] = ret[0].members.slice(0);
 			res.render('Proyecto',{
 				isMember : isMember,
 				members : ret[0].members,

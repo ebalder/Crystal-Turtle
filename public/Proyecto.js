@@ -122,7 +122,6 @@ Carrousel.prototype = {
 			drop : function(ev, ui){
 				var ts = self.parseTs(ui.draggable);
 				$(this).find('.timestamp').html(ts);
-				console.log($('.frame').index(ui.draggable) + self.framRange[0]);
 				var data = {
 					ts : $('.frame').index(ui.draggable) + self.framRange[0],
 					project : project,
@@ -150,7 +149,6 @@ Carrousel.prototype = {
 				var time = self.parseTs(ts[i]);
 				if(self.loaded.indexOf(self.fragRange[0]+i) < 0 && self.fragRange[1] <= self.last){
 					$.get('storyboard/'+ i + '_' + time, function(data){
-						console.log(i, time);
 						self.fragImage(data, i, time);
 					});
 					$(".fragment:eq(" + i + ") .timestamp").html(time);
@@ -168,7 +166,6 @@ Carrousel.prototype = {
 	},
 	parseTs : function(obj){
 		var index;
-		console.log(typeof(obj));
 		if (typeof(obj) == "object"){
 			index = $('.frame').index(obj) + carrousel.framRange[0];
 		} else if(typeof(obj) == "Number" || typeof(obj) == "string"){
@@ -191,7 +188,6 @@ function newIssue(){
 	$.get('/newIssue', function(data){
 		$('#issues').css("display", "none");
 		$('#proyInfo').append(data);
-		console.log("dafd");
 		var editor = new TINY.editor.edit('editor',{
 		    id:'issueWriter', // (required) ID of the textarea
 		    width:584, 
@@ -277,7 +273,6 @@ function Panel(){
 		type =  type[type.length-1];
 		for (var i = 0; i <= carrousel.last; i++){
 			if($('.fragment:eq('+i+') .timestamp').text() > timestamp){
-				console.log(i);
 				fragment = i-1;
 				break;
 			}
@@ -289,9 +284,6 @@ function Panel(){
 			upload : "multiple",
 			type : type
 		};
-
-		console.log(params);
-		console.log(id, file);
 		$('#fileUploader').fineUploader('setParams', params);
 		timestamp = self.plusOne(timestamp);
 		return false;
@@ -420,9 +412,12 @@ Viewer.prototype = {
 		var n = $(ev.target).attr("n");
 		this.layer = ev.target.href.split('/')[5];
 		this.layern = $("#layers .layer a").length - $("#layers .layer a").index(ev.target) - 1;
+		typeof(_initCanvas) == "function"
+			? delete _initCanvas
+			: null;
 		$.post(ev.target.href,{name : n, timestamp : this.timestamp, fragment : this.index}, function(data){ 
 			$('#loaded').html(data);
-			inicioCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto
+			_initCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto
 		});
 		return false;
 	},
