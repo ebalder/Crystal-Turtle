@@ -26,8 +26,8 @@ app.engine('.jade', cons.jade);
 app.set('view engine', 'jade');
 app.use(express.bodyParser());
 app.use(stylus.middleware({
-   src: __dirname + '/Styl',
-   dest: __dirname + '/public',
+   src: __dirname + '/styl',
+   dest: __dirname + '/public/css',
    compile: compile
  }));
 app.use(express.static('./public')); //esto debe ir después de stylus
@@ -410,7 +410,7 @@ function openLog(req, res){
 	);
 }
 function openMain(req,res){
-	res.render('Main');
+	res.render('main');
 }
 function openProject(req, res){
 	var project = req.params.project;
