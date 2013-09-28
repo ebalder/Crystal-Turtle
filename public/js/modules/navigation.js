@@ -1,8 +1,16 @@
 
 define(function(){
-	/* private vars here */
-	return {
-		login : function(ev){
+	/* private vars */
+	var test = 10;
+	function destroyDialog(event){
+		$('.dialog').remove();
+	}
+	function stopPropagation(event){
+		event.stopPropagation();
+	}
+
+	var navigation = {
+		login : function(){
 			if (localStorage.sid != null){
 				sessionStorage.user = localStorage.user;
 				sessionStorage.email = localStorage.email;
@@ -31,17 +39,20 @@ define(function(){
 		},
 		/* When there is a dialog or adition to the current page */
 		load : function(ev){
-			var url = ev.target.href;
+			test = 30;
+			var url =  ev.target.href; 
+			var path = ev.target.pathname.replace('/', '');
 			$('body').trigger('click'); //close panel if opened
 			$.get(url + "?sid=" + sessionStorage.sid, function(data){
 				$('body').append('<div class="dialog">' + data + '</div>');
 				$('.dialog').on('click', stopPropagation);
 				$('.dialog').css({'z-index' : 99});
-				typeof(initDialog) != "undefined" ? initDialog() : null;
-				$('.dialog form').one('submit', function(){
-					typeof(initDialog) == "undefined" ? submitForm() : null;
-					$('body').trigger('click'); //close panel if opened
-					return false;
+				requirejs([path], function(dialog){
+					$('.dialog form').one('submit', function(){
+						dialog.submit();
+						$('body').trigger('click'); //close panel if opened
+						return false;
+					});
 				});
 				$('body').one('click', destroyDialog);
 			});
@@ -50,28 +61,35 @@ define(function(){
 		/* when the page changes completely */
 		open : function(ev){
 			$('#area').empty();
-			delete initArea;
-			var url = $(ev.target).attr('href') + "/";
-				console.log(url);
+			var url = ev.target.href + "/";
+			var path = ev.target.pathname;
 			window.history.pushState(url, url, url);
 			$.post(url, sessionStorage, function(data){
 				$('#area').html(data);
-				typeof(initArea) == 'function' ? initArea() : null;
-				$('#area .load').on('click', Navigation.load);
-				$('#area .open').on('click', Navigation.open);
+				$('#area .load').on('click', navigation.load);
+				$('#area .open').on('click', navigation.open);
+				requirejs([path], function(page){
+
+				});
 			});
 			$('body').trigger('click'); //close panel if opened
 			return false;
 		},
 		/* when the user reaches the current page via url (paths are simulated) */
 		hash : function(path){
+			path = path.split('/')[1];
 			$.post(window.location.href, sessionStorage, function(data){
 				$('#area').html(data);
-				/* prevent from executing both _init functins (it happens!) */
-				typeof(initArea) == 'function' ? initArea() : null ;
-				$('#area .load').on('click', nav.load);
-				$('#area .open').on('click', nav.open);
+				$('#area .load').on('click', navigation.load);
+				$('#area .open').on('click', navigation.open);
 			});
+			requirejs([path], function(page){
+
+			});
+		},
+		test : function(){
+			console.log(test);
 		}
-	}
+	};
+	return navigation;
 })();

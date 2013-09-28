@@ -1,9 +1,11 @@
 
-
 requirejs.config({
-	baseUrl : 'js/modules',
+	baseUrl : '/js/modules',
 	paths : {
-		lib : '../../libs',
+		lib : '/libs',
+		project : '/js/modules/studio/boot',
+		studio : '/js/modules/studio',
+		'lib/jquery' : '/libs/jquery-2.0.3.min'
 	},
     shim: {
         'lib/jquery-ui': {
@@ -20,7 +22,7 @@ requirejs.config({
 });
 
 requirejs(['lib/jquery', 'lib/jquery-ui', 'navigation'], function($, ui, nav){
-	$(document).on('ready', _init);
+	
 	function _init(){
 		/* Show or hide buttons from user menu */
 		if(localStorage.sid != null || sessionStorage.sid != null){
@@ -38,14 +40,10 @@ requirejs(['lib/jquery', 'lib/jquery-ui', 'navigation'], function($, ui, nav){
 			nav.hash(window.location.pathname);
 		}
 	}
-	function stopPropagation(event){
-		event.stopPropagation();
-	}
-	function destroyDialog(event){
-		$('.dialog').remove();
-		typeof(initDialog) != "undefined" 
-			? delete initDialog
-			: null;
+	if(document.readyState == 'complete'){
+		_init();
+	} else {
+		$(document).on('ready', _init());
 	}
 });
 

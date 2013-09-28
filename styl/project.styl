@@ -1,0 +1,288 @@
+/*!================= Contents =================
+* Selectors are ordered by elements, classes, ids, then by alphabetic order
+*	@font-face
+*	Basic Elements (body, footer, header, nav)
+*	General (Reusable attributes for nonspecific use and containers)
+*	Yet Unused (some stuff will be moved to the main style sheet)
+*	Carrousel
+*	Panel
+*	General
+*	Info
+=============================================*/
+
+
+/*! ============================ Basic Elements ============================= */
+
+
+
+//
+ 
+
+/*! =============================== General ================================ */
+
+
+.verticalCenter
+	display table-cell
+	vertical-align middle
+
+#project  
+	padding-left 1.2em
+
+#loaded
+	display inline
+ 
+
+
+/*! ============================== Carrousel =============================== */
+
+
+.fragment  
+	border-left  solid 1px #020202 
+	border-right  solid 1px #020202 
+	display block 
+	float left 
+	position relative 
+	width 180px 
+ 
+.timestamp  
+	background-color  #F5F3F4 
+	border-bottom  solid 1px #202020 
+	display block 
+	font-size 15px 
+	height 20px 
+	text-align center 
+
+.bw    
+	float left  
+	display table
+	font-size 25px  
+	text-align center  
+	
+.frame
+	background-color #FFFFFF
+	border solid 0.5px #E5E5E5 
+	display inline-block
+	height 30px
+	width 12px
+.fw 
+	float right 
+	display table
+	position relative 
+	font-size 25px  
+	text-align center  
+	z-index 1 
+
+#frames
+	background-color #C0C0C0
+	height 30px
+	.bw, .fw
+		width 24px
+
+#frIn
+	display block 
+	height 100% 
+	position relative 
+	width 100% 
+	white-space nowrap
+
+#frView
+	display block 
+	height  100% 
+	overflow hidden 
+	padding 0 
+	position relative 
+	white-space nowrap
+
+#timeline  
+	background-color #050505 
+	display inline-block
+	height 120px 
+	width 100%
+	overflow hidden 
+	.bw, .fw
+		color #F5F3F4  
+		height 100px  
+		width 30px  
+	.thumb  
+		background-color #020202 
+		display inline-block 
+		height 80px 
+		width 180px 
+	.thumb img  
+		height 80px 
+		width 180px 
+
+#tlIn  
+	background-color #050505 
+	display block 
+	height 100px 
+	position relative 
+	transition all 0.2s ease-out
+	width 100% 
+	white-space nowrap
+ 
+#tlView  
+	display block 
+	height  100%
+	overflow-x scroll
+	overflow-y hidden
+	padding 0 
+	position relative 
+	white-space nowrap
+	
+
+/*! ============================== Panel =============================== */
+
+#fileUploader
+	ul
+		max-height 200px
+		overflow-y scroll
+		position relative
+		li
+			display inline-block
+			font-size 0.9em
+			height 2.5em
+			position relative
+#panel 
+	display block 
+	position fixed
+	top 0
+	left -27% 
+	width 27% 
+	height 100% 
+	background-color #F5F3F4 
+	padding-left 20px 
+	transition all 0.2s ease 
+	z-index 2 
+
+#panTab 
+	color #F5F3F4
+	display table
+	background-color #303030
+	width 20px
+	height 100%
+	float right
+
+#panTab span  
+	height 100% 
+
+ 
+
+
+
+/*! ================================ Forms ================================= */
+
+
+/*==================== General ===========================*/
+
+.issue > .content
+	max-height 200px
+	overflow hidden
+
+#issues
+	display block
+	float right
+	max-height 30em
+	overflow-y scroll
+	padding 1em
+	text-align justify
+	vertical-align top
+	width 45%
+
+#proyInfo
+	margin 2em auto
+	width 80%
+
+#stats
+	display inline-block
+	vertical-align top
+	width 15%
+
+#wysiwyg
+	margin-left 3em
+#wysiwyg, #general
+	display inline-block
+	vertical-align top
+
+
+/*==================== Info ===========================*/
+
+
+.contentLayer
+	background-color #C5C5B5
+
+.emptyLayer
+	background-color #E5E5D8
+	color #909090
+
+.entry
+	background-color #D8D8CA
+	display inline-block
+	font-size 0.8em
+	padding 0.5em
+	width 100%
+	h2
+		line-height 1em
+		margin 0
+	.related, .tags
+		margin-top 0.5em
+
+.layer
+	border-bottom solid 1px #252525
+	padding 0.5em
+
+.new
+	display inline-block
+	width 7em
+
+#contents
+	display block
+	float left
+	width 60%
+
+#entries
+	display block
+	float left
+	width 83%
+
+#fragmentInfo
+	background-color #E5E5D8
+	display inline-block
+	margin 2% 2%
+	padding 0.5% 0.5%
+	width 95%
+
+#img 
+	width 20%
+
+#img img
+	width 90%
+
+#img, #link, #text
+	display inline-block
+	margin 0.5em
+	vertical-align top
+
+
+#layers
+	display block
+	float right
+	font-size 0.8em
+	width 12%
+
+#link, #text
+	width 30%
+
+
+#projectInfo
+	background-color #E5E5D8
+	display inline-block
+	width 30%
+
+#fragScript
+	display inline-block
+	text-align center
+	width 39%	
+
+.issue > .content
+	display none

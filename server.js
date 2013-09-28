@@ -311,7 +311,7 @@ function loadProjectForm(req, res){
 	res.render('ProjectForm');
 }
 function loadUserForm(req,res){
-	res.render('UserForm');
+	res.render('userForm');
 }
 function openBrowse(req, res){
 	var filter = '';
@@ -458,7 +458,7 @@ function openProject(req, res){
 				? true
 				: false;
 			projectMembers[project] = ret[0].members.slice(0);
-			res.render('Proyecto',{
+			res.render('project',{
 				isMember : isMember,
 				members : ret[0].members,
 				stats : ret[0].stats,
@@ -678,7 +678,14 @@ function submitNewUser(req,res){
 		db.document.create("testU", data)
 		.then(
 			function(ret){
-		  		res.send("User '" + name + "' successfully registered.");
+		  		var sid = Date.now() + new Date().getUTCMilliseconds();
+		  		res.send({
+		  			user : req.body.name,
+		  			email : req.body.email,
+		  			pass : req.body.pass,
+		  			sid : "" + sid
+		  		});
+		  		console.log("new user registered: ", sid);
 			},
 			printError
 		);
