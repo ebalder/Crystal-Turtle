@@ -1,119 +1,117 @@
-
-define(['studio/viewer'], function(viewer){
-	var timestamp = "0:00:00.00";
-	var cssShow = {'left' : '0'};
-	var cssHide = {'left' : '-27%'};
-	$('#panel').on('click', stopPropagation); //click al panel no lo oculta
-	var hide;
-	var image;
-	var dir;
-	var name;
-	var timestamp;
-	var fragment = 0;
-	var layer;
-	var params;
-	var images = [];
-	$('#fileUploader').fineUploader({
-		request : {
-			method : "POST",
-			forceMultipart: false,
-			endpoint : "/saveImage",
-			paramsInBody : true
-		},
-		autoUpload : false,
-		text : {
-			 uploadButton: '<i class="icon-plus icon-white"></i> Select Files',
-			 retry : 'Retry'
-		},
-		validation: {
-			allowedExtensions: ['jpeg', 'jpg', 'png'],
-			sizeLimit: 1024 * 700
-		},
-		resume : {
-			enabled : true
-		}
-	})
-	.on('upload', function(ev, id, file){
-		fragment = carrousel.last;
-		var type = file.split('.');
-		type =  type[type.length-1];
-		for (var i = 0; i <= carrousel.last; i++){
-			if($('.fragment:eq('+i+') .timestamp').text() > timestamp){
-				fragment = i-1;
-				break;
-			}
-		}
-		name = fragment + '_' + timestamp;
-		params = {
-			dir : dir,
-			name : name,
-			upload : "multiple",
-			type : type
-		};
-		$('#fileUploader').fineUploader('setParams', params);
-		timestamp = self.plusOne(timestamp);
-		return false;
-		$.post('/submitImage', params, function(){
-			console.log("ok");
-		});
-		console.log("posted");
-	})
-	.on('cancel', function(){
-		console.log("cancelled");
-	});
-	$('#multiple').on('submit', function(){
-		timestamp = $('input[name="from"]').val();
-		timestamp == "" ? timestamp = "0:00:00.00" : null;
-		layer = $('input[name="layer"]').val();
-		dir = 'project/' + project + '/' + layer;
-		$('#fileUploader').fineUploader('uploadStoredFiles');
-		return false;
-	});
+define(['studio/carrousel'], function(carrousel){
+	/* ToDo: make a studioUtil module with a parseTs method */
+	var timestamp = null;
+	var index = null;
+	var layer = null;
+	var layern = null;
 
 	var pinboard = {
-		hide : function (){ 
-			$('body').off('click', self.triggerHide);
-			$('#panel').css(self.cssHide);
-			$('#panTab').one('click', self.show);
-			return 1;
+		board : function(ev){
+			var project = window.location.pathname.split( '/' )[2];
+			var group = {
+				related : $(ev.target).parents('.entry').find('.related a').text().split(', '),
+				base : $(ev.target).parents('.entry').find('a.group').text()
+			};
+			$.post('/InfoBoard/' + project, group, function(data){
+				$('#area').after('<div id="area2">' + data + '</div>');
+				$('#area').hide();
+				$.each($('.entry img'), function(index, value){
+					imgindex = index;
+					$.get($(value).attr('src'), function(data){ 
+						$('.entry img:eq(' + imgindex + ')').attr('src', data);
+					});
+				});
+			});
+			$('#area2 .back, :not(#area2 a)').on('click', function(){
+				$('#area2').remove();
+				$('#area').show();
+			});
+			$(".group").on('click', self.board);
+			return false;
 		},
-		show : function(){
-			timestamp = viewer.timestamp;
-			$('#panel').css(self.cssShow); 
-			$('body').one('click', self.triggerHide);
-			$('#panTab').one('click', self.hide;
-			return 1;
+		fragInfo : function(ev){
+			this.timestamp = $(ev.currentTarget).find('.timestamp').text();
+			this.index = $('.fragment').index(ev.currentTarget);
+			var json ={
+				selection: index,
+				sid : sessionStorage.sid
+			};
+			$.post('/fragmentInfo', json, self.showData);	
 		},
-		submit : function(ev){
-			console.log(ev.target.files);
+		frame : function(ev){
+			carrousel.parseTs(ev.target);
 		},
-		triggerHide : function(){
-			$("#panTab").trigger('click');
-			return 1;
+		showData : function(data){
+			$('#fragmentInfo').empty();
+			var imgindex;
+			$("#fragmentInfo").html(data); 
+			$(".new").on('click', self.newEntry);
+			$(".layer a").on('click', self.fragLayer);
+			$.each($('#fragmentInfo img'), function(index, value){
+				imgindex = index;
+				$.get($(value).attr('src'), function(data){ 
+					$('#img img:eq(' + imgindex + ')').attr('src', data);
+				});
+			});
+			$(".group").on('click', self.board);
 		},
-		plusOne : function(timestamp){
-			var aux = timestamp.split(':');
-			var aux2 = aux[2].split('.');
-			aux[2] = aux2[0];
-			aux[3] = aux2[1];
-			if (aux[3] == 29){
-				if(aux[2] == 59){
-					if(aux[1] == 59){
-						if(aux[0] == 9){
-							return false;
-						} else {
-							aux[0]++;
-						}
-					} else {
-						aux[1]++;
+		fragLayer : function(ev){
+			var n = $(ev.target).attr("n");
+			this.layer = ev.target.href.split('/')[5];
+			this.layern = $("#layers .layer a").length - $("#layers .layer a").index(ev.target) - 1;
+			typeof(_initCanvas) == "function"
+				? delete _initCanvas
+				: null;
+			$.post(ev.target.href,{name : n, timestamp : timestamp, fragment : index}, function(data){ 
+				$('#loaded').html(data);
+				_initCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto
+			});
+			return false;
+		},
+		newEntry : function(){
+			var img64 = '';
+			$.get("/entryForm", function(data){ 
+				$('#contents').html(data);
+				$('input[name="timestamp"]').val(timestamp);
+				$('#entryForm').on('submit', function(ev){
+					$.post("/submitEntry", $('#entryForm').serialize() + '&fragment=' + index +'&sid=' + sessionStorage.sid , function(){
+						$('.msg').html("Submission complete");
+					});
+					if($('select[name="type"]').val() == 'image'){
+						var submit = {
+							dir : 'project/'+window.location.pathname.split( '/' )[2],
+							name : $('input[name="title"]').val(),
+							image : img64,
+							type : "b64"
+						};
+						$.post("/saveImage", submit, function(){
+							$('.msg').html("ok");
+						})
 					}
-				} else {
-					aux[2]++;
-				}
-			} else {
-				aux[3]++;
-			}
-			return aux[0] + ":" + aux[1] + ":" + aux[2] + "." + aux[3];
+					return false;
+				});
+				$('select[name="type"]').on('change', function(){
+					switch ($('select[name="type"]').val()){
+						case 'text':
+							$('#entryForm [name="content"]').replaceWith('<textarea name="content" cols="30" rows="20"/>');
+							break;
+						case 'link': 
+							$('#entryForm [name="content"]').replaceWith('<input type="text" name="content"/>');
+							break;
+						case 'image':
+							$('#entryForm [name="content"]').replaceWith('<input type="file" name="content"/>');
+							$('input[name="content"]').on('change', function(ev){
+								var reader = new FileReader();
+								$(reader).on('load', function(){
+									img64 = reader.result;
+								});
+								reader.readAsDataURL(ev.target.files[0]);
+							});
+							break
+					}
+				});
+			});
+			return false;
 		}
 	};
 	var self = pinboard;

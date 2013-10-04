@@ -1,5 +1,5 @@
 
-define(function(){
+define(['studio/pinboard'], function(pinboard){
 	var fps = 30;
 	var last = $('meta#fragCount').attr('count');
 	var lastFrame = 3000;
@@ -109,12 +109,12 @@ define(function(){
 				}
 			});
 			/* ======= Set events ======= */
-			$('.frame').on('click', viewer.frame);
-			$('.fragment').on('click', viewer.fragInfo);
-			$("#timeline .fw").on('click', forward);
-			$("#timeline .bw").on('click', backward);
-			$("#frames .fw").on('click', fwFrame);
-			$("#frames .bw").on('click', bwFrame);
+			$('.frame').on('click', pinboard.frame);
+			$('.fragment').on('click', pinboard.fragInfo);
+			$("#timeline .fw").on('click', self.forward);
+			$("#timeline .bw").on('click', self.backward);
+			$("#frames .fw").on('click', self.fwFrame);
+			$("#frames .bw").on('click', self.bwFrame);
 			return 1;
 		},
 		loadFrags : function(start, end){

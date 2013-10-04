@@ -1,5 +1,5 @@
 
-define(['navigation'], function(nav){
+define(['navigation'], function(nav){ /* ToDo: make a module called session with the login method */
 		var form = $('#newUser input:not([type="submit"])');
 	return {
 		submit : function(){

@@ -6,7 +6,9 @@ define(function(){
 		$('.dialog').remove();
 	}
 	function stopPropagation(event){
+		console.log("propStopped");
 		event.stopPropagation();
+		return true;
 	}
 
 	var navigation = {
@@ -89,7 +91,8 @@ define(function(){
 		},
 		test : function(){
 			console.log(test);
-		}
+		},
+		stopPropagation : stopPropagation
 	};
 	return navigation;
 })();

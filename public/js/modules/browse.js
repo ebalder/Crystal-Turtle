@@ -1,52 +1,45 @@
 define(function(){
-	var browse = new Browse($('input[name="tags"]'), $('input[name="type"]'), $('#filter'));
-	function Browse(tags, type, form){
-		this.tagInput = tags;
-		this.typeInput = type;
-		this.form = form;
-		this.currTags = []; //valor de tagInput
-		this.template = $('.project:first').html();
-		this.currResults = []; //títulos actualmente mostrados.
-		$(this.form).on('submit', this.loadTag.bind(this));
-	}
-	Browse.prototype = {
+		var tagInput = $('input[name="tags"]');
+		var typeInput = $('input[name="type"]');
+		var form = $('#filter');
+		var currTags = []; //valor de tagInput
+		var template = $('.project:first').html();
+		var currResults = []; //títulos actualmente mostrados.
+	var browse = {
 		loadTag : function(){
-			this.delTypes = [];
-			this.currResults = [];
+			currResults = [];
+			var delTypes = [];
 			var self = this;
-			var tags = $(this.tagInput).val().split(', ');
+			var tags = $(tagInput).val().split(', ');
 			var types = [];
 			var len;
-			//evitar duplicados y vacíos
+			//prevent duplicated and untagged
 			len = tags.length;
 			tags.sort();
 			tags = $.grep(tags, function(val, index){
 				return tags[index]=='' || tags.indexOf(val, index + 1) >= 0;
 			}, true);
-			this.currTags = tags;
+			currTags = tags;
 			//obtener tipos a filtrar. y quitar resultados de tipos ya no solicitados
-			len = $(this.typeInput).length;
+			len = $(typeInput).length;
 			for(var i = 0; i < len; i++){ 
-				console.log(this.typeInput[i].checked);
-				if(this.typeInput[i].checked){
-					types.push(this.typeInput[i].value);
+				if(typeInput[i].checked){
+					types.push(typeInput[i].value);
 				} else {
-					$('.project:has(.type:contains("' + this.typeInput[i].value + '"))').remove();
+					$('.project:has(.type:contains("' + typeInput[i].value + '"))').remove();
 				}
 			}
 			//quitar tags ya no solicitados. No hacer nada si no hay filtros
 			len = tags.length;
-			console.log(tags);
 			for(var i=1; i <= len; i++){ 
-				console.log(tags[i-1]);
 				$('.project.tags:not(:contains("' + tags[i-1] + '")), .project.detail:not(:has(.tags))').parents('.project').remove();
 			}
 			//evitar que la query nos regrese títulos duplicados
 			len =  $('.project').length;
 			for(var i = 0; i < len; i++){ 
-				this.currResults.push($('.project:eq(' + i + ') .title').text());
+				currResults.push($('.project:eq(' + i + ') .title').text());
 			}
-			$.post('/browse', {tags : tags, already : this.currResults, type: types, reload:true}, function(data){
+			$.post('/browse', {tags : tags, already : currResults, type: types, reload:true}, function(data){
 				var add;
 				//agregar resultados
 				for(var i=0 in data){ 
@@ -57,7 +50,6 @@ define(function(){
 					$(add).find('.title a').attr('class', 'open');
 					$(add).find('.title a').on('click', Navigation.open);
 					$(add).find('.title a').text(data[i].title);
-					console.log($(add).filter('a'));
 					$(add).find('.thumb').attr('src', data[i].thumb);
 					$(add).find('.detail.type').text(data[i].type);
 					$(add).find('.detail').append('<span class="tags">'+data[i].tags+'</span>');
@@ -66,6 +58,9 @@ define(function(){
 			return false;
 		}
 	}
+	var self = browse;
+	$(form).on('submit', self.loadTag);
+	return browse;
 });
 
 
