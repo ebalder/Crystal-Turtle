@@ -1,8 +1,7 @@
-define(function(){
-	submit(){
+define(['lib/jquery', 'navigation'], function($, nav){
+	this.submit = function(){
 		$.post('/login', $("#login").serialize(), function(data){
-			var remember;
-			$('.dialog [name="remember"]:checked').length > 0 ? remember = true : remember = false;
+			var remember = $('.dialog [name="remember"]:checked').length > 0 ? true : false;
 			$('body').trigger('click');
 			sessionStorage.user = data.user;
 			sessionStorage.email = data.email;
@@ -10,13 +9,12 @@ define(function(){
 			if(remember){
 				if(typeof(Storage) != "undefined"){
 					localStorage = data;
-					console.log = data;
 				} else {
-					console.log("Sorry! no web storage support.");
+					console.log("Sorry! no web storage support. Have you tried an actual browser? :)");
 				}
 			}
-			Navigation.login();
+			nav.login();
 		});
 	};
-	return 1;
+	return this;
 });

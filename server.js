@@ -199,7 +199,7 @@ function loadEntryForm(req, res){
 	res.render('EntryForm');
 }
 function loadLogin(req, res){
-	res.render('Login');
+	res.render('login');
 }
 function loadFragmentInfo(req, res){
 	var project = req.headers['referer'].split('/')[4];

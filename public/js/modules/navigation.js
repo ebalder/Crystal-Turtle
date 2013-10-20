@@ -1,5 +1,5 @@
 
-define(function(){
+define(['lib/jquery'], function(){
 	/* private vars */
 	var test = 10;
 	function destroyDialog(event){
@@ -40,8 +40,7 @@ define(function(){
 			return false;
 		},
 		/* When there is a dialog or adition to the current page */
-		load : function(ev){
-			test = 30;
+		load : function(ev){ 
 			var url =  ev.target.href; 
 			var path = ev.target.pathname.replace('/', '');
 			$('body').trigger('click'); //close panel if opened
@@ -88,9 +87,6 @@ define(function(){
 			requirejs([path], function(page){
 
 			});
-		},
-		test : function(){
-			console.log(test);
 		},
 		stopPropagation : stopPropagation
 	};
