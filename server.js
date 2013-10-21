@@ -149,8 +149,7 @@ function doLogin(req, res){
 	}).then(
 		function(ret){
 			if (ret[0] == null){
-				 res.send('Wrong username or password.');
-				 console.log("Wrong username or passowrd.")
+				 res.send(false);
 			}
 			var sid = Date.now() + new Date().getUTCMilliseconds();
 			var userInfo = {
