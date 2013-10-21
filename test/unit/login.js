@@ -42,71 +42,65 @@ casp.start('http://127.0.0.1', function(){
 		casp.echo("User area not setup for unlogged user.", 'ERROR');
 	}, 1500);
 })
-.then(function(){
-	casp.each(users, function(self, curr){
+casp.each(users, function(self, curr){
+	/* open login form */
+	casp.then(function(){
+		var user = curr.user;
+		var pass = curr.pass;
+		var valid = curr.valid;
+		casp.click('a[href="/login"]');
+		casp.waitUntilVisible('.dialog', null, function(){
+			error();
+			casp.echo("Login dialog didn't show.", 'ERROR')
+		}, 500)
 		/* fill login form */
-		casp.then(function(){
-			var user = curr.user;
-			var pass = curr.pass;
-			var valid = curr.valid;
-			casp.click('a[href="/login"]');
-			casp.waitUntilVisible('.dialog', function(){
-				casp.fill('#login', {
-					name : user,
-					pass : pass,
-					remember : true
-				}, false);
-				!screenshot || casp.capture('loginForm_'+ user +'.png');
-				/* submit login form */
-				casp.then(function(){
-					casp.click('.dialog input[type="submit"]');
-					casp.waitForResource('login', function(){
-						!screenshot || casp.captureSelector('loggedHeader_'+ user +'.png', 'header');
-						/* evaluate login result */
-						casp.test.begin('Tried to login as ' + user, function(test){
-							var storage = casp.evaluate(function(){
-								return {
-									user: localStorage.user,
-									sid: localStorage.sid
-								}
-							});
-							if(valid){
-								casp.echo('User '+ user +' expected as valid');
-								var cond = casp.exists('header a[href="/user/'+ user +'"]');
-								test.assert(cond, 'Show member area');
-								test.assertEquals(storage.user, user, 'Store User');
-								test.assert(storage.sid != null, 'Get SID');
-								casp.click('header a[href="/logout"]');
-								casp.waitWhileVisible('header a[href="/logout"]', function(){
-									casp.click('body');
-									var storage = casp.evaluate(function(){
-										return {
-											user: localStorage.user,
-											sid: localStorage.sid
-										}
-									});
-									test.assert(storage.user == null, 'Forget user');
-									test.assert(storage.sid == null, 'Forget SID');
-								}, function(){
-									casp.echo("Couldn't logout", 'ERROR');
-								}, 200);
-							} else {
-								casp.echo('User '+ user +' expected as invalid');
-								var cond = casp.visible('header a[href="/logout"]');
-								test.assertNot(cond, '(NOT) Show member area');
-								test.assert(storage.user == null, '(NOT) Store User');
-								test.assert(storage.sid == null, '(NOT) Get SID');
-							}
-							test.done();
-						});
-					}, function(){
-						casp.echo('User '+ user +' could not login', 'ERROR');
-					}, 1000);
-				});
-			}, function(){
-				error();
-				casp.echo("Login dialog didn't show.", 'ERROR')
-			}, 500);
+		.then(function(){
+			casp.fill('#login', {
+				name : user,
+				pass : pass,
+				remember : true
+			}, false);
+			!screenshot || casp.capture('loginForm_'+ user +'.png');
+		})
+		/* submit login form */
+		.then(function(){
+			casp.click('.dialog input[type="submit"]');
+			casp.waitForResource('login', null, function(){
+				casp.echo('User '+ user +' could not login', 'ERROR');
+			}, 1000);
+		})
+		/* test login */
+		.then(function(){
+			!screenshot || casp.captureSelector('loggedHeader_'+ user +'.png', 'header');
+			/* evaluate login result */
+			casp.test.begin('Login as ' + user, function(test){
+				var storage = getStorage();
+				if(valid){
+					casp.echo('Expected as valid', 'COMMENT');
+					var cond = casp.exists('header a[href="/user/'+ user +'"]');
+					test.assert(cond, 'Show member area');
+					test.assertEquals(storage.user, user, 'Store User');
+					test.assert(storage.sid != null, 'Get SID');
+					casp.click('header a[href="/logout"]');
+					/* Logout */
+					casp.waitWhileVisible('header a[href="/logout"]', null, function(){
+						casp.echo("Couldn't logout", 'ERROR');
+					}, 200)
+					/* evaluate logout result */
+					.then(function(){
+						var storage = getStorage();
+						test.assert(storage.user == null, 'Forget user');
+						test.assert(storage.sid == null, 'Forget SID');
+					});
+				} else {
+					casp.echo('Expected as invalid', 'COMMENT');
+					var cond = casp.visible('header a[href="/logout"]');
+					test.assertNot(cond, '(NOT) Show member area');
+					test.assert(storage.user == null, '(NOT) Store User');
+					test.assert(storage.sid == null, '(NOT) Get SID');
+				}
+				test.done();
+			});
 		});
 	});
 });
@@ -116,6 +110,7 @@ casp.run(function(){
 	casp.exit();
 });
 
+/* global functions */
 var error = (function(){
 	var num = 0;
 	return function(){
@@ -124,3 +119,12 @@ var error = (function(){
 		num++;
 	}
 })();
+
+function getStorage(){
+	return casp.evaluate(function(){
+		return {
+			user: localStorage.user,
+			sid: localStorage.sid
+		}
+	})
+}
