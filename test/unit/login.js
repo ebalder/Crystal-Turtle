@@ -30,7 +30,7 @@ var users = [
 var screenshot = casp.cli.has('screenshot');
 
 casp.start('http://127.0.0.1', function(){
-	casp.echo('start...', 'INFO');
+	casp.echo('start...', 'COMMENT');
 })
 
 /* load page */
@@ -106,7 +106,6 @@ casp.each(users, function(self, curr){
 });
 
 casp.run(function(){
-	// utils.dump(casp.test.getFailures());
 	casp.exit();
 });
 
