@@ -1,5 +1,3 @@
-
-
 /* config */
 var casp = require('casper').create({
 	verbose: casper.cli.has('verbose'),
