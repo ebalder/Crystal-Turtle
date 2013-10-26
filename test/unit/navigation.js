@@ -1,32 +1,18 @@
 
 
-/* config */
-var casp = require('casper').create({
-	verbose: casper.cli.has('verbose'),
-	logLevel: casper.cli.get('verbose') || null,
-	onError : error,
-	viewportSize: {
-		width: 1240,
-		height: 780 
-	},
-	imgOptions: {
-		format: '.png',
-		quality: '1',
-		compression: '9'
-	}
-});
+/* defs */
 
-/* functions */
-var require = patchRequire(require);
-var utils = require('utils');
-$ = document.querySelector;
-var session = require('../../../case/login-out');
+var boot = require('../boot');
+var casp = boot.casp;
+var screenshot = boot.screenshot;
+var utils = boot.utils;
+var screenshot = boot.screenshot;
+
+var session = require('../case/login-out');
 session.use(casp);
 
-/* defs */
 var user = casper.cli.get('user') || 'user1';
 var pass = casper.cli.get('pass') || user;
-var screenshot = casp.cli.has('screenshot');
 
 casp.start('http://127.0.0.1', function(){
 	casp.echo('start...', 'COMMENT');
@@ -41,6 +27,7 @@ casp.start('http://127.0.0.1', function(){
 		casp.echo("User area not setup for unlogged user.", 'ERROR');
 	}, 1500);
 })
+/* login */
 .then(function(){
 	session.login(user, pass);
 })

@@ -1,24 +1,8 @@
 
 
-/* config */
-var casp = require('casper').create({
-	verbose: casper.cli.has('verbose'),
-	logLevel: casper.cli.get('verbose') || null,
-	onError : error,
-	viewportSize: {
-		width: 1240,
-		height: 780 
-	},
-	imgOptions: {
-		format: '.png',
-		quality: '1',
-		compression: '9'
-	}
-});
-
-/* functions */
-var utils = require('utils');
-$ = document.querySelector;
+var boot = require('../boot');
+var casp = boot.casp;
+var screenshot = boot.screenshot;
 
 /* defs */
 var users = [
@@ -27,7 +11,6 @@ var users = [
 	{user: '@test@', pass:'@test@', valid: false},
 	{user: '', pass:'', valid: false}
 ];
-var screenshot = casp.cli.has('screenshot');
 
 casp.start('http://127.0.0.1', function(){
 	casp.echo('start...', 'COMMENT');
