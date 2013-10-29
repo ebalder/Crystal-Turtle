@@ -17,9 +17,33 @@ var casp = require('casper').create({
 		compression: '9'
 	}
 });
-/* def */
+
+/* extends */
+casp.error = (function(){
+	var num = 0;
+	return function(msg){
+		casp.echo(msg, 'ERROR');
+		if(screenshot) {
+			casp.capture('error_'+ num +'.png');
+			casp.echo('Printing error '+ num, 'INFO');
+			num++;
+		}
+	}
+})();
+casp.screenshot = ( function(){
+	if(screenshot){
+		return function(name, selector){
+			if(typeof selector == 'undefined'){
+				selector = 'body';
+			}
+			casp.captureSelector(name, selector);
+			casp.echo('Screenshot: ' + name, 'COMMENT');
+		}
+	}
+})();
+
+/* vars */
+var screenshot = casp.cli.has('screenshot');
+
+/* exports */
 exports.casp = casp;
-exports.screenshot = casp.cli.has('screenshot');
-exports.utils = require('utils');
-exports.$ = document.querySelector;
-/* extend */

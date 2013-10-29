@@ -14,8 +14,8 @@ session.use(casp);
 var user = casper.cli.get('user') || 'user1';
 var pass = casper.cli.get('pass') || user;
 
-casp.start('http://127.0.0.1', function(){
-	casp.echo('start...', 'COMMENT');
+casp.start('http://127.0.0.1/browse', function(){
+	casp.echo('start...', 'INFO');
 })
 
 /* load page */
@@ -24,33 +24,22 @@ casp.start('http://127.0.0.1', function(){
 	casp.waitWhileVisible('a[href="/logout"]', function(){
 		casp.echo('page loaded', 'INFO');
 	}, function(){
-		casp.echo("User area not setup for unlogged user.", 'ERROR');
+		casp.error("User area not setup for unlogged user.");
 	}, 1500);
 })
 /* login */
 .then(function(){
 	session.login(user, pass);
 })
+/* open user profile */
+.then(function(){
+	casp.click('header a[href="/user/'+ user +'"]');
+	casp.waitForResource('user/'+ user, function(){ casp.error("Couldn't load user profile")});
+})
+.then(function(){
+	casp.screenshot('userProfile.png');
+})
 
 casp.run(function(){
 	casp.exit();
 });
-
-/* global functions */
-var error = (function(){
-	var num = 0;
-	return function(){
-		!screenshot || casp.capture('error'+ num +'.png');
-		casp.echo('Printing error '+ num, 'INFO');
-		num++;
-	}
-})();
-
-function getStorage(){
-	return casp.evaluate(function(){
-		return {
-			user: localStorage.user,
-			sid: localStorage.sid
-		}
-	})
-}
