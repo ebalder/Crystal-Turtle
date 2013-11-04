@@ -16,7 +16,7 @@ module.exports = function(){
 				if(typeof(req.body.sid) != "undefined" && typeof(session[req.body.sid]) != "undefined" && ret[0].info.name == session[req.body.sid].user) {
 					owner = true;
 				}
-				res.render('UserProfile',{
+				res.render('userProfile',{
 					usr : ret[0].info,
 					owner : owner
 				});
@@ -59,7 +59,7 @@ module.exports = function(){
 				db.document.put(ret._id, ret)
 				.then(
 					function(){
-						console.log('asdfa')
+						console.log('Profile updated.')
 					},
 					printError
 				);

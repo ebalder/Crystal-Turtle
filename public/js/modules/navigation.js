@@ -64,13 +64,17 @@ define(['lib/jquery'], function(){
 			$('#area').empty();
 			var url = ev.target.href + "/";
 			var path = ev.target.pathname;
+			var patt = new RegExp("^\/user\/");
+			if(patt.test(path)){
+				path = "userProfile";
+			}  
 			window.history.pushState(url, url, url);
 			$.post(url, sessionStorage, function(data){
 				$('#area').html(data);
 				$('#area .load').on('click', navigation.load);
 				$('#area .open').on('click', navigation.open);
 				requirejs([path], function(page){
-
+					
 				});
 			});
 			$('body').trigger('click'); //close panel if opened

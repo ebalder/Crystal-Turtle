@@ -45,7 +45,7 @@ module.exports = function(){
 					}
 				}
 				if(req.body.reload == null){
-					res.render('Browse', {
+					res.render('browse', {
 						projects : ret
 					});
 				} else { 

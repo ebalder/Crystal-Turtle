@@ -1,7 +1,7 @@
 /*Project module*/
 module.exports = function(){
 	function loadProjectForm(req, res){
-		res.render('ProjectForm');
+		res.render('projectForm');
 	}
 	function openInfoBoard(req, res){
 		var project = req.params.project;
@@ -93,7 +93,7 @@ module.exports = function(){
 	function submitProject(req, res){
 		if(session[req.body.sid] == undefined ){
 			res.send('Permission dennied.'); 
-			return 0
+			return 0;
 		}
 		fs.readFile("project.json", 'utf8', function(err, data){
 			data = JSON.parse(data);

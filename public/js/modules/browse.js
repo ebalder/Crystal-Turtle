@@ -1,10 +1,10 @@
 define(function(){
-		var tagInput = $('input[name="tags"]');
-		var typeInput = $('input[name="type"]');
-		var form = $('#filter');
-		var currTags = []; //valor de tagInput
-		var template = $('.project:first').html();
-		var currResults = []; //títulos actualmente mostrados.
+	var tagInput = $('input[name="tags"]');
+	var typeInput = $('input[name="type"]');
+	var form = $('#filter');
+	var currTags = []; //valor de tagInput
+	var template = $('.project:first').html();
+	var currResults = []; //títulos actualmente mostrados.
 	var browse = {
 		loadTag : function(){
 			currResults = [];
