@@ -1,0 +1,66 @@
+﻿link(rel="stylesheet", href="/libs/fineuploader/fineuploader-3.5.0.css")
+link(rel="stylesheet", href="/css/project.css")
+div#panel
+	div#panTab
+		span.verticalCenter >>
+	form#multiple
+		div#fileUploader
+			div#dropZone
+		br 
+		| Layer:
+		input(type="text", name="layer", size="30") 
+		br 
+		| Timestamp:
+		br
+		input(type="text", name="from", size="7") 
+		| - 
+		input(type="text", name="to", size="7")
+		br
+		input(type="submit", value="submit")
+div#project
+	meta#fragCount(count="#{fragCount}")
+	div#proyInfo
+		div#stats
+			| Repp : #{stats.reputation}
+			br
+			| Vp : #{stats.views}
+			br
+			| Act : #{stats.activity}
+			br
+			| Dev : #{stats.development}
+			br
+			a.open(href = "/log/#{project}") View Log
+			if isMember
+				|  | 
+				a#nIssue(href = "/loadIssueForm/#{project}") New Issue
+		div#issues
+			each i in issues
+				div.issue
+					h2
+						a.expand(href="##{i.title}") #{i.title}
+					div.content !{i.content}
+					span.author by #{i.author} - 
+					span.date on #{i.date} 
+	div#script 
+		a.open(href = "/script/#{project}") Script 
+		if isMember
+			| |   
+			a.load(href="/NewScene") New Scene
+			| | 
+			a.load(href = "/NewFragment") Add fragment
+	div#timeline
+		div.bw
+			span.verticalCenter <
+		div.fw
+			span.verticalCenter >
+		div#tlView
+			div#tlIn
+	div#frames
+		div.bw
+			span.verticalCenter <
+		div.fw
+			span.verticalCenter >
+		div#frView
+			div#frIn
+	div#fragmentInfo
+	div#loaded

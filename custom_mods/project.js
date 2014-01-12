@@ -78,7 +78,7 @@ module.exports = function(){
 					? true
 					: false;
 				projectMembers[project] = ret[0].members.slice(0);
-				res.render('project',{
+				res.render('studio',{
 					isMember : isMember,
 					members : ret[0].members,
 					stats : ret[0].stats,

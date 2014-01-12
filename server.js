@@ -16,8 +16,8 @@ console.log("running");
 
 /* Usar nib en Stylus */
 function compile(str, path) {
-console.log("Parsing css");
-return stylus(str).set('filename', path).use(nib());
+	console.log("Parsing css");
+	return stylus(str).set('filename', path).use(nib());
 }
 
 /* Configuraciones de los módulos */
@@ -27,8 +27,9 @@ app.use(express.bodyParser());
 app.use(stylus.middleware({
    src: __dirname + '/styl',
    dest: __dirname + '/public/css',
-   compile: compile
- }));
+   compile: compile,
+   force: true
+}));
 app.use(express.static('./public')); //esto debe ir después de stylus
 
 /*Global Variables*/
