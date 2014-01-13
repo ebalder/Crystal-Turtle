@@ -4,10 +4,16 @@ define(function(){
 	});
 	$(".data, .paragraph").on('click', function(ev){
 		var $container = $(ev.target);
-		var aux = $container.text();
-		var html = $container.hasClass('paragraph')
-			? '<textarea value="' + aux + '" cols="20" rows="4"/>'
-			: '<input type="text" value="' + aux + '"/>';
+		if($container.is('textarea') || $container.is('input') ){
+			return false;
+		}
+		var aux = $container.text() == '---' ? '' : $container.text();
+		var html = aux;
+		if($container.hasClass('paragraph')){
+			html = '<textarea cols="20" rows="4">'+ aux +'</textarea>';
+		}else if ($container.hasClass('data')){
+			html = '<input type="text" value="' + aux + '"/>';
+		}
 		$container.empty().html(html);
 		var $input = $container.find('input, textarea');
 		$input.focus();
@@ -23,9 +29,12 @@ define(function(){
 					$container.html(submit.value);
 					$.post('/submitProfileData', submit, function(data){
 					});
-				} else{
-					$container.empty();
-					$container.html(aux);
+				} 
+				$container.empty();
+				if ($input.val() == ''){
+					$container.html('---');
+				} else {
+					$container.html($input.val());
 				}
 			}
 		});

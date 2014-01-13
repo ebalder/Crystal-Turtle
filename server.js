@@ -61,7 +61,7 @@ app.get('/newFragment', modFrag.loadForm);
 app.get('/project/:project', openMain);
 app.get('/projectForm', modProj.loadForm);
 app.get('/script/:project', openMain);
-app.get('/user/:user', modUser.openProfile);
+app.get('/user/:user', openMain);
 app.get('/userForm', modUser.loadForm);
 
 /* POST */
