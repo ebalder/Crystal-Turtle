@@ -1,4 +1,4 @@
-define(['studio/carrousel'], function(carrousel){
+define(['studio/carrousel',  'studio/canvas'], function(carrousel, canvas){
 	/* ToDo: make a studioUtil module with a parseTs method */
 	var timestamp = null;
 	var index = null;
@@ -32,8 +32,8 @@ define(['studio/carrousel'], function(carrousel){
 		fragInfo : function(ev){
 			this.timestamp = $(ev.currentTarget).find('.timestamp').text();
 			this.index = $('.fragment').index(ev.currentTarget);
-			var json ={
-				selection: index,
+			var json = {
+				selection: this.index,
 				sid : sessionStorage.sid
 			};
 			$.post('/fragmentInfo', json, self.showData);	
@@ -42,6 +42,7 @@ define(['studio/carrousel'], function(carrousel){
 			carrousel.parseTs(ev.target);
 		},
 		showData : function(data){
+			console.log('showData');
 			$('#fragmentInfo').empty();
 			var imgindex;
 			$("#fragmentInfo").html(data); 
@@ -59,12 +60,9 @@ define(['studio/carrousel'], function(carrousel){
 			var n = $(ev.target).attr("n");
 			this.layer = ev.target.href.split('/')[5];
 			this.layern = $("#layers .layer a").length - $("#layers .layer a").index(ev.target) - 1;
-			typeof(_initCanvas) == "function"
-				? delete _initCanvas
-				: null;
 			$.post(ev.target.href,{name : n, timestamp : timestamp, fragment : index}, function(data){ 
 				$('#loaded').html(data);
-				_initCanvas(); //falta acción para eliminar el script, quizà haciendo el canvas otro objeto
+				canvas.openLayer(); 
 			});
 			return false;
 		},

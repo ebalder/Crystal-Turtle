@@ -1,5 +1,5 @@
 define(['lib/jquery', 'navigation'], function($, nav){
-	this.submit = function(){
+	var submit = function(){
 		var remember = $('.dialog input[name="remember"]:checked').length > 0 ? true : false;
 		$.post('/login', $("#login").serialize(), function(data){
 			console.log(remember);
@@ -23,5 +23,5 @@ define(['lib/jquery', 'navigation'], function($, nav){
 			nav.login();
 		});
 	};
-	return this;
+	return submit;
 });

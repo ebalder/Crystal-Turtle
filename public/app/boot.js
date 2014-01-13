@@ -1,11 +1,11 @@
 
 requirejs.config({
-	baseUrl : '/js/modules',
+	baseUrl : '/app/modules',
 	paths : {
-		lib : '/libs',
-		project : '/js/modules/studio/boot',
-		studio : '/js/modules/studio',
-		'lib/jquery' : '/libs/jquery-2.0.3.min'
+		lib : '/lib',
+		project : '/app/modules/studio/boot',
+		studio : '/app/modules/studio',
+		'lib/jquery' : '/lib/jquery-2.0.3.min'
 	},
     shim: {
         'lib/jquery-ui': {
@@ -15,9 +15,13 @@ requirejs.config({
     },
     map: { //only absolute paths work here
     	/* override every call to jquery with jquery-private */
-      '*': { 'lib/jquery': 'lib/jquery-wrapper' }, 
+      '*': { 
+      	'lib/jquery': 'lib/jquery-wrapper',
+      	'lib/peer': 'lib/peer-wrapper'
+      }, 
         /* except for the one in jquery-private */
-      'lib/jquery-wrapper': { 'lib/jquery': 'lib/jquery' }
+      'lib/jquery-wrapper': { 'lib/jquery': 'lib/jquery' },
+      'lib/peer-wrapper': { 'lib/peer': 'lib/peer' }
     }
 });
 
@@ -34,6 +38,7 @@ requirejs(['lib/jquery', 'lib/jquery-ui', 'navigation'], function($, ui, nav){
 		/* navigation events */
 		$('.load').on('click', nav.load);
 		$('.open').on('click', nav.open);
+		$('.popup').on('click', nav.dialog);
 		$('.logout').on('click', nav.logout);
 		/* open hashbang'd path */
 		if(window.location.pathname != '/'){

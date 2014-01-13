@@ -1,5 +1,5 @@
 
-define(['lib/jquery'], function(){
+define(['lib/jquery', 'lib/popgen'], function($, popgen){
 	/* private vars */
 	var test = 10;
 	function destroyDialog(event){
@@ -12,6 +12,65 @@ define(['lib/jquery'], function(){
 	}
 
 	var navigation = {
+		/* When there is a dialog or adition to the current page */
+		dialog : function(ev){ 
+			var form = popgen.form({
+				id: 'testForm',
+				target: 'http://google.com',
+				waitResponse: true,
+				successResp: 'success!',
+				failResp: 'error',
+				timeout: 15000,
+				onResponse: 'event',
+				onError: 'event',
+				onSuccess: 'event', 
+				onSubmit: function(){},
+				fields : {
+					'text' : {
+						type: 'text',
+						label: 'Input Text: ',
+						id: 'testText'
+					},
+					'select' : {
+						type: 'select',
+						label: 'Select: ',
+						id: 'testSelect',
+						options: {
+							opt1: 'Option 1',
+							opt2: 'Option 2',
+							opt3: 'Option 3'
+						}
+					},
+					'dataList' : {
+						type: 'list',
+						label: 'Data List: ',
+						id: 'testData',
+						options: {
+							opt1: 'Option 1',
+							opt2: 'Option 2',
+							opt3: 'Option 3'
+						}
+					},
+					'radio' : {
+						type: 'radio',
+						label: 'testRadio',
+						id: 'testRadio',
+						options: {
+							opt1: 'Option 1',
+							opt2: 'Option 2',
+							opt3: 'Option 3'
+						}
+					},
+					'submit' : {
+						type: 'submit',
+						value: 'Submit'
+					}
+				}
+			});
+			console.log(form.parentElement.className);
+			form.parentElement.className = 'dialog';
+			return false;
+		},
 		login : function(){
 			if (localStorage.sid != null){
 				sessionStorage.user = localStorage.user;
@@ -52,7 +111,7 @@ define(['lib/jquery'], function(){
 				$('.dialog').css({'z-index' : 99});
 				requirejs([path], function(dialog){
 					$('.dialog form').one('submit', function(){
-						dialog.submit();
+						dialog();
 						$('body').trigger('click'); //close panel if opened
 						return false;
 					});

@@ -1,15 +1,8 @@
 
-define(function(){
-	function _initCanvas(){
-		canvas = document.getElementById('canvas');
-		imagen = document.getElementById('imagen');
-		ctx = canvas.getContext('2d');
-		imgctx = imagen.getContext('2d');
-		canvas.onmousedown = press;
-		ctx.strokeStyle = "rgba(200,0,0,1)";
-		prevx = 0, prevy = 0;
-		_liveP2p(canvas);
-	}
+define(['studio/liveP2p'], function(live){
+	
+	var ctx;
+
 	function press(ev){
 		var x = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
 		var y = ev.clientY + document.body.scrollTop + document.documentElement.scrollTop - canvas.offsetTop;
@@ -51,5 +44,18 @@ define(function(){
 			document.onmouseup = null;
 		}
 	}
-	return 1;
+
+	function openLayer () {
+		var canvas = document.getElementById('canvas');
+		ctx = canvas.getContext('2d');
+		canvas.onmousedown = press;
+		ctx.strokeStyle = "rgba(200,0,0,1)";
+		prevx = 0, prevy = 0;
+		live.start();
+	}
+
+	console.log('openLayer');
+	return {
+		openLayer : openLayer
+	};
 });
