@@ -17,9 +17,9 @@ define(['studio/pinboard'], function(pinboard){
 		for (var i = 0; i <= last; i++){
 			addClip(timelineInner);
 		}
-		$("#tlIn").css({"width" : 182 * last});
+		$("#tlIn").css({"width" : 182 * (last+1)});
 		/*======= Load visible fragments ======*/
-		(Math.ceil(bodyWidth / 182)) > last
+		(Math.ceil(bodyWidth / 182)) > (last+1)
 			/* All clips fit in the timeline */
 			? self.loadFrags(0, last)
 			/* Load only clips that fit */
@@ -174,4 +174,4 @@ define(['studio/pinboard'], function(pinboard){
 	var self = carrousel;
 	_init();
 	return carrousel;
-})
+});

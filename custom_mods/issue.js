@@ -1,7 +1,7 @@
 /*Issues module*/
 module.exports = function(){
 	function loadNewIssue(req, res){
-		res.render('NewIssue');
+		res.render('newIssue');
 	}
 	function submitIssue(req, res){
 		var project = req.headers['referer'].split("/")[4];

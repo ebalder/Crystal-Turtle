@@ -1,5 +1,5 @@
 
-define(['studio/liveP2p'], function(live){
+define(['studio/liveP2p','studio/brushOptions'], function(live, brushOptions){
 	
 	var ctx;
 
@@ -49,11 +49,11 @@ define(['studio/liveP2p'], function(live){
 		var canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
 		canvas.onmousedown = press;
-		ctx.strokeStyle = "rgba(200,0,0,1)";
-		prevx = 0, prevy = 0;
+		brushOptions.start(ctx);
+		prevx = 0;
+		prevy = 0;
 		live.start();
 	}
-
 	console.log('openLayer');
 	return {
 		openLayer : openLayer

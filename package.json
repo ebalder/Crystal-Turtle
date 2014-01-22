@@ -1,32 +1,32 @@
 {
-    "name": "CrystalTurtle",
-    "version": "0.1.1",
-    "scripts": {
-        "start": "node server.js"
-    },
-    "license": "GPL3",
-    "dependencies" : {
-        "express" : "3.4.7",
-    	"consolidate" : "0.10.0",
-        "jade": "0.28.1",
-        "socket.io": "0.9.13",
-        "stylus" : "0.41.3",
-        "nib" : "1.0.1",
-        "arango.client" : "0.6.2",
-        "client-sessions" : "0.1.1",
-        "mkdirp" : "0.3.5",
-        "peer" : "0.2.0"
-    },
-    "amd": {},
-    "volo": {
+  "name": "CrystalTurtle",
+  "version": "0.1.1",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "GPL3",
+  "dependencies": {
+    "express": "3.4.7",
+    "consolidate": "0.10.0",
+    "jade": "0.28.1",
+    "socket.io": "0.9.13",
+    "stylus": "0.41.3",
+    "nib": "1.0.1",
+    "arango.client": "0.6.2",
+    "client-sessions": "0.1.1",
+    "mkdirp": "0.3.5",
+    "peer": "0.2.0"
+  },
+  "amd": {},
+  "volo": {
     "baseUrl": "./public/lib",
     "dependencies": {
-        "require": "http://requirejs.org/docs/release/2.1.9/comments/require.js",
-        "i18n": "https://raw.github.com/requirejs/i18n/latest/i18n.js",
-        "text": "https://raw.github.com/requirejs/text/latest/text.js",
-        "peerjs": "http://cdn.peerjs.com/0.3.7/peer.js",
-        "socket.i.o": "https://raw.github.com/LearnBoost/socket.io/master/lib/client.js",
-        "popgen": "https://raw.github.com/Lexas/PopGen/master/popgen.js"
+      "require": "http://requirejs.org/docs/release/2.1.9/comments/require.js",
+      "i18n": "https://raw.github.com/requirejs/i18n/latest/i18n.js",
+      "text": "https://raw.github.com/requirejs/text/latest/text.js",
+      "peerjs": "http://cdn.peerjs.com/0.3.7/peer.js",
+      "socket.i.o": "https://raw.github.com/LearnBoost/socket.io/master/lib/client.js",
+      "popgen": "https://raw.github.com/Lexas/PopGen/master/popgen.js"
     }
-    }
+  }
 }

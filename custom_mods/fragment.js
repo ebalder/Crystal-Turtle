@@ -1,7 +1,7 @@
 /*Fragments management module*/
 module.exports = function(){
 	function loadNewForm(req,res){
-		res.render('NewFragment');
+		res.render('newFragment');
 	}
 	function loadFragmentInfo(req, res){
 		var project = req.headers['referer'].split('/')[4];
@@ -35,7 +35,6 @@ module.exports = function(){
 					found = false;
 					for (var i in dLayers[0].fragments){ //cada fragmento en la capa
 						if(dLayers[0].fragments[i].index == index){
-							console.log("aeiou");
 							cLayers.unshift(dLayers[0].name);
 							dLayers.shift();
 							found = true;
@@ -54,6 +53,7 @@ module.exports = function(){
 				ret[0].fragment.lines == null
 					? ret[0].fragment.lines = []
 					: null;
+					console.log(isMember);
 				res.render("FragmentInfo", {
 					isMember : isMember,
 					text : entries.text,

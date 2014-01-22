@@ -128,11 +128,12 @@ define(['lib/jquery', 'lib/popgen'], function($, popgen){
 			var patt = new RegExp("^\/user\/");
 			if(patt.test(path)){
 				path = "userProfile";
-			}  
-			patt = new RegExp("^\/project\/");
-			if(patt.test(path)){
-				path = "project";
-			} 
+			}else {
+				patt = new RegExp("^\/project\/");
+				if(patt.test(path)){
+					path = "project";
+				} 
+			}
 			window.history.pushState(url, url, url);
 			$.post(url, sessionStorage, function(data){
 				$('#area').html(data);
@@ -162,4 +163,4 @@ define(['lib/jquery', 'lib/popgen'], function($, popgen){
 		stopPropagation : stopPropagation
 	};
 	return navigation;
-})();
+});
