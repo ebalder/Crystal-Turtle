@@ -35,7 +35,6 @@ module.exports = function(){
 					found = false;
 					for (var i in dLayers[0].fragments){ //cada fragmento en la capa
 						if(dLayers[0].fragments[i].index == index){
-							console.log("aeiou");
 							cLayers.unshift(dLayers[0].name);
 							dLayers.shift();
 							found = true;

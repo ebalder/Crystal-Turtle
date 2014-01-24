@@ -1,5 +1,9 @@
 
-define(['studio/pinboard'], function(pinboard){
+define(function(require){
+	var Scene = require('model/scene');
+	var Clip = require('model/clip');
+	var pinboard = require('studio/pinboard');
+
 	var fps = 30;
 	var last = $('meta#fragCount').attr('count');
 	var lastFrame = 3000;
@@ -10,6 +14,13 @@ define(['studio/pinboard'], function(pinboard){
 	var cssBw = { left: '+=' + 182*3 };
 	var cssFw = { left: '-=' +182*3 };
 
+	// var scenes = [];
+	// scenes[0] = new Scene();
+	// scenes[0].newClip();
+	// var clips = scenes[0].clips;
+
+	var clips = [new Clip()];
+	activeClip = 0;
 
 	function _init(){ 
 		/*======== Create fragment list =====*/
@@ -69,8 +80,9 @@ define(['studio/pinboard'], function(pinboard){
 			}
 		});
 		/* ======= Set events ======= */
-		$('.frame').on('click', pinboard.frame);
-		$('.clip, .fragment').on('click', pinboard.fragInfo);
+		$('.frame').on('click', loadFrame);
+		/* ToDo: change .fragment class to .clip on html */
+		$('.clip, .fragment').on('click', loadClip);
 		$("#timeline .fw").on('click', self.forward);
 		$("#timeline .bw").on('click', self.backward);
 		$("#frames .fw").on('click', self.fwFrame);
@@ -81,7 +93,7 @@ define(['studio/pinboard'], function(pinboard){
 	function addClip(timelineInner){
 		var clip, thumb, timestamp;
 		clip = document.createElement('span');
-		/* ToDo remoce 'fragment' class */
+		/* ToDo remove 'fragment' class */
 		clip.className = 'clip, fragment';
 		thumb = document.createElement('span');
 		thumb.className = 'thumb';
@@ -89,6 +101,20 @@ define(['studio/pinboard'], function(pinboard){
 		timestamp.className = 'timestamp';
 		$(clip).append(thumb, timestamp);
 		$(timelineInner).append(clip);
+	}
+
+	function loadClip (ev) {
+		var target = ev.currentTarget;
+		var timestamp = target.getElementsByClassName('timestamp')[0].innerHTML;
+		var index = $(target).index();
+		clips[index] = new Clip();
+		activeClip = index;
+		pinboard.fragInfo(ev);
+	}
+
+	function loadFrame(ev){
+		var index = $(ev.currentTarget).index();
+		clips[activeClip].openFrame(index);
 	}
 
 	var carrousel = {
@@ -128,7 +154,11 @@ define(['studio/pinboard'], function(pinboard){
 			}
 			return 1;
 		},
+		/* ToDo: put on a "project" module (load method) */
 		loadFrags : function(start, end){
+			var clip = new Clip(start, end);
+			clips.push(clip);
+
 			fragRange = [start, end];
 			$.post('/fragmentThumbs', {range: fragRange}, function(data){
 				var ts = data.timestamps;

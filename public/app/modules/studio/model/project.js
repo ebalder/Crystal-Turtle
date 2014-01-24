@@ -1,8 +1,8 @@
 
 define(function(require){
 	var Timestamp = require('model/timestamp');
-	var Clip = require('model/clip');
-	// var carrousel = require('studio/carrousel');
+	var Scene = require('model/scene');
+	var carrousel = require('studio/carrousel');
 
 	function create() {
 	}
@@ -13,17 +13,12 @@ define(function(require){
 	function join(to){
 	}
 	function load(ts){	
-		var curr = {
-			timestamp: new Timestamp(ts)
-		};
-		self.clips.push(curr);
+		
+		console.log(cfs.open);
+		document.documentElement.dispatchEvent(cfs.open);
 	}
-	function newClip(){
-		var clips = this.clips;
-		var curr = clips.length;
-		clips[curr] = new Clip();
-		clips[curr].create;
-		console.log(this);
+	function newScene(){
+		
 	}
 	function preview(){
 	}
@@ -32,29 +27,30 @@ define(function(require){
 	function split(point){
 	}
 
-	function Scene(){
+	function Project(){
 		this.clips = [];
 		this.start;
 		this.end;
+		this.length;
 		this.index;
 		this.reference;
 
-
 		/* Constructor */
 	}
-	Scene.prototype = {
+
+	var self = Project;
+
+	self.prototype = {
 		create: create,
 		del: del,
 		duplicate: duplicate,
 		join: join,
 		load: load,
-		newClip: newClip,
 		preview: preview,
 		save: save,
 		split: split,
 	};
-	var self = Scene;
 
-	return Scene;
+	return Project;
 
 })

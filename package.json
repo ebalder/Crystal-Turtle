@@ -26,7 +26,8 @@
         "text": "https://raw.github.com/requirejs/text/latest/text.js",
         "peerjs": "http://cdn.peerjs.com/0.3.7/peer.js",
         "socket.i.o": "https://raw.github.com/LearnBoost/socket.io/master/lib/client.js",
-        "popgen": "https://raw.github.com/Lexas/PopGen/master/popgen.js"
+        "popgen": "https://raw.github.com/Lexas/PopGen/master/popgen.js",
+        "tinyemitter": "https://raw.github.com/scottcorgan/tiny-emitter/master/dist/tinyemitter.js"
     }
     }
 }

@@ -4,6 +4,7 @@ requirejs.config({
 	paths : {
 		lib : '/lib',
 		project : '/app/modules/studio/boot',
+		model: '/app/modules/studio/model',
 		studio : '/app/modules/studio',
 		'lib/jquery' : '/lib/jquery-2.0.3.min'
 	},

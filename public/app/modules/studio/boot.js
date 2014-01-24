@@ -1,6 +1,15 @@
 
 
-define(['studio/carrousel', 'studio/sidePanel', 'studio/issues'], function(carrousel, panel, issues){
+define(function(require){
+
+	var carrousel = require('studio/carrousel');
+	var panel = require('studio/sidePanel');
+	var issues = require('studio/issues');
+	// var Project = require('model/project');
+
+	// var projectM = new Project();
+	// projectM.load();
+
 	//var carrousel = require('studio/carrousel');
 	$("#nIssue").on('click', issues.new);
 	$('a.expand').on('click', function(ev){

@@ -1,19 +1,23 @@
 
 define(['lib/peer'], function(peer){
 	
-		console.log('AAAAA');
 	var id = sessionStorage.sid;
 	var prevX = null;
 	var prevY = null;
+
+	var canvas, ctx;
 
 	function incomingData(data){
 		if(data.acc == "stroke"){
 			var x = data.x;
 			var y = data.y;
+			canvas = document.getElementById('canvas');
+			ctx = canvas.getContext('2d');
 			ctx.beginPath();
 			ctx.moveTo(prevX, prevY);
 			ctx.lineTo(x, y);
 			ctx.stroke();
+
 			prevX = x;
 			prevY = y;
 		}

@@ -1,5 +1,5 @@
 
-declare(function(){
+define(function(){
 	/* Returns a costructor */
 	return function(){
 		this.properties;

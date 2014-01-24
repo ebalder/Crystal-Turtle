@@ -1,6 +1,6 @@
 
 define(function(require){
-	var Object = require('object');
+	var Object = require('model/object');
 
 	/* Returns a constructor */
 	return function(reference){

@@ -1,43 +1,69 @@
 
 define(function(require){
-	var Timestamp = require('timestamp');
-	var Frame = require('frame');
+	var Timestamp = require('model/timestamp');
+	var Frame = require('model/frame');
+
+
+	var canvas = require('studio/canvas');
+
+	var pinboard = require('studio/pinboard');
 	
-	return function(){
+	function openFrame (index) {
+
+		var canvas = document.getElementById('canvas');
+		var ctx = canvas.getContext('2d');
+		if(this.active){
+			this.frames[this.active] = canvas.toDataURL();
+		}
+		if(this.frames[index]){
+			var img = new Image();
+			img.onload = function(){
+			  ctx.drawImage(img,0,0);
+			};
+			img.src = this.frames[index];
+		}
+		else {
+			canvas.width = canvas.width;
+		}
+		this.active = index
+	}
+	function del(){
+	}
+	function duplicate(dest, linked){
+	}
+	function join(to){
+	}
+	function load(){
+		// pinboard.fragInfo()
+	}
+	function move(dest){
+	}
+	function create(start, end, script){
+	}
+	function preview(){
+	}
+	function resize(len){
+	}
+	function save(){
+	}
+	function scribble(){
+	}
+	function split(point){
+	}
+
+	function Clip(){
 		this.end;
-		this.frames;
+		this.active;
+		this.frames = [];
 		this.index;
 		this.reference;
 		this.script;
 		this.start;
-
-		var self = this;
-
-		this.prototype = {
-			delete: function(){
-			},
-			duplicate: function(dest, linked){
-			},
-			join: function(to){
-			},
-			load: function(){
-			},
-			move: function(dest){
-			},
-			new: function(start, end, script){
-			},
-			preview: function(){
-			},
-			resize: function(len){
-			},
-			save: function(){
-			},
-			scribble: function(){
-			},
-			split: function(point){
-			},
-		};
-
-		/* Constructor */
 	}
+
+	Clip.prototype = {
+		openFrame : openFrame
+	};
+
+	return Clip;
 })

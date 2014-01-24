@@ -1,9 +1,10 @@
-define(['studio/carrousel',  'studio/canvas'], function(carrousel, canvas){
+define(['studio/canvas'], function(canvas){
 	/* ToDo: make a studioUtil module with a parseTs method */
 	var timestamp = null;
 	var index = null;
 	var layer = null;
 	var layern = null;
+
 
 	var pinboard = {
 		board : function(ev){
@@ -39,7 +40,7 @@ define(['studio/carrousel',  'studio/canvas'], function(carrousel, canvas){
 			$.post('/fragmentInfo', json, self.showData);	
 		},
 		frame : function(ev){
-			carrousel.parseTs(ev.target);
+			// carrousel.parseTs(ev.target);
 		},
 		showData : function(data){
 			console.log('showData');
@@ -55,6 +56,8 @@ define(['studio/carrousel',  'studio/canvas'], function(carrousel, canvas){
 				});
 			});
 			$(".group").on('click', self.board);
+			
+			$('a[href*="storyboard"]').trigger('click');
 		},
 		fragLayer : function(ev){
 			var n = $(ev.target).attr("n");

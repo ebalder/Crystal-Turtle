@@ -1,33 +1,36 @@
 
 define(function(require){
-	var Timestamp = require('timestamp');
-	var Camera = require('camera');
-	var Layer = require('layer');
-	
-	return function(reference){
-		this.bound = []; /* frame extension */
-		this.camera;
-		this.layers = [];
-		this.reference = reference;
-		this.timestamp;
+	var Timestamp = require('model/timestamp');
+	var Camera = require('model/camera');
+	var Layer = require('model/layer');
 
-		var self = this;
+	function Frame(reference){
+			this.bound = []; /* frame extension */
+			this.camera;
+			this.layers = [];
+			this.reference = reference;
+			this.timestamp;
 
-		this.prototype = {
-			delete: function(){
-			},
-			duplicate: function(){
-			},
-			load: function(){
-			},
-			move: function(){
-			},
-			new: function(){
-			},
-			save: function(){
-			},
-		};
-		
-		/* Constructor */
+			var self = this;
+
+			
+			
+			/* Constructor */
 	}
+
+	Frame.prototype = {
+		delete: function(){
+		},
+		duplicate: function(){
+		},
+		load: function(){
+		},
+		move: function(){
+		},
+		new: function(){
+		},
+		save: function(){
+		},
+	};
+	return Frame;
 })
