@@ -1,7 +1,7 @@
 /*Fragments management module*/
 module.exports = function(){
 	function loadNewForm(req,res){
-		res.render('NewFragment');
+		res.render('newFragment');
 	}
 	function loadFragmentInfo(req, res){
 		var project = req.headers['referer'].split('/')[4];
@@ -53,6 +53,7 @@ module.exports = function(){
 				ret[0].fragment.lines == null
 					? ret[0].fragment.lines = []
 					: null;
+					console.log(isMember);
 				res.render("FragmentInfo", {
 					isMember : isMember,
 					text : entries.text,

@@ -1,9 +1,9 @@
 /*canvas module*/
 module.exports = function(){
 	function loadLayer(req, res){
-		res.render("Canvas");
+		res.render("canvas");
 	}
-		function submitCanvas(req, res){
+	function submitCanvas(req, res){
 		fragment = {
 			planes : req.body.planes.length
 		};

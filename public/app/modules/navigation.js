@@ -96,6 +96,7 @@ define(['lib/jquery', 'lib/popgen'], function($, popgen){
 				$('a[href="/login"], a[href="/userForm"]').show();
 			});
 			$('body').trigger('click'); //close panel if opened
+			$('#area').empty();
 			return false;
 		},
 		/* When there is a dialog or adition to the current page */
@@ -105,6 +106,7 @@ define(['lib/jquery', 'lib/popgen'], function($, popgen){
 			$('body').trigger('click'); //close panel if opened
 			$.get(url + "?sid=" + sessionStorage.sid, function(data){
 				$('body').append('<div class="dialog">' + data + '</div>');
+				$('.dialog form input').first().focus();
 				$('.dialog').on('click', stopPropagation);
 				$('.dialog').css({'z-index' : 99});
 				requirejs([path], function(dialog){
@@ -126,7 +128,12 @@ define(['lib/jquery', 'lib/popgen'], function($, popgen){
 			var patt = new RegExp("^\/user\/");
 			if(patt.test(path)){
 				path = "userProfile";
-			}  
+			}else {
+				patt = new RegExp("^\/project\/");
+				if(patt.test(path)){
+					path = "project";
+				} 
+			}
 			window.history.pushState(url, url, url);
 			$.post(url, sessionStorage, function(data){
 				$('#area').html(data);
@@ -142,16 +149,18 @@ define(['lib/jquery', 'lib/popgen'], function($, popgen){
 		/* when the user reaches the current page via url (paths are simulated) */
 		hash : function(path){
 			path = path.split('/')[1];
+			if(path == 'user'){
+				path = 'userProfile';
+			}
 			$.post(window.location.href, sessionStorage, function(data){
 				$('#area').html(data);
 				$('#area .load').on('click', navigation.load);
 				$('#area .open').on('click', navigation.open);
 			});
 			requirejs([path], function(page){
-
 			});
 		},
 		stopPropagation : stopPropagation
 	};
 	return navigation;
-})();
+});

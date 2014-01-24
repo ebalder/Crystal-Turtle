@@ -24,7 +24,7 @@ module.exports = function(){
 						}
 					}
 				}
-				res.render('InfoBoard', {
+				res.render('infoBoard', {
 					project : project,
 					entries : related
 				});

@@ -1,26 +1,27 @@
 link(rel="stylesheet", href="/css/userProfile.css")
-
+-var classData = '' , classParagraph = ''
 img#avatar(src="/uImages/#{usr.name}.jpg")
 div#userInfo
 	if(owner)
 		span#avatar
 			input#uImage(type="file") Change user image
+		classData = 'data' 
+		classParagraph = 'paragraph'
 	| Username: 
 	span#name #{usr.name}
-	| Location: 
-	span.data#location #{usr.location}
 	| Email: 
-	span.data#email #{usr.email}
-	| Bio: 
-	span.paragraph#bio #{usr.bio}
+	span(class=classData)#email #{usr.email}
+	| Location: 
+	span(class=classData)#location #{usr.location}
 	| Projects: 
 	span#projects
 		each val, key in usr.projects
 			span 
 				a(href="/project/#{key}") #{key} (#{val.ap})
+	| Bio: 
+	span(class=classParagraph)#bio #{usr.bio}
 	| Skills: 
-	span.paragraph#skills #{usr.skills}
+	span(class=classParagraph)#skills #{usr.skills}
 	| Studies: 
-	span.paragraph#studies #{usr.studies}
-
-
+	span(class=classParagraph)#studies #{usr.studies}
+	

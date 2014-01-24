@@ -8,12 +8,12 @@ define(['studio/canvas'], function(canvas){
 
 	var pinboard = {
 		board : function(ev){
-			var project = window.location.pathname.split( '/' )[2];
+			var project = window.location.pathname.split( '/' )[1];
 			var group = {
 				related : $(ev.target).parents('.entry').find('.related a').text().split(', '),
 				base : $(ev.target).parents('.entry').find('a.group').text()
 			};
-			$.post('/InfoBoard/' + project, group, function(data){
+			$.post('/infoBoard/' + project, group, function(data){
 				$('#area').after('<div id="area2">' + data + '</div>');
 				$('#area').hide();
 				$.each($('.entry img'), function(index, value){

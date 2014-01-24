@@ -1,0 +1,20 @@
+
+a.back << Go back
+each i in entries
+	div.entry
+		a.group
+			h2 #{i.title}
+		case i.type
+			when "image"
+				img.biggerImg(src = "/project/#{project}/#{i.title}") test
+			when "link"
+				a.eLink(href="#{i.content}") #{i.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
+			when "text"
+				span.fullContent #{i.content}
+		br
+		div.related related entries:
+			each r in i.related
+				a #{r}
+		div.tags tags:
+			each r in i.tags
+				a #{r}

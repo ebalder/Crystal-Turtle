@@ -1,5 +1,5 @@
 
-define(['studio/liveP2p', 'model/frame'], function(live, frame){
+define(['studio/liveP2p', 'model/frame', 'studio/brushOptions'], function(live, frame, brushOptions){
 
 	var ctx;
 
@@ -56,7 +56,6 @@ define(['studio/liveP2p', 'model/frame'], function(live, frame){
 
 	console.log('openLayer');
 	return {
-		openLayer : openLayer,
-		ctx : ctx
+		openLayer : openLayer
 	};
 });
