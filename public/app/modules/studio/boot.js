@@ -9,8 +9,7 @@ define(function(require){
 
 	// var projectM = new Project();
 	// projectM.load();
-
-	//var carrousel = require('studio/carrousel');
+	
 	$("#nIssue").on('click', issues.new);
 	$('a.expand').on('click', function(ev){
 	    $('body').one('click', destroyDialog);
