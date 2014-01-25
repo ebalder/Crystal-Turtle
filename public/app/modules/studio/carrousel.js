@@ -1,6 +1,6 @@
 
 define(function(require){
-
+	console.log('|||||||||||1');
 	var Scene = require('model/scene');
 	var Clip = require('model/clip');
 	var pinboard = require('studio/pinboard');
