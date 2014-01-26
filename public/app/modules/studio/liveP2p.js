@@ -1,5 +1,5 @@
 
-define(['lib/peer'], function(peer){
+define(['lib/peer', 'lib/socket.io'], function(peer, io){
 	
 	var id = sessionStorage.sid;
 	var prevX = null;
