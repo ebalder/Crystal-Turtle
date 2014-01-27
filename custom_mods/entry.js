@@ -1,7 +1,7 @@
 /*Entry module*/
 module.exports = function(){
 	function loadEntryForm(req, res){
-		res.render('EntryForm');
+		res.render('entryForm');
 	}
 	function submitEntry(req, res){
 		var project = req.headers['referer'].split("/")[4];

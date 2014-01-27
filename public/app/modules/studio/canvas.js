@@ -49,7 +49,7 @@ define(['studio/liveP2p', 'model/frame', 'studio/brushOptions'], function(live, 
 		var canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
 		canvas.onmousedown = press;
-		ctx.strokeStyle = "rgba(200,0,0,1)";
+		brushOptions.start(ctx);
 		prevx = 0, prevy = 0;
 		live.start();
 	}

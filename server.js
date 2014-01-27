@@ -59,7 +59,7 @@ app.get('/newIssue', modIssue.loadForm);
 app.get('/log/:project', openMain);
 app.get('/login', modSession.loadForm);
 app.get('/newFragment', modFrag.loadForm);
-app.get('/project/:project', modProj.open);
+app.get('/project/:project', openMain);
 app.get('/projectForm', modProj.loadForm);
 app.get('/script/:project', openMain);
 app.get('/user/:user', openMain);
