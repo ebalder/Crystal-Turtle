@@ -44,9 +44,13 @@ define(['studio/canvas'], function(canvas){
 		},
 		showData : function(data){
 			console.log('showData');
-			$('#fragmentInfo').empty();
+			$('#entries').empty();
+			$('#fragScript').empty();
+			$('#layers').empty();
 			var imgindex;
-			$("#fragmentInfo").html(data); 
+			$("#entries").html($($(data)[0]).html()); 
+			$("#fragScript").html($($(data)[1]).html()); 
+			$("#layers").html($($(data)[2]).html()); 
 			$(".new").on('click', self.newEntry);
 			$(".layer a").on('click', self.fragLayer);
 			$.each($('#fragmentInfo img'), function(index, value){
@@ -56,7 +60,6 @@ define(['studio/canvas'], function(canvas){
 				});
 			});
 			$(".group").on('click', self.board);
-			
 			$('a[href*="storyboard"]').trigger('click');
 		},
 		fragLayer : function(ev){
@@ -72,7 +75,7 @@ define(['studio/canvas'], function(canvas){
 		newEntry : function(){
 			var img64 = '';
 			$.get("/entryForm", function(data){ 
-				$('#contents').html(data);
+				$('#fragmentInfo').html(data);
 				$('input[name="timestamp"]').val(timestamp);
 				$('#entryForm').on('submit', function(ev){
 					$.post("/submitEntry", $('#entryForm').serialize() + '&fragment=' + index +'&sid=' + sessionStorage.sid , function(){
@@ -89,6 +92,7 @@ define(['studio/canvas'], function(canvas){
 							$('.msg').html("ok");
 						})
 					}
+					//$('#fragmentInfo').empty();
 					return false;
 				});
 				$('select[name="type"]').on('change', function(){
@@ -110,6 +114,9 @@ define(['studio/canvas'], function(canvas){
 							});
 							break
 					}
+				});
+				$('input[name="cancel"]').on('click',function(){
+					$('#fragmentInfo').empty();
 				});
 			});
 			return false;

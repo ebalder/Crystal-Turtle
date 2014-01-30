@@ -54,7 +54,7 @@ module.exports = function(){
 					? ret[0].fragment.lines = []
 					: null;
 					console.log(isMember);
-				res.render("FragmentInfo", {
+				res.render("fragmentInfo", {
 					isMember : isMember,
 					text : entries.text,
 					image : entries.image,

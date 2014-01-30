@@ -1,0 +1,64 @@
+div#entries
+	div#text Text entries
+		br
+		each e in text
+			div.entry
+				span.eTitle 
+					a.group(href="/infoBoard")
+						h2 #{e.title}
+				br
+				span.eBrief #{e.content.replace(/<[^>]*>/g, '').substr(0, 150)+"..."}
+				div.related related entries:
+					each r in e.related
+						a, #{r}
+				div.tags tags:
+					each r in e.tags
+						a, #{r}
+	div#link Link entries
+		br
+		each l in link
+			div.entry
+				a.group(href="/infoBoard")
+					h2 #{l.title}
+				br
+				a(href="#{l.content}") #{l.content.replace(/(www.|http|https|:\/\/)/g, '').substr(0, 80)+"..."}
+				div.related related entries:
+					each r in l.related
+						a, #{r}
+				div.tags tags:
+					each r in l.tags
+						a, #{r}
+	div#img Image entries
+		br
+		each i in image
+			div.entry
+				a.group(href="/infoBoard")
+					h2 #{i.title}
+				img(src = "/project/#{project}/#{i.title}") test
+				br
+				div.related related entries:
+					each r in i.related
+						a, #{r}
+				div.tags tags:
+					each r in i.tags
+						a, #{r}
+	a.new(href="#") New entry
+	div#fragmentInfo
+div#fragScript
+	pre [ #{annotation} ]
+	br
+	each line in lines
+		br
+		if line.action != undefined
+			i (#{line.action})
+		else 
+			b #{line.chara} 
+			| : #{line.dialog}
+div#layers
+	if isMember
+		each l in eLayers
+			div.layer.emptyLayer 
+				a(href="/layer/#{project}/#{l.name}", n=l, f=timestamp) #{l.name}
+		each l in cLayers
+			div.layer.contentLayer
+				a(href="/layer/#{project}/#{l}", n=l, f=timestamp) #{l}

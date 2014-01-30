@@ -60,13 +60,14 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 		$('#picker').click(pickColor);
 		$('.rgba input').on('focusout keypress', inputRGBA);
 		$('#strokeSize').on('focusout keypress', setStrokeSize);
+		$('#picker').on('mousemove',updatePreview);
 	}
 	function setRGBA(){
 	    color = 'rgba('+$('#red').val()+','+$('#green').val()+','+$('#blue').val()+','+$('#alpha').val()+')';
-	    preview.clearRect(0, 0, 50,50);
+	    preview.clearRect(0, 55, 50,50);
 	    preview.fillStyle = color;
 	    //preview.strokeStyle = color;
-	    preview.fillRect(0,0,50,50);
+	    preview.fillRect(0,55,50,50);
 	    //Set the color on preview to brush.
 	    brush.strokeStyle = color;
 	}
@@ -106,6 +107,17 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 	       	}
           	setRGBA();
       	}
+ 	}
+ 	function updatePreview(ev){
+ 		// getting user coordinates
+	    var x = ev.pageX - Math.round($('#picker').offset().left);
+    	var y = ev.pageY - Math.round($('#picker').offset().top);
+	    // getting image data and RGB values
+	    var img_data = picker.getImageData(x, y, 1, 1).data;
+	    preview.clearRect(0, 0, 50,50);
+	    preview.fillStyle = 'rgba('+img_data[0]+','+img_data[1]+','+img_data[2]+','+$('#alpha').val()+')';
+	    //preview.strokeStyle = color;
+	    preview.fillRect(0,0,50,50);
  	}
 	/*** Changes the stroke size ***/
   	function setStrokeSize(ev){

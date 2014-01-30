@@ -1,22 +1,22 @@
-﻿link(rel="stylesheet", href="/lib/fineuploader/fineuploader-3.5.0.css")
-link(rel="stylesheet", href="/css/project.css")
+﻿link(rel="stylesheet", href="/css/project.css")
 div#panel
 	div#panTab
 		span.verticalCenter >>
-	form#multiple
-		div#fileUploader
-			div#dropZone
-		br 
-		| Layer:
-		input(type="text", name="layer", size="30") 
-		br 
-		| Timestamp:
-		br
-		input(type="text", name="from", size="7") 
-		| - 
-		input(type="text", name="to", size="7")
-		br
-		input(type="submit", value="submit")
+	div#fragInfoContainer
+		div.fragInfo
+			ul
+				li
+					a(href="#entries") Entries
+				li
+					a(href="#fragScript") Script
+				li
+					a(href="#layers") Layers
+			div#entries
+				|Select a clip first.
+			div#fragScript
+				|Select a clip first.
+			div#layers
+				|Select a clip first.
 div#project
 	meta#fragCount(count="#{fragCount}")
 	div#proyInfo
@@ -62,5 +62,4 @@ div#project
 			span.verticalCenter >
 		div#frView
 			div#frIn
-	div#fragmentInfo
 	div#loaded

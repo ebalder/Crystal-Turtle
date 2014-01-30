@@ -6,7 +6,7 @@ sessions
 .*
 *~
 *.css
-public/libs
+public/lib
 public/Frames
 public/project
 public/uImages
@@ -16,4 +16,4 @@ asdf
 test/lib
 test/*/*.png
 *.orig
-Issues to fix.txt
+floobits
