@@ -17,7 +17,7 @@ div#userInfo
 	span#projects
 		each val, key in usr.projects
 			span 
-				a.open(href="/project/#{key}") #{key} (#{val.ap})
+				a(href="/project/#{key}") #{key} (#{val.ap})
 	| Bio: 
 	span(class=classParagraph)#bio #{usr.bio}
 	| Skills: 

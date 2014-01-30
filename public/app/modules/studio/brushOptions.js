@@ -1,12 +1,10 @@
 /*brushOptions is used to change the color and size of the brush.*/
 define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
-	//var canvas = document.getElementById('canvas');//the brush
 	var brush;
 	var pickerCanvas;
   	var picker;
   	var preview;
   	var color = '';
-	//Color picker image, ToDo: change image location for tortuguilla.
   	var img = new Image();
 	
 	function start(ctx){
@@ -51,7 +49,6 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 		    step: 1,
 		    value: 5,
 		    slide: function( event, ui ) {
-		        //ctx.lineWidth = $('#alpha').val();
 		        $('#strokeSize').val(ui.value);
 		        brush.lineWidth = $('#strokeSize').val();
 		    }
@@ -70,7 +67,6 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 	    color = 'rgba('+$('#red').val()+','+$('#green').val()+','+$('#blue').val()+','+$('#alpha').val()+')';
 	    preview.clearRect(0, 55, 50,50);
 	    preview.fillStyle = color;
-	    //preview.strokeStyle = color;
 	    preview.fillRect(0,55,50,50);
 	    //Set the color on preview to brush.
 	    brush.strokeStyle = color;
@@ -120,7 +116,6 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 	    var img_data = picker.getImageData(x, y, 1, 1).data;
 	    preview.clearRect(0, 0, 50,50);
 	    preview.fillStyle = 'rgba('+img_data[0]+','+img_data[1]+','+img_data[2]+','+$('#alpha').val()+')';
-	    //preview.strokeStyle = color;
 	    preview.fillRect(0,0,50,50);
  	}
 	/*** Changes the stroke size ***/
