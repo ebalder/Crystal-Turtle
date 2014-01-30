@@ -61,6 +61,10 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 		$('.rgba input').on('focusout keypress', inputRGBA);
 		$('#strokeSize').on('focusout keypress', setStrokeSize);
 		$('#picker').on('mousemove',updatePreview);
+		$('#eraser').on('click', eraseMode);
+		$('#clear').on('click', function(){
+			brush.clearRect(0, 0,$('#canvas').width(),$('#canvas').height());
+		});
 	}
 	function setRGBA(){
 	    color = 'rgba('+$('#red').val()+','+$('#green').val()+','+$('#blue').val()+','+$('#alpha').val()+')';
@@ -129,7 +133,16 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 	        brush.lineWidth = $('#strokeSize').val();
 	    }
     }
-
+    function eraseMode(){
+    	if($('#eraser>input:checkbox').is(':checked')){
+    		brush.globalCompositeOperation = 'destination-out';
+    		brush.strokeStyle = 'rgba(0,0,0,1)';
+    	}
+    	else{
+    		brush.globalCompositeOperation = 'source-over';
+    		setRGBA();
+    	}
+    }
     return{
     	start: start
     };

@@ -5,6 +5,7 @@ define(function(){
 	var currTags = []; //valor de tagInput
 	var template = $('.project:first').html();
 	var currResults = []; //títulos actualmente mostrados.
+
 	var browse = {
 		loadTag : function(){
 			currResults = [];
@@ -47,7 +48,6 @@ define(function(){
 					$('#results').prepend(add);
 					add = $('.project:first');
 					$(add).find('.title a').attr('href', '/project/' + data[i].title);
-					$(add).find('.title a').attr('class', 'open');
 					$(add).find('.title a').on('click', Navigation.open);
 					$(add).find('.title a').text(data[i].title);
 					$(add).find('.thumb').attr('src', data[i].thumb);

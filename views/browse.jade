@@ -15,7 +15,7 @@ form#filter
 		each p in projects
 			div.project
 				div.title
-					a.open(href="/project/#{p.title}") #{p.title}
+					a(href="/project/#{p.title}") #{p.title}
 				div.thumb
 					img(src="#{p.thumb}")
 				div.detail 

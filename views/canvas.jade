@@ -5,6 +5,7 @@ form
 	label Cargar una imagen
 	input(type ="file", name="canvasFile")
 	input#enviar(type="button", value="Enviar")
+input#clear(type="button", value="Clear")
 div.brushOptions
 	h3 Brush Options
 	div
@@ -24,10 +25,14 @@ div.brushOptions
 			|B: 
 			input#blue(type="number", value="0", min="0", max="255", size="3")
 		br
+		div#eraser
+			input(type="checkbox", default="false")
+			|Eraser mode
 		|Stroke Size: 
 		input#strokeSize(type="number",value="3", size="3")
 		|px
 		div#sizeSlider
+		
 br
 div#objetos
 	canvas#canvas(width="1200", height="650")
