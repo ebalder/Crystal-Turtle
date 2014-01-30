@@ -9,12 +9,13 @@ define(function(require){
 	var pinboard = require('studio/pinboard');
 	
 	function openFrame (index) {
-
+		console.log('active', this.active);
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
-		if(this.active){
+		if(typeof this.active == 'number'){
 			this.frames[this.active] = canvas.toDataURL();
 		}
+		canvas.width = canvas.width;
 		if(this.frames[index]){
 			var img = new Image();
 			img.onload = function(){
@@ -22,10 +23,8 @@ define(function(require){
 			};
 			img.src = this.frames[index];
 		}
-		else {
-			canvas.width = canvas.width;
-		}
-		this.active = index
+		this.active = index;
+		console.log(this.active);
 	}
 	function del(){
 	}

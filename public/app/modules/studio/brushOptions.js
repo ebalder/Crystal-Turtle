@@ -6,7 +6,7 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
   	var picker;
   	var preview;
   	var color = '';
-	//Color picker image, remberber to change image location for tortuguilla.
+	//Color picker image, ToDo: change image location for tortuguilla.
   	var img = new Image();
 	
 	function start(ctx){

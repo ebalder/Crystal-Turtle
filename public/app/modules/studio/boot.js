@@ -5,7 +5,6 @@ define(function(require){
 	// var Project = require('model/project');
 	// var projectM = new Project();
 	// projectM.load();
-	//var carrousel = require('studio/carrousel');
 
 	//Aquí no tiene efecto navigation.js, así que por ahora
 	//Se deja aqui la funcion de destroyDialog para que los issues funcionen.
