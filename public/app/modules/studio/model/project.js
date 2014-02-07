@@ -3,6 +3,8 @@ define(function(require){
 	var Timestamp = require('model/timestamp');
 	var Scene = require('model/scene');
 	var carrousel = require('studio/carrousel');
+	var canvas = require('studio/canvas');
+	var fs = require('fs');
 
 	function create() {
 	}
@@ -14,8 +16,6 @@ define(function(require){
 	}
 	function load(ts){	
 		
-		console.log(cfs.open);
-		document.documentElement.dispatchEvent(cfs.open);
 	}
 	function newScene(){
 		
@@ -27,8 +27,9 @@ define(function(require){
 	function split(point){
 	}
 
-	function Project(){
+	function Project(name){
 		this.clips = [];
+		this.name;
 		this.start;
 		this.end;
 		this.length;
@@ -36,11 +37,9 @@ define(function(require){
 		this.reference;
 
 		/* Constructor */
+		load(name);
 	}
-
-	var self = Project;
-
-	self.prototype = {
+	Project.prototype = {
 		create: create,
 		del: del,
 		duplicate: duplicate,

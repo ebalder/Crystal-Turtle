@@ -1,13 +1,37 @@
-canvas{
-border: 1px solid;
-display:block;
-position:absolute;
-z-index: 1;
-}
-#objetos {
-display:inline-block;
-margin:auto;
-margin-top:20px;
-width: 1200px;
-height: 650px;
-}
+canvas
+	border  1px solid
+	display block
+	position absolute 
+	z-index  1
+
+
+.brushOptions
+	width 430px
+.ui-accordion-header 
+    color #f5f3f4
+    background #303030
+    border-color #303030
+.ui-accordion-content 
+	position absolute
+	z-index 4
+
+/*Elements inside brush options accordion*/
+.opacity, #eraser 
+	float right
+
+#preview
+	border-style solid
+	border-width 1px
+
+#alphaSlider, #sizeSlider
+	top 7px
+	width 150px
+	height 10px
+
+/*Button to clear the canvas*/
+
+#clear
+	position relative
+	float right
+	top 15px
+	right 30px

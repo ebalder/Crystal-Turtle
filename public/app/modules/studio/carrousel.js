@@ -1,6 +1,5 @@
 
 define(function(require){
-	console.log('|||||||||||1');
 	var Scene = require('model/scene');
 	var Clip = require('model/clip');
 	var pinboard = require('studio/pinboard');
@@ -21,7 +20,7 @@ define(function(require){
 	// var clips = scenes[0].clips;
 
 	var clips = [new Clip()];
-	activeClip = 0;
+	var activeClip = 0;
 
 	function _init(){ 
 		/*======== Create fragment list =====*/

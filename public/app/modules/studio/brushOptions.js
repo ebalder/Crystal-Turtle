@@ -12,7 +12,7 @@ define(['lib/jquery', 'lib/jquery-ui'],function($,ui){
 		pickerCanvas = document.getElementById('picker');
 	  	picker = pickerCanvas.getContext('2d');
 	  	preview = document.getElementById('preview').getContext('2d');
-
+	  	console.log('lalala');
 		img.src = '/media/toolImg/colorPick.jpg';
 		$(img).load(function(){
 		    picker.drawImage(img,0,0,300,200);

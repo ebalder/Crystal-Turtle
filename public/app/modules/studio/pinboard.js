@@ -1,4 +1,4 @@
-define(['studio/canvas'], function(canvas){
+define(['require'], function(require){
 	/* ToDo: make a studioUtil module with a parseTs method */
 	var timestamp = null;
 	var index = null;
@@ -68,7 +68,9 @@ define(['studio/canvas'], function(canvas){
 			this.layern = $("#layers .layer a").length - $("#layers .layer a").index(ev.target) - 1;
 			$.post(ev.target.href,{name : n, timestamp : timestamp, fragment : index}, function(data){ 
 				$('#loaded').html(data);
-				canvas.openLayer(); 
+				console.log('%%%%%%%%%%%%%%%');
+				require('studio/canvas').init();
+				/* Open Layer */
 			});
 			return false;
 		},

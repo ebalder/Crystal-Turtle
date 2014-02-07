@@ -1,10 +1,6 @@
 br
-script(src='/lib/peer.js')
 link(rel="stylesheet", href="/css/canvas.css")
 form
-	label Cargar una imagen
-	input(type ="file", name="canvasFile")
-	input#enviar(type="button", value="Enviar")
 input#clear(type="button", value="Clear")
 div.brushOptions
 	h3 Brush Options
@@ -36,4 +32,3 @@ div.brushOptions
 br
 div#objetos
 	canvas#canvas(width="1200", height="650")
-	canvas#imagen(width="1200", height="650")

@@ -1,24 +1,27 @@
 
 define(function(){
-	/* Returns a costructor */
-	return function(){
+	
+	function load (type, ref) {
+		
+	}
+
+	function Object(ref){
 		this.properties;
 		this.reference;
 		this.type;
-		
-		var self = this;
-
-		this.prototype = {
-			delete: function(){
-			},
-			new: function(type){
-			},
-			save: function(){
-			},
-			update: function(properties){
-			},
-		};
-
 		/* Constructor */
+		load(type, ref);
 	}
+	Object.prototype = {
+		delete: function(){
+		},
+		new: function(type){
+		},
+		save: function(){
+		},
+		update: function(properties){
+		},
+	};
+	/* Returns a costructor */
+	return Object;
 })

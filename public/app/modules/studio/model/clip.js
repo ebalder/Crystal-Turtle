@@ -5,11 +5,11 @@ define(function(require){
 
 
 	var canvas = require('studio/canvas');
+	var fs = require('fs');
 
 	var pinboard = require('studio/pinboard');
 	
 	function openFrame (index) {
-		console.log('active', this.active);
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
 		if(typeof this.active == 'number'){
@@ -24,7 +24,8 @@ define(function(require){
 			img.src = this.frames[index];
 		}
 		this.active = index;
-		console.log(this.active);
+		console.log(fs);
+		return true;
 	}
 	function del(){
 	}

@@ -1,4 +1,6 @@
 
+
+
 requirejs.config({
 	baseUrl : '/app/modules',
 	paths : {
@@ -26,8 +28,7 @@ requirejs.config({
     }
 });
 
-requirejs(['lib/jquery', 'lib/jquery-ui', 'navigation'], function($, ui, nav){
-	
+requirejs(['lib/jquery', 'lib/jquery-ui', 'navigation'], function($, ui, nav){	
 	function _init(){
 		/* Show or hide buttons from user menu */
 		if(localStorage.sid != null || sessionStorage.sid != null){

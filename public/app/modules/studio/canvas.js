@@ -45,7 +45,7 @@ define(['studio/liveP2p', 'model/frame', 'studio/brushOptions'], function(live, 
 		}
 	}
 
-	function openLayer () {
+	function init () {
 		var canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
 		canvas.onmousedown = press;
@@ -53,9 +53,8 @@ define(['studio/liveP2p', 'model/frame', 'studio/brushOptions'], function(live, 
 		prevx = 0, prevy = 0;
 		live.start();
 	}
-
-	console.log('openLayer');
+	
 	return {
-		openLayer : openLayer
+		init : init
 	};
 });

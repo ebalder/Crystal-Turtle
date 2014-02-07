@@ -4,6 +4,10 @@ define(function(require){
 	var Camera = require('model/camera');
 	var Layer = require('model/layer');
 
+	function load (ref) {
+		
+	}
+
 	function Frame(reference){
 			this.bound = []; /* frame extension */
 			this.camera;
@@ -11,19 +15,14 @@ define(function(require){
 			this.reference = reference;
 			this.timestamp;
 
-			var self = this;
-
-			
-			
 			/* Constructor */
+			load(reference);
 	}
 
 	Frame.prototype = {
 		delete: function(){
 		},
 		duplicate: function(){
-		},
-		load: function(){
 		},
 		move: function(){
 		},
