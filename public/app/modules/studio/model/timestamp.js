@@ -1,16 +1,17 @@
 
 define(function(){
-	function timestamp(obj){
+	function Timestamp(index){
 		this.hour;
 		this.minute;
 		this.second;
 		this.frame;
 		this.value;
+		this.string;
 
-
+		
 	}
 
-	timestamp.prototype = {
+	Timestamp.prototype = {
 		getTweens : function(){
 		},
 		isBetween : function(){
@@ -19,5 +20,5 @@ define(function(){
 		},
 	};
 
-	return timestamp;
+	return Timestamp;
 })

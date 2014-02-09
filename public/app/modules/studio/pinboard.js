@@ -30,15 +30,17 @@ define(['require'], function(require){
 			$(".group").on('click', self.board);
 			return false;
 		},
-		fragInfo : function(ev){
-			this.timestamp = $(ev.currentTarget).find('.timestamp').text();
-			this.index = $('.fragment').index(ev.currentTarget);
+		clipInfo : function(clip){
+			console.log('clip:', clip);
+			// var timestamp = clip.timestamp.string;
+			var index = clip.index;
 			var json = {
-				selection: this.index,
+				selection: index,
 				sid : sessionStorage.sid
 			};
 			$.post('/fragmentInfo', json, self.showData);	
 		},
+
 		frame : function(ev){
 			// carrousel.parseTs(ev.target);
 		},
@@ -68,7 +70,6 @@ define(['require'], function(require){
 			this.layern = $("#layers .layer a").length - $("#layers .layer a").index(ev.target) - 1;
 			$.post(ev.target.href,{name : n, timestamp : timestamp, fragment : index}, function(data){ 
 				$('#loaded').html(data);
-				console.log('%%%%%%%%%%%%%%%');
 				require('studio/canvas').init();
 				/* Open Layer */
 			});

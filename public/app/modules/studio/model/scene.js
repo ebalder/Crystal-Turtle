@@ -4,6 +4,8 @@ define(function(require){
 	var Clip = require('model/clip');
 	// var carrousel = require('studio/carrousel');
 
+	var parent;
+
 	function create() {
 	}
 	function del(){
@@ -13,10 +15,6 @@ define(function(require){
 	function join(to){
 	}
 	function load(ts){	
-		var curr = {
-			timestamp: new Timestamp(ts)
-		};
-		self.clips.push(curr);
 	}
 	function newClip(){
 		var clips = this.clips;
@@ -25,22 +23,36 @@ define(function(require){
 		clips[curr].create;
 		console.log(this);
 	}
+	function open (index) {
+		
+	}
 	function preview(){
 	}
 	function save(){
+	}
+	function setParent (project) {
+		parent = project;
 	}
 	function split(point){
 	}
 
 	function Scene(){
 		this.clips = [];
+		this.activeClip;
 		this.start;
 		this.end;
 		this.index;
 		this.reference;
 
+		/* ToDO: get from filesystem instead of the view */
+		Clip.prototype.setParent(this);
+		var timelineInner = document.getElementById('tlIn');
+		var len = $('meta#fragCount').attr('count');
+		for (var i = 0; i <= len; i++){
+			this.clips.push(new Clip(i, this.start));
+		}
 
-		/* Constructor */
+		this.open(0); /* Open a Clip */
 	}
 	Scene.prototype = {
 		create: create,
@@ -49,11 +61,13 @@ define(function(require){
 		join: join,
 		load: load,
 		newClip: newClip,
+		open: open,
+		parent: parent,
 		preview: preview,
 		save: save,
+		setParent: setParent,
 		split: split,
 	};
-	var self = Scene;
 
 	return Scene;
 

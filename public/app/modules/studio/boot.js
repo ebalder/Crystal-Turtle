@@ -2,10 +2,8 @@
 
 define(function(require){
 
-	var carrousel = require('studio/carrousel');
 	var panel = require('studio/sidePanel');
 	var issues = require('studio/issues');
-	var canvas = require('studio/canvas');
 
 	var Project = require('model/project');
 
@@ -26,8 +24,6 @@ define(function(require){
 		$('body').append('<div class="dialog">' + data + '</div>');
 		return false;
 	});
-
-	// canvas.init(); 
 	return 0;
 });
 

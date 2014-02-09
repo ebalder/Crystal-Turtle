@@ -4,19 +4,39 @@ define(function(require){
 	var Camera = require('model/camera');
 	var Layer = require('model/layer');
 
-	function load (ref) {
-		
+	var carrousel = require('studio/carrousel');
+
+	var parent;
+
+	function load () {
+		var canvas = document.getElementById('canvas');
+		var ctx = canvas.getContext('2d');
+		var active = parent.activeFrame;
+		if(active){
+			active.uri = canvas.toDataURL();
+		}
+		canvas.width = canvas.width;
+		if(this.uri){
+			var img = new Image();
+			img.onload = function(){
+			  ctx.drawImage(img,0,0);
+			};
+			img.src = this.uri;
+		}
+		parent.activeFrame = this;
+		console.log(fs);
+		return true;
+	}
+	function setParent (clip) {
+		parent = clip;
 	}
 
-	function Frame(reference){
+	function Frame(index, base){
 			this.bound = []; /* frame extension */
 			this.camera;
 			this.layers = [];
-			this.reference = reference;
+			this.reference;
 			this.timestamp;
-
-			/* Constructor */
-			load(reference);
 	}
 
 	Frame.prototype = {
@@ -24,12 +44,15 @@ define(function(require){
 		},
 		duplicate: function(){
 		},
+		load: load,
 		move: function(){
 		},
 		new: function(){
 		},
+		parent: parent,
 		save: function(){
 		},
+		setParent: setParent
 	};
 	return Frame;
 })

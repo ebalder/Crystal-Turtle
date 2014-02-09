@@ -2,9 +2,12 @@
 define(function(require){
 	var Timestamp = require('model/timestamp');
 	var Scene = require('model/scene');
+
 	var carrousel = require('studio/carrousel');
 	var canvas = require('studio/canvas');
 	var fs = require('fs');
+
+	// canvas.init();
 
 	function create() {
 	}
@@ -29,7 +32,9 @@ define(function(require){
 
 	function Project(name){
 		this.clips = [];
-		this.name;
+		this.name = name;
+		this.scenes = [new Scene('test')];
+		this.activeScene = this.scenes[0];
 		this.start;
 		this.end;
 		this.length;
@@ -37,7 +42,8 @@ define(function(require){
 		this.reference;
 
 		/* Constructor */
-		load(name);
+		Scene.prototype.setParent(this);
+		load();
 	}
 	Project.prototype = {
 		create: create,

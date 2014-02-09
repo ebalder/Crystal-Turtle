@@ -1,40 +1,23 @@
 
 define(function(require){
-	var Scene = require('model/scene');
-	var Clip = require('model/clip');
 	var pinboard = require('studio/pinboard');
 
 	var fps = 30;
-	var last = $('meta#fragCount').attr('count');
 	var lastFrame = 3000;
 	var bodyWidth = $('body').width();
 	var loaded = []; //fragmentos cargados
 	var fragRange = [0,0];
-	var framRange = [0,0];
 	var cssBw = { left: '+=' + 182*3 };
 	var cssFw = { left: '-=' +182*3 };
-
-	// var scenes = [];
-	// scenes[0] = new Scene();
-	// scenes[0].newClip();
-	// var clips = scenes[0].clips;
-
-	var clips = [new Clip()];
-	var activeClip = 0;
+	var tlIn = document.getElementById('tlIn');
+	var frIn = document.getElementById('frIn');
+	var frames;
+	var framRange = [0, 0];
 
 	function _init(){ 
-		/*======== Create fragment list =====*/
-		var timelineInner = document.getElementById('tlIn');
-		for (var i = 0; i <= last; i++){
-			addClip(timelineInner);
-		}
-		$("#tlIn").css({"width" : 182 * (last+1)});
-		/*======= Load visible fragments ======*/
-		(Math.ceil(bodyWidth / 182)) > (last+1)
-			/* All clips fit in the timeline */
-			? self.loadFrags(0, last)
-			/* Load only clips that fit */
-			: self.loadFrags(0, Math.ceil(bodyWidth / 182));
+		$("#tlIn").css({"width" : '100%'});
+		$("#frIn").css({"width" : 15 * range});
+
 		/*====== Set scrollbar actions =====*/
 		var scrollTop = $('#tlView').scrollTop();
 		var width = $('#tlView').width();	
@@ -58,9 +41,11 @@ define(function(require){
 		/*======= Create frame list =======*/
 		var range = Math.ceil(bodyWidth / 15 + 12);
 		framRange[1] = range;
-		$("#frIn").css({"width" : 15 * range})
 		for (var i = 0; i <= range; i++){
-			$("#frIn").append('<div class="frame"></div>');
+			var frame = document.createElement('div');
+			frame.className = 'frame';
+			frIn.appendChild(frame);
+			frame.onclick = loadFrame;
 		}
 		/* ====== Drag drop ====== */
 		$('.frame').draggable({
@@ -80,9 +65,6 @@ define(function(require){
 			}
 		});
 		/* ======= Set events ======= */
-		$('.frame').on('click', loadFrame);
-		/* ToDo: change .fragment class to .clip on html */
-		$('.clip, .fragment').on('click', loadClip);
 		$("#timeline .fw").on('click', self.forward);
 		$("#timeline .bw").on('click', self.backward);
 		$("#frames .fw").on('click', self.fwFrame);
@@ -90,34 +72,27 @@ define(function(require){
 		return 1;
 	}
 
-	function addClip(timelineInner){
-		var clip, thumb, timestamp;
-		clip = document.createElement('span');
-		/* ToDo remove 'fragment' class */
-		clip.className = 'clip, fragment';
+	function addClipThumb(clip){
+		var thumb, img, timestamp;
 		thumb = document.createElement('span');
-		thumb.className = 'thumb';
+		thumb.className = 'clip';
+		img = document.createElement('span');
+		img.className = 'thumb';
 		timestamp = document.createElement('span');
 		timestamp.className = 'timestamp';
-		$(clip).append(thumb, timestamp);
-		$(timelineInner).append(clip);
+		// timestamp.innerHTML = clip.timestamp.string;
+		$(thumb).append(img, timestamp);
+		$(tlIn).append(thumb);
+		thumb.onclick = function(){clip.load();}
 	}
 
-	function loadClip (ev) {
-		var target = ev.currentTarget;
-		var timestamp = target.getElementsByClassName('timestamp')[0].innerHTML;
-		var index = $(target).index();
-		clips[index] = new Clip();
-		activeClip = index;
-		pinboard.fragInfo(ev);
-	}
-
-	function loadFrame(ev){
-		var index = $(ev.currentTarget).index();
-		clips[activeClip].openFrame(index);
+	function loadFrame (ev) {
+		var index = $('.frame').index(ev.currentTarget) + framRange[0];
+		frames[index].load();
 	}
 
 	var carrousel = {
+		addClipThumb : addClipThumb,
 		backward : function(){  
 			if (fragRange[0] > 0){
 				$('#tlIn').animate(cssBw);
@@ -199,6 +174,9 @@ define(function(require){
 			var fr = aux;
 			var ts = hr + ":" + ("0" + min).slice(-2) + ":" +  ("0" + sec).slice(-2) + "." +  ("0" + fr).slice(-2);
 			return ts;
+		},
+		setFrameArray : function(array){
+			frames = array;
 		}
 	};
 	var self = carrousel;

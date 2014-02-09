@@ -3,29 +3,14 @@ define(function(require){
 	var Timestamp = require('model/timestamp');
 	var Frame = require('model/frame');
 
-
-	var canvas = require('studio/canvas');
 	var fs = require('fs');
-
 	var pinboard = require('studio/pinboard');
+	var carrousel = require('studio/carrousel');
+
+	var parent;
 	
 	function openFrame (index) {
-		var canvas = document.getElementById('canvas');
-		var ctx = canvas.getContext('2d');
-		if(typeof this.active == 'number'){
-			this.frames[this.active] = canvas.toDataURL();
-		}
-		canvas.width = canvas.width;
-		if(this.frames[index]){
-			var img = new Image();
-			img.onload = function(){
-			  ctx.drawImage(img,0,0);
-			};
-			img.src = this.frames[index];
-		}
-		this.active = index;
-		console.log(fs);
-		return true;
+		
 	}
 	function del(){
 	}
@@ -34,7 +19,7 @@ define(function(require){
 	function join(to){
 	}
 	function load(){
-		// pinboard.fragInfo()
+		pinboard.clipInfo(this);
 	}
 	function move(dest){
 	}
@@ -48,21 +33,39 @@ define(function(require){
 	}
 	function scribble(){
 	}
+	function setParent (scene) {
+		parent = scene;
+	}
 	function split(point){
 	}
 
-	function Clip(){
+	function Clip(index, base){
 		this.end;
-		this.active;
+		this.activeFrame;
 		this.frames = [];
-		this.index;
+		this.index = index;
 		this.reference;
 		this.script;
 		this.start;
+		this.timestamp = null;
+
+		Frame.prototype.setParent(this);
+		carrousel.addClipThumb(this);
+
+		/* ToDo: get all from fs */
+		var frameCache = Math.ceil($('body').width() / 15 + 12);
+		for (var i = 0; i <= frameCache; i++){
+			this.frames.push(new Frame(i, this.start));
+		}
+		carrousel.setFrameArray(this.frames);
+
 	}
 
 	Clip.prototype = {
-		openFrame : openFrame
+		load: load,
+		openFrame : openFrame,
+		parent: parent,
+		setParent: setParent
 	};
 
 	return Clip;
