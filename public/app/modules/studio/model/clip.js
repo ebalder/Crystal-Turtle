@@ -4,8 +4,6 @@ define(function(require){
 	var Frame = require('model/frame');
 
 	var fs = require('fs');
-	var pinboard = require('studio/pinboard');
-	var carrousel = require('studio/carrousel');
 
 	var parent;
 	
@@ -19,7 +17,7 @@ define(function(require){
 	function join(to){
 	}
 	function load(){
-		pinboard.clipInfo(this);
+		$(this).trigger('loaded');
 	}
 	function move(dest){
 	}
@@ -50,14 +48,12 @@ define(function(require){
 		this.timestamp = null;
 
 		Frame.prototype.setParent(this);
-		carrousel.addClipThumb(this);
 
 		/* ToDo: get all from fs */
 		var frameCache = Math.ceil($('body').width() / 15 + 12);
 		for (var i = 0; i <= frameCache; i++){
 			this.frames.push(new Frame(i, this.start));
 		}
-		carrousel.setFrameArray(this.frames);
 
 	}
 

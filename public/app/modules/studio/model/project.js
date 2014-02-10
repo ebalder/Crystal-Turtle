@@ -3,7 +3,6 @@ define(function(require){
 	var Timestamp = require('model/timestamp');
 	var Scene = require('model/scene');
 
-	var carrousel = require('studio/carrousel');
 	var canvas = require('studio/canvas');
 	var fs = require('fs');
 

@@ -1,6 +1,11 @@
 
 define(function(require){
 	var pinboard = require('studio/pinboard');
+	var Project = require('model/project');
+
+	var pName = window.location.pathname.split( '/' )[2];
+	var project = new Project(pName);
+	var clips = project.activeScene.clips;
 
 	var fps = 30;
 	var lastFrame = 3000;
@@ -18,6 +23,7 @@ define(function(require){
 		$("#tlIn").css({"width" : '100%'});
 		$("#frIn").css({"width" : 15 * range});
 
+		cacheClips(0, $('meta#fragCount').attr('count'));
 		/*====== Set scrollbar actions =====*/
 		var scrollTop = $('#tlView').scrollTop();
 		var width = $('#tlView').width();	
@@ -28,7 +34,7 @@ define(function(require){
 					var offset = $(this).offset();
 					if (scroll.indexOf(index) < 0 && scrollTop <= offset.left
 						&& $(this).width() + offset.left < scrollTop + width){
-						self.loadFrags(index, index + Math.ceil(bodyWidth / 182));
+						cacheClips(index, index + Math.ceil(bodyWidth / 182));
 						fragRange[0] = index;
 						fragRange[1] = index + Math.ceil(bodyWidth / 182);
 						scroll.push(index);
@@ -84,11 +90,21 @@ define(function(require){
 		$(thumb).append(img, timestamp);
 		$(tlIn).append(thumb);
 		thumb.onclick = function(){clip.load();}
+		$(clip).on('loaded', openClip);
+	}
+	function cacheClips(start, end){
+		for (var i = start; i <= end; i++){
+			addClipThumb(clips[i]);
+		}
 	}
 
 	function loadFrame (ev) {
 		var index = $('.frame').index(ev.currentTarget) + framRange[0];
 		frames[index].load();
+	}
+	function openClip(ev){
+		frames = this.frames;
+		pinboard.clipInfo(this);
 	}
 
 	var carrousel = {
@@ -114,8 +130,8 @@ define(function(require){
 			if (fragRange[1] < last){
 				$('#tlIn').animate(cssFw);
 				last - fragRange[1] < 0
-					? loadFrags(fragRange[0]+1, fragRange[1]+1)
-					: loadFrags(fragRange[0]+3, fragRange[1]+3);
+					? cacheClips(fragRange[0]+1, fragRange[1]+1)
+					: cacheClips(fragRange[0]+3, fragRange[1]+3);
 			}
 			return 1;
 		},
@@ -128,29 +144,6 @@ define(function(require){
 				framRange[0] += 12;
 			}
 			return 1;
-		},
-		/* ToDo: put on a "project" module (load method) */
-		loadFrags : function(start, end){
-			var clip = new Clip(start, end);
-			clips.push(clip);
-
-			fragRange = [start, end];
-			$.post('/fragmentThumbs', {range: fragRange}, function(data){
-				var ts = data.timestamps;
-				$.ajaxSetup({async:false});
-				for (var i = 0 in ts){
-					var time = self.parseTs(ts[i]);
-					if(loaded.indexOf(fragRange[0]+i) < 0 && fragRange[1] <= last){
-						$.get('storyboard/'+ i + '_' + time, function(data){
-							self.fragImage(data, i, time);
-						});
-						$(".fragment:eq(" + i + ") .timestamp").html(time);
-						loaded.push(fragRange[0]+i);
-					}
-				}
-				$.ajaxSetup({async:true});
-				return 1;
-			});
 		},
 		fragImage : function(data, i, time){
 			$(".fragment:eq(" + i + ") img").attr("src", data).css({
@@ -175,9 +168,6 @@ define(function(require){
 			var ts = hr + ":" + ("0" + min).slice(-2) + ":" +  ("0" + sec).slice(-2) + "." +  ("0" + fr).slice(-2);
 			return ts;
 		},
-		setFrameArray : function(array){
-			frames = array;
-		}
 	};
 	var self = carrousel;
 	_init();

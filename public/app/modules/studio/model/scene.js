@@ -2,7 +2,6 @@
 define(function(require){
 	var Timestamp = require('model/timestamp');
 	var Clip = require('model/clip');
-	// var carrousel = require('studio/carrousel');
 
 	var parent;
 
@@ -44,9 +43,8 @@ define(function(require){
 		this.index;
 		this.reference;
 
-		/* ToDO: get from filesystem instead of the view */
 		Clip.prototype.setParent(this);
-		var timelineInner = document.getElementById('tlIn');
+		/* load() from fs */
 		var len = $('meta#fragCount').attr('count');
 		for (var i = 0; i <= len; i++){
 			this.clips.push(new Clip(i, this.start));
@@ -55,6 +53,7 @@ define(function(require){
 		this.open(0); /* Open a Clip */
 	}
 	Scene.prototype = {
+		cached: [],
 		create: create,
 		del: del,
 		duplicate: duplicate,

@@ -4,11 +4,7 @@ define(function(require){
 
 	var panel = require('studio/sidePanel');
 	var issues = require('studio/issues');
-
-	var Project = require('model/project');
-
-	var pName = window.location.pathname.split( '/' )[2];
-	var project = new Project(pName);
+	var carrousel = require('studio/carrousel');
 
 	//Aquí no tiene efecto navigation.js, así que por ahora
 	//Se deja aqui la funcion de destroyDialog para que los issues funcionen.

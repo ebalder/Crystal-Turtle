@@ -4,8 +4,6 @@ define(function(require){
 	var Camera = require('model/camera');
 	var Layer = require('model/layer');
 
-	var carrousel = require('studio/carrousel');
-
 	var parent;
 
 	function load () {
