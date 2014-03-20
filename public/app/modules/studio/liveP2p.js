@@ -50,12 +50,12 @@ define(['lib/peer', 'lib/socket.io'], function(peer, io){
 
 			console.log('local', id);
 			var socket = io.connect('http://localhost:3000');
-			// socket.on('newPeer', function (data) {
-			// 	remotes.push(data.sid);
-			// 	peer.connect(data.sid)
-			// 	.on('open', startConnection);
-			// 	console.log('remote: ', data.sid);
-			// });
+			socket.on('newPeer', function (data) {
+				remotes.push(data.sid);
+				peer.connect(data.sid)
+				.on('open', startConnection);
+				console.log('remote: ', data.sid);
+			});
 			socket.emit('join', { 
 				sid: id, 
 				project: window.location.pathname.split( '/' )[2]
@@ -70,9 +70,10 @@ define(['lib/peer', 'lib/socket.io'], function(peer, io){
 				}
 			);
 		}
+		return peer;
 	}
 	
 	return {
-		start: start
+		start: start,
 	};
 });

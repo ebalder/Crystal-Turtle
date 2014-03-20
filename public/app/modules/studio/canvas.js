@@ -2,6 +2,16 @@
 define(['studio/liveP2p', 'model/frame', 'studio/brushOptions'], function(live, frame, brushOptions){
 
 	var ctx;
+	var peer;
+
+	var bufferCanvas = document.createElement('canvas');
+	var bufferCtx = bufferCanvas.getContext('2d');
+
+	function buffer (frame, layer, data) {
+		// buffers[frame][layer] say which image fragments to merge and redraw
+	}
+
+	function 
 
 	function press(ev){
 		var x = ev.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - canvas.offsetLeft;
@@ -17,7 +27,12 @@ define(['studio/liveP2p', 'model/frame', 'studio/brushOptions'], function(live, 
 		var i = 0;
 		for(; i < len; i++){
 			if(typeof(peer.connections[remotes[i]]) == 'object' && peer.connections[remotes[i]].peerjs.open){
-		    	peer.connections[remotes[i]].peerjs.send({ acc : 'press', x : x, y : y});
+				if(frame.timestamp.value == )
+		    	peer.connections[remotes[i]].peerjs.send({ 
+		    		acc : 'press', 
+		    		x : x, 
+		    		y : y}
+		    	);
 		    }
 		}
 		function drag(ev){
@@ -51,10 +66,15 @@ define(['studio/liveP2p', 'model/frame', 'studio/brushOptions'], function(live, 
 		canvas.onmousedown = press;
 		brushOptions.start(ctx);
 		prevx = 0, prevy = 0;
-		live.start();
+		peer = live.start();
+	}
+
+	function buffer(action){
+
 	}
 	
 	return {
-		init : init
+		init : init,
+		buffer: buffer
 	};
 });

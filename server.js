@@ -26,7 +26,7 @@ app.set('view engine', 'jade');
 app.use(express.bodyParser());
 app.use(stylus.middleware({
    src: __dirname + '/styl',
-   dest: __dirname + '/public/css',
+   dest: __dirname + '/public',
    compile: compile,
    force: true
 }));

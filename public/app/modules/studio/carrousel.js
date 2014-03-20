@@ -50,6 +50,7 @@ define(function(require){
 		for (var i = 0; i <= range; i++){
 			var frame = document.createElement('div');
 			frame.className = 'frame';
+			frame.style.zIndex = '1';
 			frIn.appendChild(frame);
 			frame.onclick = loadFrame;
 		}
