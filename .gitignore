@@ -17,3 +17,5 @@ test/lib
 test/*/*.png
 *.orig
 floobits
+*.sublime-project
+*.sublime-workspace
