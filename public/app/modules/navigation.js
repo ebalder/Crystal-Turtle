@@ -1,5 +1,12 @@
 
 define(['lib/jquery', 'lib/popgen'], function($, popgen){
+
+    /* navigation events */
+    $('.load').on('click', navigation.load);
+    $('.open').on('click', navigation.open);
+    $('.popup').on('click', navigation.dialog);
+    $('.logout').on('click', navigation.logout);
+
 	/* private vars */
 	var test = 10;
 	function destroyDialog(event){

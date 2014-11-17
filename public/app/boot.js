@@ -6,6 +6,7 @@ requirejs.config({
         lib : '/lib',
         project : '/app/modules/studio/boot',
         models: '/app/modules/studio/models',
+        users: '/app/modules/users',
         underscore: '/lib/lodash.custom',
         components: '/app/modules/studio/components',
         studio : '/app/modules/studio',
@@ -33,17 +34,19 @@ requirejs.config({
 });
 
 
-requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', /*'session',*/
+requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', 'users/session',
     'navigation'], 
-    function($, ui, Backbone, /*session,*/
+    function($, ui, Backbone, session,
         nav)
 {  
+    'use strict';
 
     /* add backbone plugins */
     require(['lib/Backbone.ModelBinder']);
 
     function _init(){
-        //session.init();
+        session.init();
+        nav.init();
 
         // TODO: this doesn't handle network timeouts, only various
         // gateway timeouts.  This all probably should go into a
@@ -98,6 +101,9 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', /*'session',*/
         },
         login: function(){
             // require(['login'], function(view) { view(router); });
+        },
+        signup: function(){
+            require(['signup'])
         }
     });
 
@@ -109,22 +115,6 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', /*'session',*/
     } else {
         document.onready = _init;
     }
-
-    // if(localStorage.sid != null || sessionStorage.sid != null){
-    //     nav.login();
-    // } else {
-    //     $('a[href="/logout"]').hide();
-    //     $('a[href="/projectForm"]').hide();
-    // }
-    // /* navigation events */
-    // $('.load').on('click', nav.load);
-    // $('.open').on('click', nav.open);
-    // $('.popup').on('click', nav.dialog);
-    // $('.logout').on('click', nav.logout);
-    // /* open hashbang'd path */
-    // if(window.location.pathname != '/'){
-    //     nav.hash(window.location.pathname);
-    // }
 
     return;
 });
