@@ -1,0 +1,42 @@
+//
+    | =============== Sistema de Gestión de Colaboración para Animaciones ==============
+    | UACH.
+    |     Elsa M Balderrama Sosa
+    |     Rocío Rivera Corral
+    |   Facultad de ingeniería.
+    |                       Nov 2012
+    | Ingeniería de software aplicada a proyectos.
+    | =================================================================================
+
+
+- var isHome = url == '/' ? 'homeHeader' : ''
+
+doctype html
+html(lang="en")
+    head
+        meta(charset="utf-8") 
+        title Crystal Turtle
+        link(rel="stylesheet", href="/lib/jquery-ui/css/ui-lightness/jquery-ui-1.10.2.custom.min.css")
+        link(rel="stylesheet", href="/css/main.css")
+        script(src="/lib/require.js", data-main="/app/boot")
+    body
+        div#wrapper
+            header
+                h1 Crystal Turtle
+                a Animation Studio _ (pre-alpha 0.1.1).
+                div.userArea 
+                    a.load(href = "/userForm") New User | 
+                    a.load(href = "/login") Login
+                    a.logout(href = "/logout") Logout
+                    a.load(href = "/projectForm") New Project
+            nav
+                ul
+                    li 
+                        a(href="/", class="full") Index
+                    li 
+                        a(href="#") User
+                    li 
+                        a(href="#") Panel
+                    li 
+                        a(href="/browse", class="open") Browse
+            div#area

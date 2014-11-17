@@ -32,6 +32,12 @@ app.use(stylus.middleware({
 }));
 app.use(express.static('./public')); //esto debe ir después de stylus
 
+var router = express.Router();
+
+var studio = require('./pages/studio');
+router.route('/studio')
+	.get(studio.main);
+
 /*Global Variables*/
 db = new arango.Connection;
 db.use("test");

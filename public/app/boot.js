@@ -91,7 +91,8 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', 'users/session',
             "login(/)": 'login',
             "logout(/)": 'logout',
             "newProject(/)": 'newProject',
-            "projects(/)": 'browseProjects'
+            "projects(/)": 'browseProjects',
+            "studio(/)": 'studio'
             "projects/:id(/)": 'project',
             "signup(/)": 'signup'
             "users/:id(/)": 'profile',
@@ -103,7 +104,10 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', 'users/session',
             // require(['login'], function(view) { view(router); });
         },
         signup: function(){
-            require(['signup'])
+            //require(['signup'])
+        },
+        studio: function(){
+            require(['studio/boot'], function(view){ view(router); });
         }
     });
 
