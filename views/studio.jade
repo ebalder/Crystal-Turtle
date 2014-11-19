@@ -24,26 +24,26 @@ div#project
     meta#fragCount(count="#{fragCount}")
     div#proyInfo
         div#stats
-            | Repp : #{stats.reputation}
+            | Repp : #{ '-' || stats.reputation }
             br
-            | Vp : #{stats.views}
+            | Vp : #{ '-' || stats.views }
             br
-            | Act : #{stats.activity}
+            | Act : #{ '-' || stats.activity }
             br
-            | Dev : #{stats.development}
+            | Dev : #{ '-' || stats.development }
             br
             a.open(href = "/log/#{project}") View Log
             if isMember
                 |  | 
                 a#nIssue(href = "/loadIssueForm/#{project}") New Issue
         div#issues
-            each i in issues
+            //each i in issues
                 div.issue
                     h2
-                        a.expand(href="##{i.title}") #{i.title}
-                    div.content !{i.content}
-                    span.author by #{i.author} - 
-                    span.date on #{i.date} 
+                        a.expand(href="##{'-' || i.title}") #{'-' || i.title}
+                    div.content !{ '-' || i.content }
+                    span.author by #{ '-' || i.author } - 
+                    span.date on #{ '-' || i.date } 
     div#script 
         a.open(href = "/script/#{project}") Script 
         if isMember
