@@ -39,11 +39,11 @@ app.use(cookieParser());
 app.engine('.jade', cons.jade);
 app.set('view engine', 'jade');
 app.use(stylus.middleware({
-   src: __dirname + '/styl',
+   src: __dirname,
    dest: __dirname + '/public',
-   compile: compile,
-   force: true
+   compile: compile
 }));
+
 app.use(express.static('./public')); //esto debe ir después de stylus
 
 var router = express.Router();

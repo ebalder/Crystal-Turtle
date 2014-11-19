@@ -7,44 +7,37 @@ requirejs.config({
         project : '/app/modules/studio/boot',
         models: '/app/modules/studio/models',
         users: '/app/modules/users',
-        underscore: '/lib/lodash.custom',
         components: '/app/modules/studio/components',
         studio : '/app/modules/studio',
-        'lib/jquery' : '/lib/jquery-2.0.3.min'
     },
-    shim: {
-        'lib/jquery-ui': {
-            export: '$',
-            deps: ['lib/jquery']
-        },
-    },
-    map: { //only absolute paths work here
-        /* override every call to jquery with jquery-wrapper */
+    map: {
         '*': { 
+            'lib/peer': 'lib/peer-wrapper',
             'lib/jquery': 'lib/jquery-wrapper',
-            'lib/peer': 'lib/peer-wrapper'
-        }, 
-        /* except for the one in jquery-private */
-        'lib/jquery-wrapper': { 'lib/jquery': 'lib/jquery' },
-        'lib/peer-wrapper': { 'lib/peer': 'lib/peer' },
+            'lib/underscore': 'lib/lodash'
+        },
         'lib': {
-            backbone: 'lib/backbone'
+            backbone: 'lib/backbone',
+            jquery: 'lib/jquery',
+            peer: 'lib/peer',
+            underscore: 'lib/lodash'
         }
     }
 });
 
 
-requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', 'users/session',
+requirejs(['lib/jquery','lib/jquery-ui','lib/underscore','lib/backbone','users/session',
     'navigation'], 
-    function($, ui, Backbone, session,
+    function($, ui, _, Backbone, session,
         nav)
-{  
+{ 
     'use strict';
 
     /* add backbone plugins */
     require(['lib/Backbone.ModelBinder']);
 
     function _init(){
+    console.log($, '00');
         session.init();
         nav.init();
 
@@ -92,9 +85,9 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/backbone', 'users/session',
             "logout(/)": 'logout',
             "newProject(/)": 'newProject',
             "projects(/)": 'browseProjects',
-            "studio(/)": 'studio'
+            "studio(/)": 'studio',
             "projects/:id(/)": 'project',
-            "signup(/)": 'signup'
+            "signup(/)": 'signup',
             "users/:id(/)": 'profile',
         },
         home: function() {

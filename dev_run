@@ -1,1 +1,1 @@
-nodemon server.js --debug --ext .jade,.js,.styl 127.0.0.1 3000 
+DEBUG=server:* nodemon server.js --debug --ext .jade,.js,.styl 127.0.0.1 3000 

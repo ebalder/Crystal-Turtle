@@ -1,38 +1,43 @@
 {
-    "name": "CrystalTurtle",
-    "version": "0.1.1",
-    "scripts": {
-        "start": "node server.js"
-    },
-    "author": "Elsa Balderrama <mail@elsabalderrama.com>",
-    "license": "GPL3",
-    "dependencies" : {
-        "body-parser": "1.x",
-        "debug": "0.7.x",
-        "cookie-parser": "1.x",
-        "consolidate": "0.10.x",
-        "express" : "4.10.x",
-        "jade": "1.5.x",
-        "socket.io": "0.9.13",
-        "stylus": "0.42.x",
-        "serve-static": "1.x",
-        "nib" : "1.0.1",
-        "arango.client" : "0.6.2",
-        "client-sessions" : "0.1.1",
-        "mkdirp" : "0.3.5",
-        "peer" : "0.2.0"
-    },
-    "amd": {},
-    "volo": {
+  "name": "CrystalTurtle",
+  "version": "0.1.1",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Elsa Balderrama <mail@elsabalderrama.com>",
+  "license": "GPL3",
+  "dependencies": {
+    "body-parser": "1.x",
+    "debug": "0.7.x",
+    "cookie-parser": "1.x",
+    "consolidate": "0.10.x",
+    "express": "4.10.x",
+    "jade": "1.5.x",
+    "socket.io": "0.9.13",
+    "stylus": "0.42.x",
+    "serve-static": "1.x",
+    "nib": "1.0.1",
+    "arango.client": "0.6.2",
+    "client-sessions": "0.1.1",
+    "mkdirp": "0.3.5",
+    "peer": "0.2.0"
+  },
+  "amd": {},
+  "volo": {
     "baseUrl": "./public/lib",
     "dependencies": {
-        "require": "http://requirejs.org/docs/release/2.1.9/comments/require.js",
-        "i18n": "https://raw.github.com/requirejs/i18n/latest/i18n.js",
-        "text": "https://raw.github.com/requirejs/text/latest/text.js",
-        "peerjs": "http://cdn.peerjs.com/0.3.7/peer.js",
-        "socket.i.o": "https://raw.github.com/LearnBoost/socket.io/master/lib/client.js",
-        "popgen": "https://raw.github.com/Lexas/PopGen/master/popgen.js",
-        "tinyemitter": "https://raw.github.com/scottcorgan/tiny-emitter/master/dist/tinyemitter.js"
+      "jquery": "github:jquery/jquery/2.1.0",
+      "jquery-ui": "https://code.jquery.com/ui/1.11.2/jquery-ui.js",
+      "lodash": "https://raw.githubusercontent.com/lodash/lodash/master/dist/lodash.js",
+      "require": "http://requirejs.org/docs/release/2.1.9/comments/require.js",
+      "peerjs": "http://cdn.peerjs.com/0.3.7/peer.js",
+      "socket.i.o": "https://raw.github.com/LearnBoost/socket.io/master/lib/client.js",
+      "popgen": "https://raw.github.com/Lexas/PopGen/master/popgen.js",
+      "tinyemitter": "https://raw.github.com/scottcorgan/tiny-emitter/master/dist/tinyemitter.js",
+      "underscore": "github:amdjs/underscore/1.5.2",
+      "backbone": "github:jashkenas/backbone/1.1.2",
+      "backbone.stickit": "https://raw.githubusercontent.com/NYTimes/backbone.stickit/master/backbone.stickit.js",
+      "backbone.paginator": "https://raw.githubusercontent.com/backbone-paginator/backbone.paginator/master/lib/backbone.paginator.js"
     }
-    }
+  }
 }
