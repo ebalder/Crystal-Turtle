@@ -1,6 +1,6 @@
 /*global requirejs, require, define*/
 
-define(['lib/jquery'], function(){
+define(['lib/jquery'], function($){
     'use strict';
 
     function _init(){
