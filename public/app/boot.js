@@ -1,43 +1,40 @@
 /*global requirejs, require*/
 
 requirejs.config({
-    baseUrl : '/app/modules',
+    baseUrl : '/app',
     paths : {
         lib : '/lib',
-        project : '/app/modules/studio/boot',
-        models: '/app/modules/studio/models',
-        users: '/app/modules/users',
-        components: '/app/modules/studio/components',
-        studio : '/app/modules/studio',
+        project : '/app/studio/boot',
+        models: '/app/studio/models',
+        users: '/app/users',
+        components: '/app/studio/components',
+        studio : '/app/studio',
     },
     map: {
         '*': { 
             'lib/peer': 'lib/peer-wrapper',
-            'lib/jquery': 'lib/jquery-wrapper',
-            'lib/underscore': 'lib/lodash'
+            'lib/underscore': 'lib/lodash',
+            'lib/jquery': 'jquery-loader',
         },
         'lib': {
             backbone: 'lib/backbone',
-            jquery: 'lib/jquery',
-            peer: 'lib/peer',
+            peer: 'lib/peer-wrapper',
             underscore: 'lib/lodash'
+        },
+        'jquery-loader':{
+            'lib/jquery': 'lib/jquery'
         }
     }
 });
 
-
-requirejs(['lib/jquery','lib/jquery-ui','lib/underscore','lib/backbone','users/session',
-    'navigation'], 
-    function($, ui, _, Backbone, session,
-        nav)
+requirejs(['lib/jquery','lib/jquery-ui','lib/underscore','lib/backbone',
+    'lib/backbone.stickit','users/session', 'navigation'], 
+    function($, ui, _, Backbone, 
+        stickit, session, nav)
 { 
     'use strict';
+    function _init(){  
 
-    /* add backbone plugins */
-    require(['lib/Backbone.ModelBinder']);
-
-    function _init(){
-    console.log($, '00');
         session.init();
         nav.init();
 
@@ -75,37 +72,38 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/underscore','lib/backbone','users/s
                 598: retry
             }
         });
+
+        var router;
+        var AppRouter = Backbone.Router.extend({
+            routes: {
+                "": 'home',
+                "login(/)": 'login',
+                "logout(/)": 'logout',
+                "newProject(/)": 'newProject',
+                "projects(/)": 'browseProjects',
+                "studio(/)": 'studio',
+                "projects/:id(/)": 'project',
+                "signup(/)": 'signup',
+                "users/:id(/)": 'profile',
+            },
+            home: function() {
+                require(['home'], function(view) { view(router); });
+            },
+            login: function(){
+                // require(['login'], function(view) { view(router); });
+            },
+            signup: function(){
+                //require(['signup'])
+            },
+            studio: function(){
+                require(['studio/boot'], function(view){ view(router); });
+            }
+        });
+
+        router = new AppRouter();
+        Backbone.history.start({pushState:true});
+
     }
-
-    var router;
-    var AppRouter = Backbone.Router.extend({
-        routes: {
-            "": 'home',
-            "login(/)": 'login',
-            "logout(/)": 'logout',
-            "newProject(/)": 'newProject',
-            "projects(/)": 'browseProjects',
-            "studio(/)": 'studio',
-            "projects/:id(/)": 'project',
-            "signup(/)": 'signup',
-            "users/:id(/)": 'profile',
-        },
-        home: function() {
-            require(['home'], function(view) { view(router); });
-        },
-        login: function(){
-            // require(['login'], function(view) { view(router); });
-        },
-        signup: function(){
-            //require(['signup'])
-        },
-        studio: function(){
-            require(['studio/boot'], function(view){ view(router); });
-        }
-    });
-
-    router = new AppRouter();
-    Backbone.history.start({pushState:true});
 
     if(document.readyState === 'complete'){
         _init();
@@ -113,6 +111,5 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/underscore','lib/backbone','users/s
         document.onready = _init;
     }
 
-    return;
 });
 
