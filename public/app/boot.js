@@ -19,7 +19,8 @@ requirejs.config({
         'lib': {
             backbone: 'lib/backbone',
             peer: 'lib/peer-wrapper',
-            underscore: 'lib/lodash'
+            underscore: 'lib/lodash',
+            jquery: 'jquery-loader'
         },
         'jquery-loader':{
             'lib/jquery': 'lib/jquery'
