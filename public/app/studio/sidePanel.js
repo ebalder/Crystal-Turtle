@@ -1,32 +1,39 @@
+/* global define */
 
-define(['lib/jquery', 'lib/jquery-ui','studio/pinboard', 'navigation'], function($,ui, pinboard, nav){ /* ToDo: make a utils module with a stopPropagation method */
+define(['lib/jquery', 'lib/jquery-ui','studio/pinboard', 'util'], function($,ui, pinboard, util){ 
+    'use strict';
+
     var timestamp = "0:00:00.00";
     var cssShow = {'left' : '0%' , 'padding-left' : '10px'};
     var cssHide = {'left' : '-35%', 'padding-left': '20px'};
 
-    var panel = {
+    var $panel = $('#panel');
+    var panel, self;
+
+    panel = self = {
         hide : function (){ 
             $('body').off('click', self.hide);
-            $('#panel').css(cssHide);
+            $panel.css(cssHide);
             $('#panTab').one('click', self.show);
-            return 1;
         },
         show : function(){
+            $('#panTab').off('click', self.show);
             timestamp = pinboard.timestamp;
-            $('#panel').css(cssShow); 
-            $('#panel').on('click', nav.stopPropagation); //click al panel no lo oculta
+            $panel.css(cssShow); 
             $('body').one('click', self.hide);
             $('#panTab').one('click', self.hide);
-            return 1;
+        },
+        init : function(){
+            panel.hide();
+            $panel.on('click', util.stopPropagation);
         },
         triggerHide : function(){
             $("#panTab").trigger('click');
-            return 1;
         }
     };
+
+    panel.init();
     
-    var self = panel;
-    panel.hide();
     $('.fragInfo').tabs({
         heightStyle: "fill",
         active: 0,

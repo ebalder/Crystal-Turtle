@@ -2,8 +2,7 @@
 
 define(function(require){
     var panel = require('studio/sidePanel');
-    var issues = require('studio/issues');
-    var carrousel = require('studio/carrousel');
+    //var carrousel = require('studio/carrousel');
 
     
     return function(router){
