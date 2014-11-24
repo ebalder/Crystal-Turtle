@@ -1,7 +1,7 @@
-/*global requirejs, require, define*/
+/*global define*/
+'use strict';
 
 define(['lib/jquery'], function($){
-    'use strict';
 
     function _init(){
         /* ToDo: real session check */

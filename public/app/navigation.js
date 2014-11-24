@@ -1,5 +1,8 @@
+/* global define */
+'use strict';
 
 define(['lib/jquery', 'lib/popgen'], function($, popgen){
+
     function _init(){
         /* navigation events */
         $('.load').on('click', navigation.load);

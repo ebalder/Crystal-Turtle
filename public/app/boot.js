@@ -1,11 +1,12 @@
 /*global requirejs, require*/
+'use strict';
 
 requirejs.config({
     baseUrl : '/app',
     paths : {
         lib : '/lib',
         project : '/app/studio/boot',
-        models: '/app/studio/models',
+        model: '/app/studio/model',
         users: '/app/users',
         components: '/app/studio/components',
         studio : '/app/studio',
@@ -33,7 +34,6 @@ requirejs(['lib/jquery','lib/jquery-ui','lib/underscore','lib/backbone',
     function($, ui, _, Backbone, 
         stickit, session, nav)
 { 
-    'use strict';
     function _init(){  
 
         session.init();
