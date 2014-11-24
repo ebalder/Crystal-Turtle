@@ -1,60 +1,61 @@
+/* global define */
+'use strict';
 
-define(function(require){
-	var Timestamp = require('model/timestamp');
-	var Scene = require('model/scene');
+define(['lib/jquery', 'lib/underscore'], 
+    function($, _){
 
-	var canvas = require('studio/canvas');
-	var fs = require('fs');
+    function duplicate(dest){
+    }
+    function join(to){
+    }
+    function newScene(){
+        
+    }
+    function preview(){
+    }
+    function save(){
+    }
+    function split(point){
+    }
 
-	// canvas.init();
+    var Project = function Project(name){
+        this.clips = [];
+        this.name = name;
+        this.scenes = [];
+        this.fps;
+        // this.activeScene = this.scenes[0];
+        this.end;
+        this.length;
+        this.index;
+        this.reference;
 
-	function create() {
-	}
-	function del(){
-	}
-	function duplicate(dest){
-	}
-	function join(to){
-	}
-	function load(ts){	
-		
-	}
-	function newScene(){
-		
-	}
-	function preview(){
-	}
-	function save(){
-	}
-	function split(point){
-	}
+        /* Constructor */
+        // Scene.prototype.setParent(this);
+        load();
+    };
 
-	function Project(name){
-		this.clips = [];
-		this.name = name;
-		this.scenes = [new Scene('test')];
-		this.activeScene = this.scenes[0];
-		this.start;
-		this.end;
-		this.length;
-		this.index;
-		this.reference;
+    Project.prototype = {
+        create: function create(){
+            this.scenes[0] = new Scene();
+            this.length = new util.Timestamp(0);
+            this.activeScene = this.scenes[0];
+            this.fps = 30;
+        },
+        close: function close(){
 
-		/* Constructor */
-		Scene.prototype.setParent(this);
-		load();
-	}
-	Project.prototype = {
-		create: create,
-		del: del,
-		duplicate: duplicate,
-		join: join,
-		load: load,
-		preview: preview,
-		save: save,
-		split: split,
-	};
+        },
+        duplicate: duplicate,
+        join: join,
+        load: function load(ts){
 
-	return Project;
+        },
+        open: function open(){
+        },
+        preview: preview,
+        save: save,
+        split: split,
+    };
 
-})
+    return Project;
+
+});

@@ -1,16 +1,22 @@
+/* global define */
 
+define(['require','lib/jquery','lib/popgen','studio/sidePanel',
+    'studio/carrousel',
+    'model/project'], 
+    function(require, $, popgen, panel, 
+        carrousel, 
+        Project)
+{
+    'use strict';
 
-define(function(require){
-    var panel = require('studio/sidePanel');
-    //var carrousel = require('studio/carrousel');
-
-    
     return function(router){
-        //Aquí no tiene efecto navigation.js, así que por ahora
-        //Se deja aqui la funcion de destroyDialog para que los issues funcionen.
-        /* ToDo: applicar navigation.js */
         function destroyDialog(event){
             $('.dialog').remove();
+        }
+
+        var project = new Project();
+        if(localStorage.openedProject){
+            Project.open(localStorage.openedProject);
         }
 
         $("#nIssue").on('click', issues.new);
