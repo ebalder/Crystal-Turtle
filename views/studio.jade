@@ -44,27 +44,30 @@ div#project
                     div.content !{ '-' || i.content }
                     span.author by #{ '-' || i.author } - 
                     span.date on #{ '-' || i.date } 
-    div#script 
-        a.open(href = "/script/#{project}") Script 
-        if isMember
-            | |   
-            a.load(href="/NewScene") New Scene
-            | | 
-            a.load(href = "/NewFragment") Add fragment
+        div#script 
+            a.open(href = "/script/#{project}") Script 
+            if isMember
+                | |   
+                a.load(href="/NewScene") New Scene
+                | | 
+                a.load(href = "/NewFragment") Add fragment
     div#timeline
-        div.bw
-            span.verticalCenter <
-        div.fw
-            span.verticalCenter >
-        div#tlView
-            div#tlIn
-    div#frames
-        div.bw
-            span.verticalCenter <
-        div.fw
-            span.verticalCenter >
-        div#frView
-            div#frIn
+        div#clips
+            div.bw
+                span.verticalCenter <
+            div.fw
+                span.verticalCenter >
+            div.scrollView
+                div#clIn
+                    div.tlClip
+        div#frames
+            div.bw
+                span.verticalCenter <
+            div.fw
+                span.verticalCenter >
+            div.scrollView
+                div#frIn
+                    div.tlFrame
     div#loaded
 
     include canvas

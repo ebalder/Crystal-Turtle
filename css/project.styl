@@ -1,13 +1,13 @@
 /*!================= Contents =================
 * Selectors are ordered by elements, classes, ids, then by alphabetic order
-*	@font-face
-*	Basic Elements (body, footer, header, nav)
-*	General (Reusable attributes for nonspecific use and containers)
-*	Yet Unused (some stuff will be moved to the main style sheet)
-*	Carrousel
-*	Panel
-*	General
-*	Info
+*   @font-face
+*   Basic Elements (body, footer, header, nav)
+*   General (Reusable attributes for nonspecific use and containers)
+*   Yet Unused (some stuff will be moved to the main style sheet)
+*   Carrousel
+*   Panel
+*   General
+*   Info
 =============================================*/
 
 
@@ -22,140 +22,144 @@
 
 
 .verticalCenter
-	display table-cell
-	vertical-align middle
+    display table-cell
+    vertical-align middle
 
 #project  
-	padding-left 1.2em
+    padding-left 1.2em
 
 #loaded
-	display inline
+    display inline
  
 
 
-/*! ============================== Carrousel =============================== */
+/*! ============================== Timeline =============================== */
 
 
 .clip 
-	border-left  solid 1px #020202 
-	border-right  solid 1px #020202 
-	display block 
-	float left 
-	position relative 
-	width 180px 
+    border-left  solid 1px #020202 
+    border-right  solid 1px #020202 
+    display block 
+    float left 
+    position relative 
+    width 180px 
  
 .timestamp  
-	background-color  #F5F3F4 
-	border-bottom  solid 1px #202020 
-	display block 
-	font-size 15px 
-	height 20px 
-	text-align center 
+    background-color  #F5F3F4 
+    border-bottom  solid 1px #202020 
+    display block 
+    font-size 15px 
+    height 20px 
+    text-align center 
 
 .bw    
-	float left  
-	display table
-	font-size 25px  
-	text-align center  
-	
-.frame
-	background-color #FFFFFF
-	border solid 0.5px #E5E5E5 
-	display inline-block
-	height 30px
-	width 12px
-	z-index -2000
+    float left  
+    display table
+    font-size 25px  
+    text-align center  
+
 .fw 
-	float right 
-	display table
-	position relative 
-	font-size 25px  
-	text-align center  
-	z-index 1 
+    float right 
+    display table
+    position relative 
+    font-size 25px  
+    text-align center  
+    z-index 1 
 
 #frames
-	background-color #C0C0C0
-	height 30px
-	.bw, .fw
-		width 24px
+    background-color #C0C0C0
+    height 30px
+    .bw, .fw
+        width 24px
 
-#frIn
-	display block 
-	height 100% 
-	position relative 
-	width 100% 
-	white-space nowrap
-
-#frView
-	display block 
-	height  100% 
-	overflow hidden 
-	padding 0 
-	position relative 
-	white-space nowrap
 
 #timeline  
-	background-color #050505 
-	display inline-block
-	height 120px 
-	width 100%
-	overflow hidden 
-	.bw, .fw
-		color #F5F3F4  
-		height 100px  
-		width 30px  
-	.thumb  
-		background-color #020202 
-		display inline-block 
-		height 80px 
-		width 180px 
-	.thumb img  
-		height 80px 
-		width 180px 
+    background-color #050505 
+    display inline-block
+    width 100%
+    overflow hidden 
+    div
+        box-sizing border-box
+    .bw, .fw
+        color #F5F3F4  
+        height 100%  
+        width 30px  
+    .thumb  
+        background-color #020202 
+        display inline-block 
+        height 80px 
+        width 180px 
+    .thumb img  
+        height 80px 
+        width 180px 
 
-#tlIn  
-	background-color #050505 
-	display block 
-	height 100px 
-	position relative 
-	transition all 0.2s ease-out
-	width 100% 
-	white-space nowrap
- 
-#tlView  
-	display block 
-	height  100%
-	overflow-x scroll
-	overflow-y hidden
-	padding 0 
-	position relative 
-	white-space nowrap
-	
+    .scrollView
+        height 100%
+        overflow-x scroll
+        overflow-y hidden
+        padding 0 
+        position relative 
+        white-space nowrap
+
+    #clips
+        font-size 0.5em
+        height 9em
+        position relative
+        #clIn  
+            background-color #050505 
+            height 100%
+            position relative 
+            transition all 0.2s ease-out
+            white-space nowrap
+            width 100% 
+            .tlClip
+                background-color #121212
+                display inline-block
+                height 100%
+                width 16em
+
+    #frames
+        font-size 0.5em
+        height 3em
+        position relative
+        #frIn
+            height 100% 
+            position relative 
+            white-space nowrap
+            width 100% 
+            .tlFrame
+                background-color #C9c9c9
+                border solid 0.5px #E5E5E5 
+                display inline-block
+                height 100%
+                width 1em
+     
+    
 
 /*! ============================== Panel =============================== */
 
 #panel 
-	display block 
-	position fixed
-	top 0
-	left -35% 
-	width 35% 
-	height 100% 
-	background-color #F5F3F4 
-	padding-left 20px 
-	transition all 0.2s ease 
-	z-index 2000 
+    display block 
+    position fixed
+    top 0
+    left -35% 
+    width 35% 
+    height 100% 
+    background-color #F5F3F4 
+    padding-left 20px 
+    transition all 0.2s ease 
+    z-index 2000 
 
 #panTab 
-	color #F5F3F4
-	display table
-	background-color #303030
-	width 20px
-	height 100%
-	float right
+    color #F5F3F4
+    display table
+    background-color #303030
+    width 20px
+    height 100%
+    float right
 
 #panTab span  
-	height 100% 
+    height 100% 
 
  #fragInfoContainer
    height 100%
@@ -191,74 +195,74 @@
 /*==================== General ===========================*/
 
 .issue > .content
-	max-height 200px
-	overflow hidden
+    max-height 200px
+    overflow hidden
 
 #issues
-	display block
-	float right
-	max-height 30em
-	overflow-y scroll
-	padding 1em
-	text-align justify
-	vertical-align top
-	width 45%
+    display block
+    float right
+    max-height 30em
+    overflow-y scroll
+    padding 1em
+    text-align justify
+    vertical-align top
+    width 45%
 
 #proyInfo
-	margin 2em auto
-	width 80%
+    margin 2em auto
+    width 80%
 
 #stats
-	display inline-block
-	vertical-align top
-	width 15%
+    display inline-block
+    vertical-align top
+    width 15%
 
 #wysiwyg
-	margin-left 3em
+    margin-left 3em
 #wysiwyg, #general
-	display inline-block
-	vertical-align top
+    display inline-block
+    vertical-align top
 
 
 /*==================== Info ===========================*/
 
 
 .contentLayer
-	background-color #C5C5B5
+    background-color #C5C5B5
 
 .emptyLayer
-	background-color #E5E5D8
-	color #909090
+    background-color #E5E5D8
+    color #909090
 
 .entry
-	background-color #D8D8CA
-	display inline-block
-	font-size 0.8em
-	padding 0.5em
-	width 100%
-	h2
-		line-height 1em
-		margin 0
-	.related, .tags
-		margin-top 0.5em
+    background-color #D8D8CA
+    display inline-block
+    font-size 0.8em
+    padding 0.5em
+    width 100%
+    h2
+        line-height 1em
+        margin 0
+    .related, .tags
+        margin-top 0.5em
 
 .layer
-	border-bottom solid 1px #252525
-	padding 0.5em
+    border-bottom solid 1px #252525
+    padding 0.5em
 
 .new
-	display inline-block
-	width 7em
+    display inline-block
+    width 7em
 
 #contents
-	display block
-	float left
-	width 60%
+    display block
+    float left
+    width 60%
 
 #entries
-	display block
-	float left
-	width 83%
+    display block
+    float left
+    width 83%
 
 #entryForm
   margin 15px auto auto
@@ -270,25 +274,25 @@
 
 
 #img 
-	width 20%
+    width 20%
 
 #img img
-	width 90%
+    width 90%
 
 #img, #link, #text
-	display block
-	margin 0.5em
-	vertical-align top
+    display block
+    margin 0.5em
+    vertical-align top
 
 #projectInfo
-	background-color #E5E5D8
-	display inline-block
-	width 30%
+    background-color #E5E5D8
+    display inline-block
+    width 30%
 
 #fragScript
-	display inline-block
-	text-align center
-	width 39%	
+    display inline-block
+    text-align center
+    width 39%   
 
 .issue > .content
-	display none
+    display none
