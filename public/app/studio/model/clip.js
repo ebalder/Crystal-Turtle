@@ -1,9 +1,7 @@
 
-define(function(require){
-	var Timestamp = require('model/timestamp');
-	var Frame = require('model/frame');
+define(['util','model/frame'], function(util, frame){
 
-	var fs = require('fs');
+	//var fs = require('fs');
 
 	var parent;
 	

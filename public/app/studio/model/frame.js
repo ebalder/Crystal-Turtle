@@ -1,8 +1,7 @@
+/* global define */
+'use strict';
 
-define(function(require){
-	var Timestamp = require('model/timestamp');
-	var Camera = require('model/camera');
-	var Layer = require('model/layer');
+define(['util','model/camera','model/layer'], function(util, Camera, Layer){
 
 	var parent;
 

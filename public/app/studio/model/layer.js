@@ -1,11 +1,12 @@
+/* global define */
+'use strict';
 
-define(function(require){
-	var Object = require('model/object');
+define(['model/object'], function(Obj){
 
 	function load(ref){
 		var obj = this.objects;
 		if(!obj[ref]){
-			obj[ref] = new Object('canvas');
+			obj[ref] = new Obj('canvas');
 		}
 	}
 

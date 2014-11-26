@@ -1,11 +1,11 @@
 /* global define */
 
 define(['require','lib/jquery','lib/popgen','studio/sidePanel',
-    'studio/carrousel',
+    'studio/timeline',
     'model/project'], 
     function(require, $, popgen, panel, 
         carrousel, 
-        Project)
+        project)
 {
     'use strict';
 
@@ -14,9 +14,8 @@ define(['require','lib/jquery','lib/popgen','studio/sidePanel',
             $('.dialog').remove();
         }
 
-        var project = new Project();
         if(localStorage.openedProject){
-            Project.open(localStorage.openedProject);
+            project.open(localStorage.openedProject);
         }
 
         $("#nIssue").on('click', issues.new);

@@ -1,8 +1,8 @@
 /* global define */
 'use strict';
 
-define(['lib/jquery', 'lib/underscore'], 
-    function($, _){
+define(['lib/jquery', 'lib/underscore','util','model/scene'], 
+    function($, _, util, Scene){
 
     function duplicate(dest){
     }
@@ -23,20 +23,20 @@ define(['lib/jquery', 'lib/underscore'],
         this.name = name;
         this.scenes = [];
         this.fps;
-        // this.activeScene = this.scenes[0];
+        this.activeScene;
         this.end;
-        this.length;
+        this.length = new util.Timestamp(0);
         this.index;
         this.reference;
 
         /* Constructor */
         // Scene.prototype.setParent(this);
-        load();
     };
 
     Project.prototype = {
         create: function create(){
             this.scenes[0] = new Scene();
+            this.activeScene = this.scenes[0];
             this.length = new util.Timestamp(0);
             this.activeScene = this.scenes[0];
             this.fps = 30;
@@ -56,6 +56,9 @@ define(['lib/jquery', 'lib/underscore'],
         split: split,
     };
 
-    return Project;
+    var proy = new Project();
+    proy.create();
+    
+    return proy;
 
 });
