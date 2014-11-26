@@ -35,7 +35,7 @@ define(['lib/jquery', 'lib/underscore','util','model/scene'],
 
     Project.prototype = {
         create: function create(){
-            this.scenes[0] = new Scene();
+            this.scenes[0] = new Scene().create();
             this.activeScene = this.scenes[0];
             this.length = new util.Timestamp(0);
             this.activeScene = this.scenes[0];
@@ -58,7 +58,7 @@ define(['lib/jquery', 'lib/underscore','util','model/scene'],
 
     var proy = new Project();
     proy.create();
-    
+
     return proy;
 
 });

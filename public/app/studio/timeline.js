@@ -16,12 +16,8 @@ define(['require','lib/jquery','studio/pinboard','model/project'],
     var $frIn = $('#frIn');
 
     /* clips and frames visible in the timeline */
-    var frames = Math.floor($frIn.width() / $('.tlFrame:eq(0)').width());
-    frames = project.length.value > frames ? project.length.value : frames;
-    var clips = Math.floor($clIn.width() / $('.tlClip:eq(0)').width());
-    clips = project.activeScene.clips.length > clips ? project.activeScene.clips.length : clips;
-    var clipRange = [0,0];
-    var frameRange = [0, 0];
+    var frames = project.activeScene.activeClip.frames.length;
+    var clips = project.activeScene.clips.length;
 
     var buffer;
     var i;
@@ -32,13 +28,13 @@ define(['require','lib/jquery','studio/pinboard','model/project'],
     for (i=0; i < frames; i++){
         buffer.append('<div class="tlFrame"></div>');
     }
-    $('#frIn').append(buffer);
+    $frIn.empty().append(buffer);
 
     buffer = $(document.createDocumentFragment());
     for (i=0; i < clips; i++){
         buffer.append('<div class="tlClip"></div>');
     }
-    $('#clIn').append(buffer);
+    $clIn.empty().append(buffer);
 
 
     // cacheClips(0, $('meta#fragCount').attr('count'));

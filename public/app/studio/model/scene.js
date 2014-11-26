@@ -54,9 +54,10 @@ define(['util', 'model/clip'], function(util, Clip){
     Scene.prototype = {
         cached: [],
         create: function create(){
-            this.clips[0] = new Clip();
+            this.clips[0] = new Clip().create();
             this.activeClip = this.clips[0];
             this.length = new util.Timestamp(0);
+            return this;
         },
         del: del,
         duplicate: duplicate,
