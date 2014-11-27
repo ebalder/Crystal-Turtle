@@ -8,10 +8,7 @@
 define(['require','lib/jquery','studio/pinboard','model/project'], 
     function(require, $, pinboard, project){
 
-    var bodyWidth = $('body').width();
     var loaded = []; //fragmentos cargados
-    var cssBw = { left: '+=' + 182*3 };
-    var cssFw = { left: '-=' +182*3 };
     var $clIn = $('#clIn');
     var $frIn = $('#frIn');
 
@@ -36,6 +33,25 @@ define(['require','lib/jquery','studio/pinboard','model/project'],
     }
     $clIn.empty().append(buffer);
 
+    /* Hide and show scrollbars */
+    var $scroll = $('.scrollView');
+    $scroll.on('mouseenter', function(ev){
+        $(this).css('overflow-x', 'scroll');
+        $scroll.on('mousedown', function(ev){
+            $(this).off(['mouseleave', 'mouseenter']);
+            $(this).on('mouseleave', function(ev){
+                $('body').on('mouseup',function(ev){
+                    $scroll.css('overflow-x', 'hidden');
+                    $scroll.on('mouseleave', function(ev){
+                        $(this).css('overflow-x', 'hidden');
+                    });
+                });
+            });
+        });
+    });   /* wat? */
+    $scroll.on('mouseleave', function(ev){
+        $(this).css('overflow-x', 'hidden');
+    });
 
     // cacheClips(0, $('meta#fragCount').attr('count'));
 
