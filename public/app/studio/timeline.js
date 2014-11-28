@@ -36,20 +36,25 @@ define(['require','lib/jquery','studio/pinboard','model/project'],
     /* Hide and show scrollbars */
     var $scroll = $('.scrollView');
     $scroll.on('mouseenter', function(ev){
-        $(this).css('overflow-x', 'scroll');
+        var $self = $(this);
+        console.log('a');
+        $self.css('overflow-x', 'auto');
         $scroll.on('mousedown', function(ev){
-            $(this).off(['mouseleave', 'mouseenter']);
-            $(this).on('mouseleave', function(ev){
-                $('body').on('mouseup',function(ev){
-                    $scroll.css('overflow-x', 'hidden');
-                    $scroll.on('mouseleave', function(ev){
-                        $(this).css('overflow-x', 'hidden');
-                    });
-                });
-            });
+            util.stopPropagation(ev);
+            // $self.off(['mouseleave', 'mouseenter']);
+            // $self.on('mouseleave', function(ev){
+            //     $('body').on('mouseup',function(ev){
+            //         $scroll.css('overflow-x', 'hidden');
+            //         $scroll.on('mouseleave', function(ev){
+            //             $self.css('overflow-x', 'hidden');
+            //         });
+            //     });
+            // });
         });
-    });   /* wat? */
+    });   /* ToDo: wat? */
+
     $scroll.on('mouseleave', function(ev){
+        console.log('b');
         $(this).css('overflow-x', 'hidden');
     });
 

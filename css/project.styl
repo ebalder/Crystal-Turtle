@@ -26,7 +26,7 @@
     vertical-align middle
 
 #project  
-    padding-left 1.2em
+    padding 0.2em
 
 #loaded
     display inline
@@ -52,38 +52,11 @@
     height 20px 
     text-align center 
 
-.bw    
-    float left  
-    display table
-    font-size 25px  
-    text-align center  
-
-.fw 
-    float right 
-    display table
-    position relative 
-    font-size 25px  
-    text-align center  
-    z-index 1 
-
-#frames
-    background-color #C0C0C0
-    height 30px
-    .bw, .fw
-        width 24px
-
-
 #timeline  
     background-color #050505 
-    display inline-block
     width 100%
-    overflow hidden 
     div
         box-sizing border-box
-    .bw, .fw
-        color #F5F3F4  
-        height 100%  
-        width 30px  
     .thumb  
         background-color #020202 
         display inline-block 
@@ -92,6 +65,15 @@
     .thumb img  
         height 80px 
         width 180px 
+    .swiper
+        height 0
+        position absolute
+        text-align center
+        width 100%
+        div
+            display inline-block
+            height 2em
+            width 3em
 
     .scrollView
         height 100%
@@ -105,6 +87,11 @@
         font-size 0.5em
         height 9em
         position relative
+        z-index 1
+        .swiper
+            bottom 100%
+            top -2em
+            vertical-align bottom
         #clIn  
             background-color #050505 
             height 100%
@@ -119,9 +106,12 @@
                 width 16em
 
     #frames
+        background-color #c0c0c0
         font-size 0.5em
         height 3em
         position relative
+        .swiper
+            top 100%
         #frIn
             height 100% 
             position relative 
@@ -146,20 +136,21 @@
     width 35% 
     height 100% 
     background-color #F5F3F4 
-    padding-left 20px 
     transition all 0.2s ease 
     z-index 2000 
 
 #panTab 
+    background-color #303030
     color #F5F3F4
     display table
-    background-color #303030
-    width 20px
-    height 100%
     float right
-
-#panTab span  
-    height 100% 
+    height 2.2em 
+    right -2.5em
+    position relative
+    text-align center
+    top 0.3em
+    vertical-align middle
+    width 2.2em
 
  #fragInfoContainer
    height 100%

@@ -4,8 +4,8 @@ define(['lib/jquery', 'lib/jquery-ui','studio/pinboard', 'util'], function($,ui,
     'use strict';
 
     var timestamp = "0:00:00.00";
-    var cssShow = {'left' : '0%' , 'padding-left' : '10px'};
-    var cssHide = {'left' : '-35%', 'padding-left': '20px'};
+    var cssShow = {'left' : '0%'};
+    var cssHide = {'left' : '-35%'};
 
     var $panel = $('#panel');
     var panel, self;

@@ -1,11 +1,11 @@
 /*!================= Contents =================
 * Selectors are ordered by elements, classes, ids, then by alphabetic order
-*	@font-face
-*	Basic Elements (body, footer, header, nav)
-*	General (Reusable attributes for nonspecific use and containers)
-*	Yet Unused (some stuff will be moved to the main style sheet)
-*	Forms
-*	Info
+*   @font-face
+*   Basic Elements (body, footer, header, nav)
+*   General (Reusable attributes for nonspecific use and containers)
+*   Yet Unused (some stuff will be moved to the main style sheet)
+*   Forms
+*   Info
 =============================================*/
 
 @import 'browse.styl'
@@ -59,91 +59,85 @@
 
 
 body 
-	font-family  'AmbleLightCondensed', sans-serif
-	color #303030
-	font-size 100%
-	margin  0
-	padding  0
-	background  #F5F3F4
-	min-width 950px
-	height 100%
-	overflow auto
+    font-family  'AmbleLightCondensed', sans-serif
+    color #303030
+    font-size 100%
+    margin  0
+    padding  0
+    background  #F5F3F4
+    min-width 950px
+    height 100%
+    overflow auto
 
 footer  
-	font-size 15px 
-	text-align center 
-	margin auto 
-	margin-top 90px 
-	display  block 
-	min-width  300px 
-	width  15% 
-	border-top  solid 1px #303030 
+    font-size 15px 
+    text-align center 
+    margin auto 
+    margin-top 90px 
+    display  block 
+    min-width  300px 
+    width  15% 
+    border-top  solid 1px #303030 
 
 header  
-	background  #FBFBFB 
-	display  block 
-	line-height 0
-	margin 0 0 0 0 
-	padding  0.6em 0 1.2em 9%
-	position  relative 
-	h1  
-		font-family 'SteelfishRgBold' 
-		font-size 4.5em 
-		letter-spacing 0.04em 
-		line-height 0.2em 
-	a  
-		font-family 'BebasNeueRegular' 
-		font-size 1.81em 
-		line-height 0 
-		margin 0 0 0 0.1em  
+    background  #FBFBFB 
+    display  block 
+    line-height 0
+    margin 0 0 0 0 
+    padding  0.6em 0 1.2em 9%
+    position  relative 
+    h1  
+        font-family 'SteelfishRgBold' 
+        font-size 4.5em 
+        letter-spacing 0.04em 
+        line-height 0.2em 
+    a  
+        font-family 'BebasNeueRegular' 
+        font-size 1.81em 
+        line-height 0 
+        margin 0 0 0 0.1em  
 
 nav  
-	background-color  #303030 
-	color #F0F0E0 
-	display  block 
-	font-family 'KenyanCoffeeRgRegular' 
-	font-size 1em
-	overflow  auto 
-	width 100% 
-	a, a:hover, a:link, a:visited, a:active
-		border  solid 1px #848583 
-		color #F0F0E0 
-		display table-cell
-		font-family 'KenyanCoffeeRgRegular' 
-		height 1em
-		padding 5% 10%
-		outline none
-		transition all 0.2s ease
-		vertical-align middle
-		width  5em 
-	a:focus
-		background-color #191919
-		border  solid 1px #F0F0F0 
-		color #F0F0F0
-	li  
-		display  inline-block 
-		margin  1% 
-	ul  
-		display block 
-		margin auto 
-		overflow  auto 
-		width  85% 
+    background-color  #303030 
+    color #F0F0E0 
+    display  block 
+    font-family 'KenyanCoffeeRgRegular' 
+    font-size 1em
+    overflow  auto 
+    width 100% 
+    a, a:hover, a:link, a:visited, a:active
+        border  solid 1px #848583 
+        color #F0F0E0 
+        display table-cell
+        font-family 'KenyanCoffeeRgRegular' 
+        height 1em
+        padding 5% 10%
+        outline none
+        transition all 0.2s ease
+        vertical-align middle
+        width  5em 
+    a:focus
+        background-color #191919
+        border  solid 1px #F0F0F0 
+        color #F0F0F0
+    li  
+        display  inline-block 
+        margin  1% 
+    ul  
+        display block 
+        margin auto 
+        overflow  auto 
+        width  85% 
  
 
 /*! =============================== General ================================ */
 
-.topCenter
-	position absolute
-
 .verticalCenter
-	display table-cell
-	vertical-align middle
-
-#project  
-	padding-left 1.2em 
+    display table-cell
+    vertical-align middle
 
 #loaded
-	display inline
+    display inline
  
 
 
@@ -151,98 +145,98 @@ nav
 
 
 .dialog
-	background-color #F0F0F0
-	border solid 1px #121212
-	max-height 300px
-	left -50%
-	overflow hidden
-	padding 0.5em
-	position relative
-	top 5pc
-	max-width 120em
-	form
-		color #000000
-		margin-top 0
-		padding-top 0
-	h2
-		line-height 1em
+    background-color #F0F0F0
+    border solid 1px #121212
+    max-height 300px
+    left -50%
+    overflow hidden
+    padding 0.5em
+    position relative
+    top 5pc
+    max-width 120em
+    form
+        color #000000
+        margin-top 0
+        padding-top 0
+    h2
+        line-height 1em
 
 .msg  
-	display none 
-	padding 10px 
-	position fixed 
-	bottom  5% 
-	right  5% 
-	width 350px 
-	min-height 26px 
-	background #C0C0C0 
+    display none 
+    padding 10px 
+    position fixed 
+    bottom  5% 
+    right  5% 
+    width 350px 
+    min-height 26px 
+    background #C0C0C0 
 
 .userArea
-	display inline-block
-	float right
-	vertical-align top
-	a
-		display inline-block
-		font-size 16px
-		width 100px
+    display inline-block
+    float right
+    vertical-align top
+    a
+        display inline-block
+        font-size 16px
+        width 100px
 
 #area  
-	margin auto 
-	margin-top 20px 
-	width 100% 
-	min-width 950px 
+    margin auto 
+    margin-top 20px 
+    width 100% 
+    min-width 950px 
 
 #logout  
-	float  right 
+    float  right 
  
 /*! ================================ Forms ================================= */
 
 
 form  
-	display block 
-	margin auto 
-	margin-top 70px 
-	overflow auto 
+    display block 
+    margin auto 
+    margin-top 70px 
+    overflow auto 
 
 form span 
-	display block 
-	overflow auto 
+    display block 
+    overflow auto 
 
 label  
-	font-family 'AmbleLightCondensed' 
-	font-size 18px 
-	margin-top 2px 
-	margin-bottom 2px 
-	margin-right 10px 
-	display block 
+    font-family 'AmbleLightCondensed' 
+    font-size 18px 
+    margin-top 2px 
+    margin-bottom 2px 
+    margin-right 10px 
+    display block 
 
 input invalid 
-	box-shadow none 
+    box-shadow none 
 
 [type = text], [type = password],  valid,  invalid  
-	font-family 'BitstreamVeraSansRoman' 
-	font-size 13px 
-	display block 
-	border  solid 1px #A0A0A0 
-	border-radius 0 
+    font-family 'BitstreamVeraSansRoman' 
+    font-size 13px 
+    display block 
+    border  solid 1px #A0A0A0 
+    border-radius 0 
  
 
 [type = button], [type = submit] 
-	font-family 'BitstreamVeraSansRoman' 
-	font-size 14px 
-	display block 
-	width 80px 
-	height 25px 
-	border  solid 1px #A0A0A0 
-	border-radius 0 
+    font-family 'BitstreamVeraSansRoman' 
+    font-size 14px 
+    display block 
+    width 80px 
+    height 25px 
+    border  solid 1px #A0A0A0 
+    border-radius 0 
 
  form input focus  invalid  
-	background  url(media/img/invalid.png) no-repeat 98% center 
-	box-shadow  0 0 3px #d45252 
-	border  solid 1px #b03535 
+    background  url(media/img/invalid.png) no-repeat 98% center 
+    box-shadow  0 0 3px #d45252 
+    border  solid 1px #b03535 
  
 
 form input focus  valid 
-	background  url(media/img/valid.png) no-repeat 98% center 
-	box-shadow  0 0 5px #5cd053 
-	border  solid 1px #35b035 
+    background  url(media/img/valid.png) no-repeat 98% center 
+    box-shadow  0 0 5px #5cd053 
+    border  solid 1px #35b035 
