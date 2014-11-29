@@ -1,34 +1,14 @@
-br
-link(rel="stylesheet", href="/css/canvas.css")
-form
+
 input#clear(type="button", value="Clear")
-div.brushOptions
+div#brushPanel
     h3 Brush Options
-    div
-        canvas#picker(width="300", height="200")
-        canvas#preview(width="50", height="105") 
-        div.rgba
-            div.opacity
-                |Opacity: 
-                input#alpha(type="number", value="1", min="0", max="1", size="3") 
-                div#alphaSlider
-            |R: 
-            input#red(type="number", value="0", min="0", max="255", size="3")
-            br
-            |G: 
-            input#green(type="number", value="0", min="0", max="255", size="3")
-            br
-            |B: 
-            input#blue(type="number", value="0", min="0", max="255", size="3")
-        br
-        div#eraser
-            input(type="checkbox", default="false")
-            |Eraser mode
-        |Stroke Size: 
-        input#strokeSize(type="number",value="3", size="3")
-        |px
-        div#sizeSlider
+    div#eraser
+        input(type="checkbox", default="false")
+        |Eraser mode
+    |Stroke Size: 
+    input#strokeSize(type="number",value="3", size="3")
+    |px
+    div#sizeSlider
         
-br
-div#objetos
-    canvas#canvas(width="1200", height="650")
+div#canvas
+    canvas.active(width="1240", height="780")
