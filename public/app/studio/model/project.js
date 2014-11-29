@@ -1,7 +1,7 @@
 /* global define */
 'use strict';
 
-define(['lib/jquery', 'lib/underscore','util','model/scene'], 
+define(['lib/jquery','lib/underscore','util','model/scene'], 
     function($, _, util, Scene){
 
     function duplicate(dest){

@@ -37,7 +37,6 @@ define(['require','lib/jquery','studio/pinboard','model/project'],
     var $scroll = $('.scrollView');
     $scroll.on('mouseenter', function(ev){
         var $self = $(this);
-        console.log('a');
         $self.css('overflow-x', 'auto');
         $scroll.on('mousedown', function(ev){
             util.stopPropagation(ev);
@@ -54,7 +53,6 @@ define(['require','lib/jquery','studio/pinboard','model/project'],
     });   /* ToDo: wat? */
 
     $scroll.on('mouseleave', function(ev){
-        console.log('b');
         $(this).css('overflow-x', 'hidden');
     });
 

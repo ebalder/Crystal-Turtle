@@ -1,13 +1,17 @@
 /* global define */
+'use strict';
 
 define(['require','lib/jquery','lib/popgen','studio/sidePanel',
     'studio/timeline',
+    //'studio/canvas',
+    'studio/panels',
     'model/project'], 
     function(require, $, popgen, panel, 
-        carrousel, 
+        timeline,
+        // canvas,
+        panels, 
         project)
 {
-    'use strict';
 
     return function(router){
         function destroyDialog(event){
